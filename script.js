@@ -76,11 +76,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }, observerOptions);
 
     // Observe elements for fade-in animation
-    const animatedElements = document.querySelectorAll('.benefit-card, .course-card, .testimonial-card, .video-wrapper, .video-description');
-    animatedElements.forEach(el => {
+    const animatedElements = document.querySelectorAll('.benefit-card, .course-card, .testimonial-card, .video-wrapper, .video-description, .faq-item');
+    animatedElements.forEach((el, index) => {
         el.style.opacity = '0';
         el.style.transform = 'translateY(30px)';
         el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        
+        // Add staggered delay for FAQ items
+        if (el.classList.contains('faq-item')) {
+            const faqIndex = Array.from(document.querySelectorAll('.faq-item')).indexOf(el);
+            el.style.transitionDelay = `${faqIndex * 0.1}s`;
+        }
+        
         observer.observe(el);
     });
 
@@ -317,18 +324,5 @@ document.addEventListener('DOMContentLoaded', function() {
                 toggleFAQ(this);
             }
         });
-    });
-    
-    // Add FAQ items to the existing animation observer
-    const faqItems = document.querySelectorAll('.faq-item');
-    faqItems.forEach((item, index) => {
-        item.style.opacity = '0';
-        item.style.transform = 'translateY(30px)';
-        item.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        item.style.transitionDelay = `${index * 0.1}s`;
-        
-        if (observer) {
-            observer.observe(item);
-        }
     });
 });
