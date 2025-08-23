@@ -812,6 +812,15 @@ body {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+    
+    .hero {
+        padding-top: 120px;
+        padding-bottom: 60px;
+    }
+    
     .hero-content {
         grid-template-columns: 1fr;
         gap: 2rem;
@@ -843,6 +852,44 @@ body {
     
     .cta-content h2 {
         font-size: 2rem;
+    }
+    
+    /* Promo Box Mobile Fixes */
+    .promo-box {
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        flex-direction: column;
+        text-align: center;
+        gap: 0.8rem;
+    }
+    
+    .promo-text {
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+    
+    .promo-code {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+        display: inline-block;
+        margin-top: 0.5rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+    
+    .promo-code-large {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+        word-break: break-all;
+    }
+    
+    .promo-reminder {
+        margin-bottom: 2rem;
+        text-align: center;
+        font-size: 0.9rem;
     }
 }
 
