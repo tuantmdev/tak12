@@ -173,13 +173,29 @@ body {
     font-weight: 500;
 }
 
+.promo-message {
+    margin-bottom: 0.5rem;
+}
+
+.promo-code-wrapper {
+    margin: 0.7rem 0;
+}
+
 .promo-code {
     background: white;
     color: var(--mocha-primary);
-    padding: 0.3rem 0.8rem;
-    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
     font-weight: 700;
+    font-size: 1rem;
+    display: inline-block;
+    letter-spacing: 1px;
+    white-space: nowrap;
+}
+
+.promo-discount {
     font-size: 0.9rem;
+    margin-top: 0.3rem;
 }
 
 .hero-buttons {
@@ -870,14 +886,31 @@ body {
         margin: 0 !important;
     }
     
-    .promo-code {
-        padding: 0.7rem 1.2rem !important;
+    .promo-message {
+        margin-bottom: 0.8rem !important;
         font-size: 0.9rem !important;
+    }
+    
+    .promo-code-wrapper {
+        margin: 1rem 0 !important;
+    }
+    
+    .promo-code {
+        padding: 0.8rem 1.5rem !important;
+        font-size: 1rem !important;
         display: block !important;
-        margin: 0.8rem auto 0 auto !important;
-        border-radius: 25px !important;
+        margin: 0 auto !important;
+        border-radius: 30px !important;
         max-width: fit-content !important;
         font-weight: 700 !important;
+        letter-spacing: 2px !important;
+        white-space: nowrap !important;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.2) !important;
+    }
+    
+    .promo-discount {
+        margin-top: 0.8rem !important;
+        font-size: 0.85rem !important;
     }
     
     .promo-icon {
@@ -915,10 +948,18 @@ body {
         padding: 0 0.5rem !important;
     }
     
+    .promo-message {
+        font-size: 0.8rem !important;
+    }
+    
     .promo-code {
-        padding: 0.6rem 1rem !important;
-        font-size: 0.85rem !important;
-        letter-spacing: 0.5px !important;
+        padding: 0.7rem 1.2rem !important;
+        font-size: 0.9rem !important;
+        letter-spacing: 1.5px !important;
+    }
+    
+    .promo-discount {
+        font-size: 0.8rem !important;
     }
     
     .hero-title {
