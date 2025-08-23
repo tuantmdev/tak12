@@ -173,29 +173,28 @@ body {
     font-weight: 500;
 }
 
-.promo-message {
-    margin-bottom: 0.5rem;
+.promo-line1, .promo-line2 {
+    margin: 0.3rem 0;
+    font-size: inherit;
 }
 
-.promo-code-wrapper {
-    margin: 0.7rem 0;
+.promo-code-line {
+    margin: 0.8rem 0;
+    text-align: center;
 }
 
 .promo-code {
     background: white;
     color: var(--mocha-primary);
-    padding: 0.5rem 1rem;
-    border-radius: 25px;
+    padding: 0.6rem 1.2rem;
+    border-radius: 30px;
     font-weight: 700;
-    font-size: 1rem;
+    font-size: 1.1rem;
     display: inline-block;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     white-space: nowrap;
-}
-
-.promo-discount {
-    font-size: 0.9rem;
-    margin-top: 0.3rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    border: 2px solid rgba(255,255,255,0.8);
 }
 
 .hero-buttons {
@@ -882,35 +881,32 @@ body {
     
     .promo-text {
         font-size: 0.9rem !important;
-        line-height: 1.5 !important;
+        line-height: 1.4 !important;
         margin: 0 !important;
+        text-align: center !important;
     }
     
-    .promo-message {
-        margin-bottom: 0.8rem !important;
-        font-size: 0.9rem !important;
+    .promo-line1, .promo-line2 {
+        margin: 0.5rem 0 !important;
+        font-size: 0.85rem !important;
     }
     
-    .promo-code-wrapper {
-        margin: 1rem 0 !important;
+    .promo-code-line {
+        margin: 1.2rem 0 !important;
+        text-align: center !important;
     }
     
     .promo-code {
-        padding: 0.8rem 1.5rem !important;
-        font-size: 1rem !important;
-        display: block !important;
-        margin: 0 auto !important;
-        border-radius: 30px !important;
-        max-width: fit-content !important;
-        font-weight: 700 !important;
-        letter-spacing: 2px !important;
+        padding: 1rem 1.8rem !important;
+        font-size: 1.1rem !important;
+        display: inline-block !important;
+        border-radius: 35px !important;
+        font-weight: 800 !important;
+        letter-spacing: 3px !important;
         white-space: nowrap !important;
-        box-shadow: 0 3px 10px rgba(0,0,0,0.2) !important;
-    }
-    
-    .promo-discount {
-        margin-top: 0.8rem !important;
-        font-size: 0.85rem !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.25) !important;
+        border: 3px solid rgba(255,255,255,0.9) !important;
+        transform: scale(1.05) !important;
     }
     
     .promo-icon {
@@ -944,22 +940,19 @@ body {
     }
     
     .promo-text {
-        font-size: 0.85rem !important;
+        font-size: 0.8rem !important;
         padding: 0 0.5rem !important;
     }
     
-    .promo-message {
+    .promo-line1, .promo-line2 {
         font-size: 0.8rem !important;
+        margin: 0.4rem 0 !important;
     }
     
     .promo-code {
-        padding: 0.7rem 1.2rem !important;
-        font-size: 0.9rem !important;
-        letter-spacing: 1.5px !important;
-    }
-    
-    .promo-discount {
-        font-size: 0.8rem !important;
+        padding: 0.9rem 1.5rem !important;
+        font-size: 1rem !important;
+        letter-spacing: 2px !important;
     }
     
     .hero-title {
@@ -1619,5 +1612,38 @@ body {
     
     .faq-icon {
         font-size: 1.3rem;
+    }
+}
+
+/* High-specificity mobile promo code fix */
+@media screen and (max-width: 768px) {
+    .hero .promo-box .promo-text .promo-code-line .promo-code {
+        display: block !important;
+        width: auto !important;
+        max-width: 200px !important;
+        margin: 0 auto !important;
+        text-align: center !important;
+        padding: 12px 20px !important;
+        font-size: 16px !important;
+        font-weight: bold !important;
+        letter-spacing: 2px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: clip !important;
+        background: white !important;
+        color: #A47864 !important;
+        border-radius: 25px !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
+    }
+    
+    .hero .promo-box .promo-text {
+        text-align: center !important;
+        line-height: 1.5 !important;
+    }
+    
+    .hero .promo-box .promo-text .promo-line1,
+    .hero .promo-box .promo-text .promo-line2 {
+        margin: 8px 0 !important;
+        font-size: 14px !important;
     }
 }
