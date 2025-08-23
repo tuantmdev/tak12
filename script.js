@@ -182,32 +182,28 @@ function toggleCourseCatalog() {
 }
 
 function showCategory(categoryId) {
-    try {
-        // Hide all tab contents
-        const tabContents = document.querySelectorAll('.tab-content');
-        tabContents.forEach(content => {
-            content.classList.remove('active');
-        });
-        
-        // Remove active class from all tab buttons
-        const tabButtons = document.querySelectorAll('.tab-btn');
-        tabButtons.forEach(button => {
-            button.classList.remove('active');
-        });
-        
-        // Show selected tab content
-        const selectedContent = document.getElementById(categoryId);
-        if (selectedContent) {
-            selectedContent.classList.add('active');
-        }
-        
-        // Add active class to clicked button
-        if (typeof event !== 'undefined' && event.target) {
-            const clickedButton = event.target;
-            clickedButton.classList.add('active');
-        }
-    } catch (error) {
-        console.warn('Error in showCategory:', error.message);
+    // Hide all tab contents
+    const tabContents = document.querySelectorAll('.tab-content');
+    tabContents.forEach(content => {
+        content.classList.remove('active');
+    });
+    
+    // Remove active class from all tab buttons
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    tabButtons.forEach(button => {
+        button.classList.remove('active');
+    });
+    
+    // Show selected tab content
+    const selectedContent = document.getElementById(categoryId);
+    if (selectedContent) {
+        selectedContent.classList.add('active');
+    }
+    
+    // Add active class to clicked button
+    const clickedButton = event.target;
+    if (clickedButton) {
+        clickedButton.classList.add('active');
     }
 }
 
@@ -278,48 +274,35 @@ document.head.appendChild(style);
 
 // FAQ Toggle Functionality
 function toggleFAQ(button) {
-    try {
-        if (!button || !button.parentElement) {
-            console.warn('Invalid button element passed to toggleFAQ');
-            return;
+    const faqItem = button.parentElement;
+    const faqAnswer = faqItem.querySelector('.faq-answer');
+    const isActive = faqItem.classList.contains('active');
+    
+    // Close all other FAQ items
+    document.querySelectorAll('.faq-item').forEach(item => {
+        if (item !== faqItem) {
+            item.classList.remove('active');
         }
-
-        const faqItem = button.parentElement;
-        const faqAnswer = faqItem.querySelector('.faq-answer');
-        const isActive = faqItem.classList.contains('active');
+    });
+    
+    // Toggle current FAQ item
+    if (isActive) {
+        faqItem.classList.remove('active');
+    } else {
+        faqItem.classList.add('active');
         
-        // Close all other FAQ items
-        document.querySelectorAll('.faq-item').forEach(item => {
-            if (item !== faqItem) {
-                item.classList.remove('active');
-            }
-        });
-        
-        // Toggle current FAQ item
-        if (isActive) {
-            faqItem.classList.remove('active');
-        } else {
-            faqItem.classList.add('active');
+        // Smooth scroll to the FAQ item if it's not fully visible
+        setTimeout(() => {
+            const rect = faqItem.getBoundingClientRect();
+            const windowHeight = window.innerHeight;
             
-            // Smooth scroll to the FAQ item if it's not fully visible
-            setTimeout(() => {
-                try {
-                    const rect = faqItem.getBoundingClientRect();
-                    const windowHeight = window.innerHeight;
-                    
-                    if (rect.bottom > windowHeight) {
-                        faqItem.scrollIntoView({ 
-                            behavior: 'smooth', 
-                            block: 'center' 
-                        });
-                    }
-                } catch (scrollError) {
-                    console.warn('Error in FAQ scroll:', scrollError.message);
-                }
-            }, 300);
-        }
-    } catch (error) {
-        console.warn('Error in toggleFAQ:', error.message);
+            if (rect.bottom > windowHeight) {
+                faqItem.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            }
+        }, 300);
     }
 }
 

@@ -43,17 +43,8 @@
     <!-- Preconnect for Performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://www.youtube-nocookie.com">
+    <link rel="preconnect" href="https://www.youtube.com">
     <link rel="dns-prefetch" href="https://tak12.com">
-    <link rel="preload" href="styles.css" as="style">
-    <link rel="preload" href="script.js" as="script">
-    
-    <!-- Security Headers -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.youtube-nocookie.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; frame-src 'self' https://www.youtube-nocookie.com; connect-src 'self' https://tak12.com; object-src 'none'; base-uri 'self'; form-action 'self' https://tak12.com;">
-    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), interest-cohort=()">
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -61,8 +52,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"></noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     
     <!-- Structured Data for SEO and LLM optimization -->
@@ -256,14 +246,13 @@
             <div class="video-container">
                 <div class="video-wrapper">
                     <iframe 
-                        src="https://www.youtube-nocookie.com/embed/1D4Fx3aaF6w" 
+                        src="https://www.youtube.com/embed/1D4Fx3aaF6w" 
                         title="TAK12 - Giới thiệu nền tảng học tập K-12 toàn diện" 
                         frameborder="0" 
-                        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                         allowfullscreen
                         loading="lazy"
-                        aria-describedby="video-description"
-                        sandbox="allow-scripts allow-same-origin allow-presentation">
+                        aria-describedby="video-description">
                     </iframe>
                 </div>
                 <div class="video-description" id="video-description">
@@ -909,6 +898,6 @@
         </div>
     </footer>
 
-    <script src="script.js" defer></script>
+    <script src="script.js"></script>
 </body>
 </html>
