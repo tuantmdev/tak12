@@ -30,7 +30,7 @@ A modern, responsive landing page for TAK12 - Vietnam's comprehensive K-12 onlin
 
 ## 🚀 Live Demo
 
-Visit the live site: [TAK12 Landing Page](https://tuantmdev.github.io/tak12/)
+Visit the live site: [TAK12 Landing Page](https://tak-12.com/)
 
 ## 🛠️ Technologies Used
 
@@ -91,13 +91,7 @@ cd tak12
 
 2. Serve locally:
 ```bash
-# Using Python
-python -m http.server 8000
-
-# Using Node.js
-npx serve .
-
-# Or simply open index.html in your browser
+# Simply open index.html in your browser
 ```
 
 ### File Structure
@@ -119,27 +113,6 @@ This site is deployed using **GitHub Pages** with automatic deployment:
 - Any push to `main` branch triggers automatic deployment
 - Live at: https://tuantmdev.github.io/tak12/
 - Custom domain supported via CNAME file
-
-## 📋 Course Offerings
-
-### Main Featured Courses
-1. **3-Year English Certificate Bundle** - Cambridge, ETS, IELTS (1,314,000 VNĐ)
-2. **Grade 6 Entrance Prep Bundle** - Math, Vietnamese, English (2,502,000 VNĐ)  
-3. **Grade 10 Entrance Combo** - English + Math for Hanoi students (972,000 VNĐ)
-
-### Course Categories
-- **Certificates**: Cambridge, TOEFL, IELTS preparation (5 courses)
-- **Skills Development**: Grammar, Reading, Vocabulary (4 courses)
-- **Entrance Exams**: Grade 6, Grade 10, University prep (4 courses)
-- **University Prep**: THPT graduation, assessment tests (3 courses)
-- **Learning Support**: Textbook integration, daily study support (3 courses)
-
-## 💰 Pricing & Promotions
-
-- **Universal Discount**: 10% off all courses with code `DSMANHTUAN`
-- **Price Transparency**: Clear original vs. discounted pricing
-- **Permanent Guarantee**: Discount applies to current prices even if they change
-- **Multiple Payment Options**: Direct links to TAK12 checkout with affiliate tracking
 
 ## 📊 Analytics & Tracking
 
