@@ -95,15 +95,34 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('scroll', animateProgressBars);
     animateProgressBars(); // Initial check
 
-    // Add click tracking for analytics (placeholder)
+    // Add click tracking for analytics
     const trackClick = (element, action) => {
         console.log(`Tracking: ${action} clicked`);
-        // Here you would integrate with your analytics service
-        // Example: gtag('event', 'click', { 'event_category': 'button', 'event_label': action });
+        
+        // Send event to PostHog
+        if (window.posthog) {
+            const properties = {
+                button_text: element.textContent.trim(),
+                button_class: element.className,
+                page_url: window.location.href,
+                action: action
+            };
+            
+            // Add course-specific data if available
+            const href = element.getAttribute('href');
+            if (href && href.includes('tak12.com/license/ex/')) {
+                const courseId = href.match(/ex\/(\d+\/\d+)/)?.[1];
+                if (courseId) {
+                    properties.course_id = courseId;
+                }
+            }
+            
+            posthog.capture('cta_clicked', properties);
+        }
     };
 
     // Track CTA button clicks
-    const ctaButtons = document.querySelectorAll('.primary-button, .cta-button');
+    const ctaButtons = document.querySelectorAll('.primary-button, .cta-button, .course-cta-button, .select-course');
     ctaButtons.forEach(button => {
         button.addEventListener('click', () => {
             trackClick(button, 'CTA Button');
