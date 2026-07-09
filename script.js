@@ -79,15 +79,27 @@
   function initFAQ() {
     var items = document.querySelectorAll('.faq-item');
     for (var i = 0; i < items.length; i++) {
-      (function (item) {
+      (function (item, idx) {
         var btn = item.querySelector('.faq-q');
         var icon = item.querySelector('.q-icon');
+        var answer = item.querySelector('.faq-a');
         if (!btn) return;
+
+        // Accessibility wiring so screen readers and AI agents can parse state.
+        if (answer) {
+          var answerId = 'faq-a-' + idx;
+          answer.id = answerId;
+          answer.setAttribute('role', 'region');
+          btn.setAttribute('aria-controls', answerId);
+        }
+        btn.setAttribute('aria-expanded', 'false');
+
         btn.addEventListener('click', function () {
           var open = item.classList.toggle('open');
+          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
           if (icon) icon.textContent = open ? '−' : '+';
         });
-      })(items[i]);
+      })(items[i], i);
     }
   }
 
