@@ -8,6 +8,7 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     initCopyButtons();
+    initHeroMotion();
     initFAQ();
     initQuiz();
   });
@@ -73,6 +74,68 @@
         track('cta_click', { cta: this.getAttribute('data-cta') });
       });
     }
+  }
+
+  // ---------- Hero mouse motion ----------
+  function initHeroMotion() {
+    var hero = document.querySelector('[data-hero-motion]');
+    if (!hero) return;
+
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var canHover = window.matchMedia && window.matchMedia('(hover: hover)').matches;
+    if (reduceMotion || !canHover) return;
+
+    var bounds = null;
+    var targetX = 0;
+    var targetY = 0;
+    var currentX = 0;
+    var currentY = 0;
+    var raf = null;
+
+    function readBounds() {
+      bounds = hero.getBoundingClientRect();
+    }
+
+    function setVars(x, y) {
+      hero.style.setProperty('--hero-x', x.toFixed(4));
+      hero.style.setProperty('--hero-y', y.toFixed(4));
+      hero.style.setProperty('--hero-glow-x', ((x + 1) * 50).toFixed(2) + '%');
+      hero.style.setProperty('--hero-glow-y', ((y + 1) * 50).toFixed(2) + '%');
+      hero.style.setProperty('--hero-tilt-x', (-y * 4).toFixed(3) + 'deg');
+      hero.style.setProperty('--hero-tilt-y', (x * 5).toFixed(3) + 'deg');
+    }
+
+    function tick() {
+      currentX += (targetX - currentX) * 0.12;
+      currentY += (targetY - currentY) * 0.12;
+      setVars(currentX, currentY);
+
+      if (Math.abs(targetX - currentX) > 0.001 || Math.abs(targetY - currentY) > 0.001) {
+        raf = window.requestAnimationFrame(tick);
+      } else {
+        raf = null;
+      }
+    }
+
+    function startTick() {
+      if (!raf) raf = window.requestAnimationFrame(tick);
+    }
+
+    hero.addEventListener('pointerenter', readBounds);
+    hero.addEventListener('pointermove', function (event) {
+      if (!bounds) readBounds();
+      targetX = ((event.clientX - bounds.left) / bounds.width - 0.5) * 2;
+      targetY = ((event.clientY - bounds.top) / bounds.height - 0.5) * 2;
+      targetX = Math.max(-1, Math.min(1, targetX));
+      targetY = Math.max(-1, Math.min(1, targetY));
+      startTick();
+    });
+    hero.addEventListener('pointerleave', function () {
+      targetX = 0;
+      targetY = 0;
+      startTick();
+    });
+    window.addEventListener('resize', readBounds);
   }
 
   // ---------- FAQ accordion ----------
