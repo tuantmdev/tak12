@@ -1,82 +1,82 @@
-# TAK12 Landing Page
+# TAK12 Courses — Affiliate Landing Page
 
-A modern, responsive landing page for TAK12 - Vietnam's comprehensive K-12 online learning platform.
+A modern, responsive affiliate landing page promoting **TAK12**, Vietnam's comprehensive K-12 online learning platform. The page showcases featured courses, an interactive course-finder quiz, and the exclusive **DSMANHTUAN** discount code (10% off all TAK12 courses).
+
+This page was designed in [Claude Design](https://claude.ai/design) (`TAK12 Affiliate.dc.html`) and implemented here as standalone vanilla HTML/CSS/JS.
 
 ## 🌟 Features
 
-### Educational Content
-- **Comprehensive K-12 Education**: Math and English courses for grades 1-12
-- **International Certifications**: Cambridge, TOEFL, IELTS preparation courses
-- **Entrance Exam Prep**: Specialized courses for grade 6, grade 10, and university entrance exams
-- **Curriculum Integration**: Supports popular Vietnamese textbooks (Kết nối tri thức, Cánh diều, Global Success)
+### Page Sections
+- **Sticky navigation** with anchor links and a discount CTA
+- **Coupon banner** with copy-to-clipboard code
+- **Hero** with headline, value proposition, and primary CTAs
+- **Stats bar** — social-proof metrics (students, satisfaction, courses, rating)
+- **Featured courses** — 3 highlighted courses with tags, highlights, and pricing
+- **Course-finder quiz** — 3 questions that recommend the best course for the student
+- **Coupon CTA** — prominent discount code with copy button
+- **About TAK12** — key selling points (AI personalization, time savings, progress tracking, affordability)
+- **Testimonials** — parent reviews
+- **FAQ** — collapsible accordion (6 questions)
+- **Final CTA** and footer
 
-### User Experience
-- **Responsive Design**: Mobile-first approach optimized for all devices
-- **Interactive Elements**: 
-  - Collapsible FAQ section with smooth animations
-  - Course catalog modal with tabbed navigation
-  - Smooth scrolling navigation
-  - Copy-to-clipboard promo code functionality
-- **Video Integration**: YouTube introduction video with privacy-focused nocookie domain
-- **Visual Feedback**: Hover effects, loading animations, and user interaction feedback
+### Interactive Elements
+- Interactive course-finder quiz with a progress bar and dynamic recommendation
+- Collapsible FAQ accordion
+- Copy-to-clipboard promo code with toast confirmation (and `execCommand` fallback)
+- Smooth-scrolling in-page navigation (native CSS `scroll-behavior`)
+- Hover states and transitions throughout
 
 ### Marketing & Conversion
-- **Promotional Features**: 
-  - Prominent discount code (DSMANHTUAN) with 10% off guarantee
-  - Pricing disclaimers explaining discount permanence
-  - Multiple CTA buttons throughout the page
-- **Course Showcase**: Three featured courses with detailed pricing and purchase buttons
-- **Comprehensive Course Catalog**: Modal with 30+ courses across 5 categories
+- Exclusive discount code **DSMANHTUAN** (10% off) surfaced in the banner, coupon sections, and footer
+- Multiple CTAs linking to TAK12 with the affiliate `?ref=njg2odn` parameter
+- PostHog event tracking on CTA clicks, quiz interactions, and promo-code copies
 
 ## 🚀 Live Demo
 
-Visit the live site: [TAK12 Landing Page](https://tak-12.com/)
+Visit the live site: [tak-12.com](https://tak-12.com/)
 
 ## 🛠️ Technologies Used
 
 ### Frontend
-- **HTML5**: Semantic markup with ARIA accessibility features
-- **CSS3**: Modern styling with CSS Grid, Flexbox, custom properties, and animations
-- **JavaScript**: Interactive features, intersection observers, and smooth UX enhancements
+- **HTML5**: Semantic markup
+- **CSS3**: CSS Grid, Flexbox, custom properties, and responsive breakpoints
+- **JavaScript**: Vanilla JS (no framework) for the quiz, FAQ, and copy/toast interactions
 
 ### SEO & Analytics
-- **SEO Optimized**: 
+- **SEO Optimized**:
   - Comprehensive meta tags and Open Graph implementation
-  - JSON-LD structured data for educational organization
-  - FAQ schema for rich snippets
+  - JSON-LD structured data (`EducationalOrganization` with course catalog)
+  - FAQ schema matching the visible FAQ for rich snippets
   - Twitter Card integration
 - **Analytics**: PostHog integration for user behavior tracking and insights
-- **Performance**: Core Web Vitals optimization, lazy loading, preconnect hints
+- **Performance**: Preconnect hints and a CDN for assets
 
 ### Assets & CDN
-- **Image CDN**: jsDelivr CDN via GitHub for global image delivery
-- **Font Optimization**: Google Fonts with preconnect for performance
+- **Image CDN**: jsDelivr via GitHub for global image delivery
+- **Fonts**: Google Fonts (Be Vietnam Pro) with preconnect
 - **Social Media Preview**: Custom feature images for Open Graph and Twitter Cards
 
 ## 📱 Responsive Design
 
-- **Mobile-First**: Optimized layout starting from 320px width
-- **Breakpoints**: 768px (tablet) and 1024px (desktop) with fluid scaling
+- **Breakpoints**: 900px and 640px with layout stacking (nav, hero, stats, course/testimonial grids, coupon card, footer)
 - **Touch-Friendly**: Large tap targets and mobile-optimized interactions
-- **Cross-Browser**: Compatible with modern browsers including Safari, Chrome, Firefox
+- **Cross-Browser**: Compatible with modern browsers including Safari, Chrome, and Firefox
 
 ## 🎯 SEO & Marketing Features
 
 ### Structured Data
-- Educational Organization schema for TAK12
-- Course offerings with pricing information  
-- FAQ schema for rich search results
-- LocalBusiness schema for Vietnam market
+- `EducationalOrganization` schema for TAK12 with an offer catalog
+- Course offerings with pricing information
+- `FAQPage` schema for rich search results
 
 ### Social Media Integration
-- Open Graph tags for Facebook, LinkedIn sharing
+- Open Graph tags for Facebook and LinkedIn sharing
 - Twitter Card support with large image previews
 - Custom feature images served via CDN
-- Optimized meta descriptions and titles
 
 ### Affiliate Marketing
 - Consistent `?ref=njg2odn` parameter across all TAK12 links
-- Trackable course purchase buttons
+- Trackable CTA buttons
 - Analytics integration for conversion tracking
 
 ## 🔧 Development
@@ -89,79 +89,65 @@ git clone https://github.com/tuantmdev/tak12.git
 cd tak12
 ```
 
-2. Serve locally:
+2. Serve locally (any static server works):
 ```bash
-# Simply open index.html in your browser
+python3 -m http.server 8000
+# then open http://localhost:8000
 ```
 
 ### File Structure
 ```
 tak12/
-├── index.html          # Main landing page
-├── styles.css          # Complete styling with 2025 color trends
-├── script.js           # Interactive functionality
+├── index.html          # Affiliate landing page
+├── styles.css          # Green/gold theme + responsive styles
+├── script.js           # Quiz, FAQ accordion, copy-to-clipboard, PostHog events
 ├── images/             # Feature images for social media
 │   ├── feature_desktop.png
 │   └── feature_mobile.png
+├── pricing/            # Course pricing reference screenshots
+├── CNAME               # Custom domain (tak-12.com)
 ├── README.md           # This file
-└── CLAUDE.md          # Development instructions
+└── CLAUDE.md           # Development instructions
 ```
 
 ### Deployment
 
 This site is deployed using **GitHub Pages** with automatic deployment:
-- Any push to `main` branch triggers automatic deployment
-- Live at: https://tuantmdev.github.io/tak12/
-- Custom domain supported via CNAME file
+- Any push to `main` triggers automatic deployment
+- Live at https://tuantmdev.github.io/tak12/
+- Custom domain (tak-12.com) via the `CNAME` file
 
 ## 📊 Analytics & Tracking
 
 ### PostHog Integration
-- **User Behavior**: Page views, interactions, conversion tracking
-- **Privacy-Focused**: Identified users only, GDPR compliant
-- **Custom Events**: CTA clicks, promo code usage, course selections
-
-### Performance Monitoring
-- **Core Web Vitals**: Optimized for LCP, FID, CLS metrics
-- **Loading Performance**: Preconnect hints, optimized assets
-- **SEO Tracking**: Rich snippets, search appearance monitoring
+- **User Behavior**: Page views and interactions
+- **Privacy-Focused**: Identified users only
+- **Custom Events**: `cta_click`, `quiz_started`, `quiz_completed`, and `promo_code_copied`
 
 ## 🎨 Design System
 
-### 2025 Color Palette (Mocha Mousse & Earth Tones)
-- **Primary**: Mocha (#A47864) - warm, trustworthy
-- **Secondary**: Terracotta (#C77B5B) - energetic accent
-- **Backgrounds**: Warm whites and creams for comfort
-- **Success**: Sage green for positive actions
-- **Typography**: Deep brown for excellent readability
+### Color Palette (Green & Gold)
+- **Primary**: TAK12 green (`#1B8A2C`) — trust and growth
+- **Accent**: Gold (`#FFD700`) — highlights and CTAs
+- **Backgrounds**: White and soft green (`#f8faf8`) for a clean, airy feel
+- **Typography**: Be Vietnam Pro; deep ink (`#1a202c`) for readability
 
 ### Interactive Elements
-- **Hover Effects**: Subtle transforms and color transitions
-- **Loading States**: Skeleton screens and progressive disclosure
-- **Micro-animations**: Scroll-triggered reveals, button feedback
-- **Accessibility**: High contrast ratios, keyboard navigation
+- Hover transforms and color transitions
+- Toast feedback on promo-code copy
+- Accessible tap targets and keyboard-friendly buttons
 
 ## 🤝 Contributing
 
 This is a marketing landing page for TAK12. For:
 - **Course Content Issues**: Contact TAK12 directly
-- **Technical Issues**: Open GitHub issue
+- **Technical Issues**: Open a GitHub issue
 - **Feature Requests**: Submit via GitHub issues
 
 ## 📄 License
 
 This landing page is created for promotional purposes. All educational content and services are provided by TAK12.
 
-## 🔄 Recent Updates
-
-- ✅ Added PostHog analytics integration
-- ✅ Implemented jsDelivr CDN for global image delivery  
-- ✅ Enhanced course catalog with 30+ specific course offerings
-- ✅ Added pricing disclaimers and transparency features
-- ✅ Optimized mobile responsive design with multiple breakpoint fixes
-- ✅ Integrated comprehensive FAQ section with 8 questions
-- ✅ Added YouTube video introduction with privacy controls
-
 ---
 
-**Built with ❤️ using Claude Code** | **Deployed via GitHub Pages** | **Analytics by PostHog**
+**Built with ❤️ using Claude Code** | **Designed in Claude Design** | **Deployed via GitHub Pages** | **Analytics by PostHog**
