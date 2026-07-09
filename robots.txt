@@ -1,0 +1,28 @@
+# TAK12 Courses — affiliate landing page
+# All crawlers, including AI agents, are welcome.
+User-agent: *
+Allow: /
+
+# Common AI / LLM crawlers (explicitly allowed)
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://tak-12.com/sitemap.xml
