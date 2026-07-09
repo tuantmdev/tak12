@@ -102,7 +102,7 @@ tak12/
 ├── styles.css          # Green/gold theme + responsive styles
 ├── script.js           # Quiz, FAQ accordion, copy-to-clipboard, PostHog events
 ├── images/             # Feature images for social media
-│   ├── feature_desktop.png
+│   ├── feature_desktop.jpg
 │   └── feature_mobile.png
 ├── pricing/            # Course pricing reference screenshots
 ├── CNAME               # Custom domain (tak-12.com)

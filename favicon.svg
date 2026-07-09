@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="TAK12">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#22a035"/>
+      <stop offset="1" stop-color="#157123"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#g)"/>
+  <text x="32" y="30" text-anchor="middle" font-family="'Be Vietnam Pro',Arial,sans-serif" font-size="20" font-weight="800" fill="#ffffff">T</text>
+  <text x="32" y="50" text-anchor="middle" font-family="'Be Vietnam Pro',Arial,sans-serif" font-size="18" font-weight="800" fill="#ffc800">12</text>
+</svg>
