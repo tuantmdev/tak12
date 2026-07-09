@@ -105,6 +105,17 @@
     var resTag = document.getElementById('quiz-result-tag');
     var resName = document.getElementById('quiz-result-name');
     var resDesc = document.getElementById('quiz-result-desc');
+    var resLink = document.getElementById('quiz-result-link');
+
+    var BASE = 'https://tak12.com/info/';
+    var REF = '?ref=njg2odn';
+    var URLS = {
+      cert: BASE + 'bang-gia-chung-chi' + REF,
+      exam6: BASE + 'bang-gia-vao-6' + REF,
+      exam10: BASE + 'bang-gia-vao-10' + REF,
+      examdh: BASE + 'bang-gia-vao-dh' + REF,
+      hoctot: BASE + 'bang-gia-hoc-tot' + REF
+    };
 
     var questions = [
       {
@@ -139,18 +150,18 @@
     function getResult() {
       var grade = answers[0], goal = answers[1], subject = answers[2];
       if (goal === 'cert') {
-        if (grade === 'primary') return { tag: 'Chứng chỉ Anh', name: 'TOEFL Primary', desc: 'Khóa luyện thi TOEFL Primary dành cho học sinh tiểu học, tập trung nghe và đọc hiểu với bài tập AI cá nhân hóa.' };
-        if (grade === 'secondary') return { tag: 'Chứng chỉ Anh', name: 'Luyện thi Cambridge (KET/PET)', desc: 'Chuẩn bị bài bản cho kỳ thi Cambridge KET và PET với đề mô phỏng và hướng dẫn 4 kỹ năng.' };
-        return { tag: 'Chứng chỉ Anh', name: 'Luyện thi IELTS', desc: 'Chiến lược bài bản cho 4 kỹ năng IELTS với AI phân tích điểm yếu và gợi ý lộ trình cải thiện.' };
+        if (grade === 'primary') return { tag: 'Chứng chỉ Anh', name: 'TOEFL Primary', desc: 'Khóa luyện thi TOEFL Primary dành cho học sinh tiểu học, tập trung nghe và đọc hiểu với bài tập AI cá nhân hóa.', url: URLS.cert };
+        if (grade === 'secondary') return { tag: 'Chứng chỉ Anh', name: 'Luyện thi Cambridge (KET/PET)', desc: 'Chuẩn bị bài bản cho kỳ thi Cambridge KET và PET với đề mô phỏng và hướng dẫn 4 kỹ năng.', url: URLS.cert };
+        return { tag: 'Chứng chỉ Anh', name: 'Luyện thi IELTS', desc: 'Chiến lược bài bản cho 4 kỹ năng IELTS với AI phân tích điểm yếu và gợi ý lộ trình cải thiện.', url: URLS.cert };
       }
       if (goal === 'exam') {
-        if (grade === 'primary') return { tag: 'Ôn thi', name: 'Ôn thi vào Lớp 6', desc: 'Lộ trình ôn tập toàn diện cho kỳ thi tuyển sinh lớp 6 với đề thi thử và AI điều chỉnh độ khó.' };
-        if (grade === 'secondary') return { tag: 'Ôn thi', name: 'Ôn thi vào Lớp 10', desc: 'Chuẩn bị kỹ lưỡng cho kỳ thi tuyển sinh THPT với 200+ đề thi thử và phân tích chi tiết.' };
-        return { tag: 'Ôn thi', name: 'Ôn thi Tốt nghiệp THPT', desc: 'Ôn luyện trọng tâm cho kỳ thi tốt nghiệp THPT quốc gia, tập trung vào dạng bài thường gặp.' };
+        if (grade === 'primary') return { tag: 'Ôn thi', name: 'Ôn thi vào Lớp 6', desc: 'Lộ trình ôn tập toàn diện cho kỳ thi tuyển sinh lớp 6 với đề thi thử và AI điều chỉnh độ khó.', url: URLS.exam6 };
+        if (grade === 'secondary') return { tag: 'Ôn thi', name: 'Ôn thi vào Lớp 10', desc: 'Chuẩn bị kỹ lưỡng cho kỳ thi tuyển sinh THPT với 200+ đề thi thử và phân tích chi tiết.', url: URLS.exam10 };
+        return { tag: 'Ôn thi', name: 'Ôn thi Tốt nghiệp THPT', desc: 'Ôn luyện trọng tâm cho kỳ thi tốt nghiệp THPT quốc gia, tập trung vào dạng bài thường gặp.', url: URLS.examdh };
       }
-      if (subject === 'math') return { tag: 'Học thêm', name: 'Toán Lớp 1–12', desc: 'Hỗ trợ học Toán theo chương trình SGK mới với bài tập AI thích ứng theo trình độ.' };
-      if (subject === 'english') return { tag: 'Học thêm', name: 'Tiếng Anh Lớp 1–12', desc: 'Nâng cao ngữ pháp, đọc hiểu và kỹ năng giao tiếp tiếng Anh cho mọi cấp lớp.' };
-      return { tag: 'Học thêm', name: 'Toán & Tiếng Anh Lớp 1–12', desc: 'Gói học thêm cả Toán và Tiếng Anh, tiết kiệm hơn khi đăng ký cùng lúc với mã DSMANHTUAN.' };
+      if (subject === 'math') return { tag: 'Học thêm', name: 'Toán Lớp 2–12', desc: 'Hỗ trợ học Toán theo chương trình SGK mới với bài tập AI thích ứng theo trình độ.', url: URLS.hoctot };
+      if (subject === 'english') return { tag: 'Học thêm', name: 'Tiếng Anh Lớp 3–12', desc: 'Nâng cao ngữ pháp, đọc hiểu và kỹ năng giao tiếp tiếng Anh cho mọi cấp lớp.', url: URLS.hoctot };
+      return { tag: 'Học thêm', name: 'Toán & Tiếng Anh Lớp 2–12', desc: 'Gói học thêm cả Toán và Tiếng Anh, tiết kiệm hơn khi đăng ký cùng lúc với mã DSMANHTUAN.', url: URLS.hoctot };
     }
 
     function show(el) {
@@ -192,6 +203,7 @@
       if (resTag) resTag.textContent = r.tag;
       if (resName) resName.textContent = r.name;
       if (resDesc) resDesc.textContent = r.desc;
+      if (resLink && r.url) resLink.href = r.url;
       show(result);
       track('quiz_completed', { result: r.name, answers: answers.join(',') });
     }
