@@ -34,14 +34,34 @@
       toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 2500);
     }
 
+    function getCopyPlacement(btn) {
+      if (!btn) return 'unknown';
+      if (btn.classList.contains('final-code')) return 'final_cta';
+      if (btn.classList.contains('coupon-copy')) return 'coupon_card';
+      if (btn.closest && btn.closest('.top-banner')) return 'top_banner';
+      if (btn.closest && btn.closest('.lp-coupon-inline')) return 'inline_coupon';
+      return 'coupon_button';
+    }
+
+    function buildCouponProps(btn) {
+      return {
+        code: COUPON,
+        placement: getCopyPlacement(btn),
+        page_path: window.location.pathname,
+        page_title: document.title
+      };
+    }
+
     function copyCoupon(btn) {
+      var props = buildCouponProps(btn);
+      track('copy_coupon_clicked', props);
       var restore = null;
       if (btn && btn.classList.contains('final-code') === false) {
         restore = btn.textContent;
         btn.textContent = 'Đã sao chép! ✓';
         setTimeout(function () { if (restore !== null) btn.textContent = restore; }, 2500);
       }
-      var done = function () { showToast(); track('promo_code_copied', { code: COUPON }); };
+      var done = function () { showToast(); track('promo_code_copied', props); };
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(COUPON).then(done, function () { fallbackCopy(COUPON); done(); });
       } else {
