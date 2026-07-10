@@ -11,6 +11,7 @@
     initHeroMotion();
     initFAQ();
     initQuiz();
+    initCampaign();
   });
 
   // ---------- PostHog helper ----------
@@ -156,6 +157,31 @@
       startTick();
     });
     window.addEventListener('resize', readBounds);
+  }
+
+  // ---------- Partner campaign banner ----------
+  // Reads data-end-date="dd/mm/yyyy" off the section and fills in the
+  // "days left" countdown and the displayed end date. Editors only ever
+  // need to touch that one attribute (plus the plain-text copy in the HTML).
+  function initCampaign() {
+    var section = document.querySelector('[data-campaign]');
+    if (!section || section.classList.contains('hidden')) return;
+
+    var endDateStr = section.getAttribute('data-end-date');
+    if (!endDateStr) return;
+
+    var parts = endDateStr.split('/').map(function (n) { return parseInt(n, 10); });
+    var day = parts[0], month = parts[1], year = parts[2];
+    if (!day || !month || !year) return;
+
+    var endDate = new Date(year, month - 1, day, 23, 59, 59);
+    var daysLeft = Math.max(0, Math.ceil((endDate - new Date()) / (1000 * 60 * 60 * 24)));
+
+    var daysEl = section.querySelector('[data-campaign-days]');
+    if (daysEl) daysEl.textContent = daysLeft;
+
+    var dateEl = section.querySelector('[data-campaign-end-date]');
+    if (dateEl) dateEl.textContent = day + '/' + month + '/' + year;
   }
 
   // ---------- FAQ accordion ----------

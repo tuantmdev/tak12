@@ -19,6 +19,9 @@
   --green-soft: #e6f4ea;
   --gold-soft: #fff3cd;
   --gold-ink: #b8860b;
+  --orange: #FF8C42;
+  --orange-2: #FFB627;
+  --orange-dark: #c2410c;
   --maxw: 1200px;
 }
 
@@ -354,6 +357,49 @@ img { max-width: 100%; }
   color: var(--green-dark);
 }
 
+/* ---------- Partner Campaign Banner ---------- */
+.campaign-banner { max-width: var(--maxw); margin: 28px auto 0; padding: 0 32px; }
+.campaign-inner {
+  background: linear-gradient(120deg, var(--orange) 0%, var(--orange-2) 100%);
+  border-radius: 18px;
+  padding: 28px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 24px; flex-wrap: wrap;
+  position: relative; overflow: hidden;
+}
+.campaign-inner::before {
+  content: "";
+  position: absolute; top: -30px; right: 10%;
+  width: 160px; height: 160px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,.25) 0%, transparent 70%);
+  pointer-events: none;
+}
+.campaign-info {
+  display: flex; align-items: center; gap: 16px;
+  position: relative; z-index: 1; flex: 1; min-width: 280px;
+}
+.campaign-countdown {
+  background: rgba(255,255,255,.9); color: var(--orange-dark);
+  padding: 6px 14px; border-radius: 8px; text-align: center; flex-shrink: 0;
+}
+.campaign-countdown .days-num { display: block; font-size: 16px; font-weight: 800; }
+.campaign-countdown .days-label { display: block; font-size: 9px; font-weight: 700; margin-top: 1px; letter-spacing: .3px; }
+.campaign-title { font-size: 19px; font-weight: 800; color: #fff; margin-bottom: 2px; }
+.campaign-subtitle { font-size: 13px; color: rgba(255,255,255,.9); }
+.campaign-action { display: flex; align-items: center; gap: 10px; position: relative; z-index: 1; flex-wrap: wrap; }
+.campaign-partner {
+  background: #fff; border-radius: 10px; padding: 8px 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.campaign-partner .partner-name { font-size: 12px; font-weight: 700; color: var(--muted-2); }
+.campaign-discount { background: #dc2626; color: #fff; padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 800; }
+.campaign-cta {
+  background: var(--ink); color: #fff;
+  padding: 11px 22px; font-size: 13px;
+  text-decoration: none; white-space: nowrap;
+}
+.campaign-cta:hover { background: #000; color: #fff; }
+
 /* ---------- Stats ---------- */
 .stats { background: var(--bg-soft); border-bottom: 1px solid var(--border); }
 .stats-inner {
@@ -633,10 +679,18 @@ img { max-width: 100%; }
   .testimonial-grid { grid-template-columns: 1fr; }
   .coupon-card { flex-direction: column; align-items: flex-start; }
   .coupon-action { flex-wrap: wrap; }
+  .campaign-inner { flex-direction: column; align-items: flex-start; }
+  .campaign-action { width: 100%; }
 }
 
 @media (max-width: 640px) {
   .container, .section, .quiz-wrap, .coupon-wrap { padding-left: 20px; padding-right: 20px; }
+  .campaign-banner { padding: 0 20px; margin-top: 20px; }
+  .campaign-inner { padding: 22px 20px; }
+  .campaign-title { font-size: 17px; }
+  .campaign-action { width: 100%; }
+  .campaign-partner { flex: 1; justify-content: center; }
+  .campaign-cta { width: 100%; }
   .hero { padding: 56px 20px 52px; }
   .hero h1 { font-size: 30px; }
   .hero p { font-size: 15px; }
