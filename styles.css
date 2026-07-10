@@ -171,7 +171,7 @@ img { max-width: 100%; }
 /* ---------- Hero ---------- */
 .hero {
   background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 40%, var(--green-darker) 100%);
-  padding: 80px 32px 72px;
+  padding: 80px 0 72px;
   position: relative; overflow: hidden;
   --hero-x: 0;
   --hero-y: 0;
@@ -198,6 +198,7 @@ img { max-width: 100%; }
 }
 .hero-inner {
   max-width: var(--maxw); margin: 0 auto;
+  padding: 0 32px;
   display: flex; gap: 48px; align-items: center;
   position: relative; z-index: 1;
 }
@@ -684,14 +685,14 @@ img { max-width: 100%; }
 }
 
 @media (max-width: 640px) {
-  .container, .section, .quiz-wrap, .coupon-wrap { padding-left: 20px; padding-right: 20px; }
+  .container, .section, .quiz-wrap, .coupon-wrap, .hero-inner { padding-left: 20px; padding-right: 20px; }
   .campaign-banner { padding: 0 20px; margin-top: 20px; }
   .campaign-inner { padding: 22px 20px; }
   .campaign-title { font-size: 17px; }
   .campaign-action { width: 100%; }
   .campaign-partner { flex: 1; justify-content: center; }
   .campaign-cta { width: 100%; }
-  .hero { padding: 56px 20px 52px; }
+  .hero { padding: 56px 0 52px; }
   .hero h1 { font-size: 30px; }
   .hero p { font-size: 15px; }
   .hero-actions { width: 100%; }
