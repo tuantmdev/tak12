@@ -357,7 +357,9 @@
 
   <!-- PARTNER CAMPAIGN BANNER -->
   <!-- Configurable promo, kept independent of the DSMANHTUAN/TAK12 coupon above.
-       - Hide it: add class="hidden" to the <section> tag below.
+       - Hide it now: add class="hidden" to the <section> tag below.
+       - Auto-hide: once data-end-date passes, script.js adds class="hidden" itself
+         on page load — no manual cleanup needed after a campaign ends.
        - Edit copy: title, subtitle, and partner discount chips are plain text here.
        - Edit the countdown: change data-end-date (dd/mm/yyyy) on the <section> tag —
          "days left" and the displayed end date are both computed from it automatically.

@@ -163,6 +163,7 @@
   // Reads data-end-date="dd/mm/yyyy" off the section and fills in the
   // "days left" countdown and the displayed end date. Editors only ever
   // need to touch that one attribute (plus the plain-text copy in the HTML).
+  // Once the end date has fully passed, the section hides itself.
   function initCampaign() {
     var section = document.querySelector('[data-campaign]');
     if (!section || section.classList.contains('hidden')) return;
@@ -175,6 +176,11 @@
     if (!day || !month || !year) return;
 
     var endDate = new Date(year, month - 1, day, 23, 59, 59);
+    if (endDate < new Date()) {
+      section.classList.add('hidden');
+      return;
+    }
+
     var daysLeft = Math.max(0, Math.ceil((endDate - new Date()) / (1000 * 60 * 60 * 24)));
 
     var daysEl = section.querySelector('[data-campaign-days]');
