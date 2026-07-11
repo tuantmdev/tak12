@@ -4,10 +4,8 @@
 (function () {
   'use strict';
 
-  var COUPON = 'DSMANHTUAN';
-
   document.addEventListener('DOMContentLoaded', function () {
-    initCopyButtons();
+    initCtaTracking();
     initHeroMotion();
     initFAQ();
     initQuiz();
@@ -23,72 +21,8 @@
     } catch (e) { /* analytics must never break the page */ }
   }
 
-  // ---------- Copy coupon + toast ----------
-  function initCopyButtons() {
-    var toast = document.getElementById('toast');
-    var toastTimer;
-
-    function showToast() {
-      if (!toast) return;
-      toast.classList.add('show');
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 2500);
-    }
-
-    function getCopyPlacement(btn) {
-      if (!btn) return 'unknown';
-      if (btn.classList.contains('final-code')) return 'final_cta';
-      if (btn.classList.contains('coupon-copy')) return 'coupon_card';
-      if (btn.closest && btn.closest('.top-banner')) return 'top_banner';
-      if (btn.closest && btn.closest('.lp-coupon-inline')) return 'inline_coupon';
-      return 'coupon_button';
-    }
-
-    function buildCouponProps(btn) {
-      return {
-        code: COUPON,
-        placement: getCopyPlacement(btn),
-        page_path: window.location.pathname,
-        page_title: document.title
-      };
-    }
-
-    function copyCoupon(btn) {
-      var props = buildCouponProps(btn);
-      track('copy_coupon_clicked', props);
-      var restore = null;
-      if (btn && btn.classList.contains('final-code') === false) {
-        restore = btn.textContent;
-        btn.textContent = 'Đã sao chép! ✓';
-        setTimeout(function () { if (restore !== null) btn.textContent = restore; }, 2500);
-      }
-      var done = function () { showToast(); track('promo_code_copied', props); };
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(COUPON).then(done, function () { fallbackCopy(COUPON); done(); });
-      } else {
-        fallbackCopy(COUPON);
-        done();
-      }
-    }
-
-    function fallbackCopy(text) {
-      var ta = document.createElement('textarea');
-      ta.value = text;
-      ta.setAttribute('readonly', '');
-      ta.style.position = 'absolute';
-      ta.style.left = '-9999px';
-      document.body.appendChild(ta);
-      ta.select();
-      try { document.execCommand('copy'); } catch (e) { /* noop */ }
-      document.body.removeChild(ta);
-    }
-
-    var buttons = document.querySelectorAll('[data-copy]');
-    for (var i = 0; i < buttons.length; i++) {
-      buttons[i].addEventListener('click', function () { copyCoupon(this); });
-    }
-
-    // CTA click tracking (course/final/quiz links to TAK12)
+  // ---------- CTA click tracking ----------
+  function initCtaTracking() {
     var ctas = document.querySelectorAll('[data-cta]');
     for (var j = 0; j < ctas.length; j++) {
       ctas[j].addEventListener('click', function () {
@@ -324,7 +258,7 @@
       }
       if (subject === 'math') return { tag: 'Học thêm', name: 'Toán Lớp 2–12', desc: 'Hỗ trợ học Toán theo chương trình SGK mới với bài tập AI thích ứng theo trình độ.', url: URLS.hoctot };
       if (subject === 'english') return { tag: 'Học thêm', name: 'Tiếng Anh Lớp 3–12', desc: 'Nâng cao ngữ pháp, đọc hiểu và kỹ năng giao tiếp tiếng Anh cho mọi cấp lớp.', url: URLS.hoctot };
-      return { tag: 'Học thêm', name: 'Toán & Tiếng Anh Lớp 2–12', desc: 'Gói học thêm cả Toán và Tiếng Anh, tiết kiệm hơn khi đăng ký cùng lúc với mã DSMANHTUAN.', url: URLS.hoctot };
+      return { tag: 'Học thêm', name: 'Toán & Tiếng Anh Lớp 2–12', desc: 'Gói học thêm cả Toán và Tiếng Anh, tiết kiệm hơn khi đăng ký cùng lúc.', url: URLS.hoctot };
     }
 
     function show(el) {
