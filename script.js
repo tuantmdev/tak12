@@ -161,9 +161,13 @@
 
   // ---------- Partner campaign banner ----------
   // Reads data-end-date="dd/mm/yyyy" off the section and fills in the
-  // "days left" countdown and the displayed end date. Editors only ever
-  // need to touch that one attribute (plus the plain-text copy in the HTML).
-  // Once the end date has fully passed, the section hides itself.
+  // countdown and the displayed end date. Editors only ever need to touch
+  // that one attribute (plus the plain-text copy in the HTML). Once the end
+  // date has fully passed, the section hides itself. On the end date's own
+  // calendar day, it switches to a live, ticking HH:MM:SS countdown for a
+  // stronger urgency (FOMO) effect.
+  var MS_PER_DAY = 1000 * 60 * 60 * 24;
+
   function initCampaign() {
     var section = document.querySelector('[data-campaign]');
     if (!section || section.classList.contains('hidden')) return;
@@ -176,18 +180,50 @@
     if (!day || !month || !year) return;
 
     var endDate = new Date(year, month - 1, day, 23, 59, 59);
-    if (endDate < new Date()) {
-      section.classList.add('hidden');
-      return;
-    }
 
-    var daysLeft = Math.max(0, Math.ceil((endDate - new Date()) / (1000 * 60 * 60 * 24)));
-
+    var daysBlock = section.querySelector('[data-campaign-days-block]');
+    var timerBlock = section.querySelector('[data-campaign-timer-block]');
     var daysEl = section.querySelector('[data-campaign-days]');
-    if (daysEl) daysEl.textContent = daysLeft;
-
+    var hEl = section.querySelector('[data-timer-h]');
+    var mEl = section.querySelector('[data-timer-m]');
+    var sEl = section.querySelector('[data-timer-s]');
     var dateEl = section.querySelector('[data-campaign-end-date]');
     if (dateEl) dateEl.textContent = day + '/' + month + '/' + year;
+
+    var pad = function (n) { return n < 10 ? '0' + n : '' + n; };
+    var timerHandle = null;
+
+    function tick() {
+      var now = new Date();
+      var msLeft = endDate - now;
+
+      if (msLeft <= 0) {
+        if (timerHandle) clearInterval(timerHandle);
+        section.classList.add('hidden');
+        return;
+      }
+
+      var todayOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      var endDateOnly = new Date(year, month - 1, day);
+      var calendarDaysLeft = Math.round((endDateOnly - todayOnly) / MS_PER_DAY);
+
+      if (calendarDaysLeft <= 0) {
+        if (daysBlock) daysBlock.classList.add('hidden');
+        if (timerBlock) timerBlock.classList.remove('hidden');
+        var totalSeconds = Math.floor(msLeft / 1000);
+        if (hEl) hEl.textContent = pad(Math.floor(totalSeconds / 3600));
+        if (mEl) mEl.textContent = pad(Math.floor((totalSeconds % 3600) / 60));
+        if (sEl) sEl.textContent = pad(totalSeconds % 60);
+        if (!timerHandle) timerHandle = setInterval(tick, 1000);
+      } else {
+        if (timerBlock) timerBlock.classList.add('hidden');
+        if (daysBlock) daysBlock.classList.remove('hidden');
+        if (daysEl) daysEl.textContent = calendarDaysLeft;
+        if (timerHandle) { clearInterval(timerHandle); timerHandle = null; }
+      }
+    }
+
+    tick();
   }
 
   // ---------- FAQ accordion ----------

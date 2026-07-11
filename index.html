@@ -363,13 +363,21 @@
        - Edit copy: title, subtitle, and partner discount chips are plain text here.
        - Edit the countdown: change data-end-date (dd/mm/yyyy) on the <section> tag —
          "days left" and the displayed end date are both computed from it automatically.
+         On the end date's own calendar day, it switches to a live HH:MM:SS countdown
+         that ticks every second and hides the section the instant it hits zero.
        - The CTA link keeps the usual ?ref=njg2odn affiliate parameter. -->
   <section id="campaign-section" class="campaign-banner" data-campaign data-end-date="31/07/2026">
     <div class="campaign-inner">
       <div class="campaign-info">
-        <div class="campaign-countdown">
-          <span class="days-num" data-campaign-days>—</span>
-          <span class="days-label">Ngày Còn Lại</span>
+        <div class="campaign-countdown" data-campaign-countdown>
+          <div class="cd-days" data-campaign-days-block>
+            <span class="days-num" data-campaign-days>—</span>
+            <span class="days-label">Ngày Còn Lại</span>
+          </div>
+          <div class="cd-timer hidden" data-campaign-timer-block>
+            <span class="cd-clock"><span data-timer-h>00</span><span class="cd-colon">:</span><span data-timer-m>00</span><span class="cd-colon">:</span><span data-timer-s>00</span></span>
+            <span class="days-label">Sắp Kết Thúc!</span>
+          </div>
         </div>
         <div class="campaign-text">
           <div class="campaign-title">Hè Rực Rỡ - Học Hết Cỡ</div>

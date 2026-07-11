@@ -379,12 +379,29 @@ img { max-width: 100%; }
   display: flex; align-items: center; gap: 16px;
   position: relative; z-index: 1; flex: 1; min-width: 280px;
 }
-.campaign-countdown {
+.campaign-countdown { flex-shrink: 0; }
+.cd-days, .cd-timer {
   background: rgba(255,255,255,.9); color: var(--orange-dark);
-  padding: 6px 14px; border-radius: 8px; text-align: center; flex-shrink: 0;
+  padding: 6px 14px; border-radius: 8px; text-align: center;
 }
-.campaign-countdown .days-num { display: block; font-size: 16px; font-weight: 800; }
-.campaign-countdown .days-label { display: block; font-size: 9px; font-weight: 700; margin-top: 1px; letter-spacing: .3px; }
+.cd-days .days-num { display: block; font-size: 16px; font-weight: 800; }
+.cd-days .days-label { display: block; font-size: 9px; font-weight: 700; margin-top: 1px; letter-spacing: .3px; }
+.cd-timer {
+  background: #fff5f5; color: #dc2626;
+  animation: campaignPulse 1s ease-in-out infinite;
+}
+.cd-timer .cd-clock {
+  display: block; font-family: ui-monospace, monospace;
+  font-size: 17px; font-weight: 800; letter-spacing: .5px;
+  font-variant-numeric: tabular-nums;
+}
+.cd-timer .cd-colon { animation: campaignBlink 1s steps(1) infinite; }
+.cd-timer .days-label { display: block; font-size: 9px; font-weight: 700; margin-top: 1px; letter-spacing: .3px; }
+@keyframes campaignPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 rgba(220,38,38,0); }
+  50% { transform: scale(1.06); box-shadow: 0 0 0 6px rgba(220,38,38,.12); }
+}
+@keyframes campaignBlink { 50% { opacity: .15; } }
 .campaign-title { font-size: 19px; font-weight: 800; color: #fff; margin-bottom: 2px; }
 .campaign-subtitle { font-size: 13px; color: rgba(255,255,255,.9); }
 .campaign-action { display: flex; align-items: center; gap: 10px; position: relative; z-index: 1; flex-wrap: wrap; }
@@ -808,4 +825,9 @@ img { max-width: 100%; }
     --hero-tilt-x: 0deg;
     --hero-tilt-y: 0deg;
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cd-timer { animation: none; }
+  .cd-timer .cd-colon { animation: none; }
 }
