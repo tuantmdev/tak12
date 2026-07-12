@@ -2,12 +2,13 @@
 
 > Trang giới thiệu chính thức của đối tác liên kết TAK12. TAK12 là nền tảng học tập
 > trực tuyến K-12 tại Việt Nam cho học sinh lớp 1–12, kết hợp chương trình giảng dạy
-> với AI để cá nhân hóa lộ trình học. Dùng mã giảm giá **DSMANHTUAN** để được **giảm 10%**
-> cho tất cả khóa học khi thanh toán trên tak12.com.
+> với AI để cá nhân hóa lộ trình học. Đăng ký tài khoản **FREE** để dùng thử miễn phí,
+> không cần thẻ thanh toán, rồi nâng cấp lên **PRO** bất cứ lúc nào để mở khóa luyện
+> tập không giới hạn.
 
 ## Thông tin nhanh (Key facts)
 
-- **Mã giảm giá / Discount code:** DSMANHTUAN (giảm 10% mọi khóa học, không giới hạn số lần dùng, không yêu cầu giá trị đơn tối thiểu)
+- **Dùng thử / Trial:** Tài khoản FREE — luyện các bài đánh dấu FREE, tối đa 10 câu/ngày và 100 câu/chương trình cho mỗi phần, không xem giải thích chi tiết, không tải PDF, có quảng cáo. Nâng cấp PRO để mở khóa đầy đủ.
 - **Đối tượng / Audience:** Học sinh lớp 1–12 (6–18 tuổi)
 - **Nền tảng / Platform:** TAK12 (https://tak12.com/) — học trực tuyến, cá nhân hóa bằng AI
 - **Landing page:** https://tak-12.com/
@@ -16,14 +17,14 @@
 
 ## Khóa học nổi bật (Featured courses)
 
-- [Ôn thi vào Lớp 10](https://tak12.com/info/bang-gia-vao-10?ref=njg2odn): Luyện đề Toán & Tiếng Anh theo mẫu đề Sở GD, cho học sinh Lớp 9. Từ 846.000₫ (đã giảm 10%, giá gốc 940.000₫).
-- [Luyện thi Chứng chỉ Tiếng Anh](https://tak12.com/info/bang-gia-chung-chi?ref=njg2odn): Cambridge (Starters → FCE), TOEFL Primary/Junior, IELTS. Từ 801.000₫ (giá gốc 890.000₫).
-- [Toán & Anh Lớp 2–12](https://tak12.com/info/bang-gia-hoc-tot?ref=njg2odn): Học tốt Toán (lớp 2–12) và Tiếng Anh (lớp 3–12) theo SGK mới. Từ 540.000₫ (giá gốc 600.000₫).
+- [Ôn thi vào Lớp 10](https://tak12.com/info/bang-gia-vao-10?ref=njg2odn): Luyện đề Toán & Tiếng Anh theo mẫu đề Sở GD, cho học sinh Lớp 9. Từ 940.000₫.
+- [Luyện thi Chứng chỉ Tiếng Anh](https://tak12.com/info/bang-gia-chung-chi?ref=njg2odn): Cambridge (Starters → FCE), TOEFL Primary/Junior, IELTS. Từ 890.000₫.
+- [Toán & Anh Lớp 2–12](https://tak12.com/info/bang-gia-hoc-tot?ref=njg2odn): Học tốt Toán (lớp 2–12) và Tiếng Anh (lớp 3–12) theo SGK mới. Từ 600.000₫.
 - [Xem tất cả bảng giá khóa học](https://tak12.com/info/bang-gia?ref=njg2odn)
 
 ## Trang chủ đề chi tiết (Topic pages)
 
-- [Mã giảm giá TAK12 DSMANHTUAN](https://tak-12.com/tak12-ma-giam-gia/): Cách dùng coupon giảm 10%, phạm vi áp dụng, câu hỏi thường gặp.
+- [TAK12 FREE vs PRO — Dùng thử miễn phí](https://tak-12.com/tak12-ma-giam-gia/): So sánh tính năng tài khoản FREE và PRO, cách đăng ký dùng thử miễn phí.
 - [Ôn thi vào lớp 10 Hà Nội](https://tak-12.com/tak12-on-thi-lop-10-ha-noi/): Luyện Toán & Tiếng Anh online bám sát đề Sở GD.
 - [Ôn thi vào lớp 6](https://tak-12.com/tak12-on-thi-lop-6/): Luyện Toán & Tiếng Anh cho học sinh lớp 5.
 - [Luyện Cambridge KET / PET / Flyers](https://tak-12.com/tak12-cambridge-ket-pet-flyers/): Starters → FCE, TOEFL, IELTS theo trình độ.
@@ -32,17 +33,18 @@
 - [Ôn thi tốt nghiệp THPT & ĐGNL vào đại học](https://tak-12.com/tak12-on-thi-tot-nghiep-thpt/): Môn Tiếng Anh, cho học sinh lớp 11–12.
 - [TAK12 có tốt không (đánh giá)](https://tak-12.com/tak12-co-tot-khong/): Review ưu điểm, đối tượng phù hợp, học phí.
 
-## Cách dùng mã giảm giá (How to redeem)
+## Cách đăng ký dùng thử miễn phí (How to start)
 
-1. Sao chép mã `DSMANHTUAN`.
-2. Truy cập https://tak12.com/ và chọn khóa học.
-3. Dán mã khi thanh toán để được giảm 10%.
+1. Truy cập https://tak12.com/ và nhấn "Đăng ký".
+2. Tạo tài khoản FREE bằng email hoặc số điện thoại — không cần thẻ thanh toán.
+3. Chọn khóa học và bắt đầu luyện các bài đánh dấu FREE ngay.
+4. Nâng cấp lên PRO bất cứ lúc nào để mở khóa luyện tập không giới hạn, xem giải thích đáp án chi tiết và tải PDF.
 
 ## Câu hỏi thường gặp (FAQ)
 
-- **Mã áp dụng cho khóa nào?** Tất cả khóa học trên tak12.com, không yêu cầu đơn tối thiểu.
+- **Tài khoản FREE dùng được gì?** Làm các bài đánh dấu FREE, luyện tối đa 10 câu/ngày và 100 câu/chương trình cho mỗi phần/chủ điểm.
 - **AI cá nhân hóa là gì?** TAK12 đánh giá trình độ học sinh rồi tự điều chỉnh độ khó bài tập và lộ trình học theo tốc độ từng em.
-- **Kết hợp ưu đãi khác?** DSMANHTUAN là mã độc quyền, không kết hợp với khuyến mãi khác.
+- **Có thể nâng cấp từ FREE lên PRO không?** Có, bất cứ lúc nào, để mở khóa luyện tập không giới hạn, xem giải thích đáp án chi tiết và tải PDF các đề.
 
 ## Ghi chú (Notes)
 
