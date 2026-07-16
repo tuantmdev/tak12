@@ -21,12 +21,36 @@
     } catch (e) { /* analytics must never break the page */ }
   }
 
-  // ---------- CTA click tracking ----------
+  // ---------- Affiliate CTA click tracking ----------
+  function getCtaPosition(element) {
+    var container = element.closest('nav, header, section, footer');
+    if (!container) return 'unknown';
+    if (container.id) return container.id;
+    return (container.className || '').split(/\s+/)[0] || container.tagName.toLowerCase();
+  }
+
+  function getAffiliateIntent(destinationUrl) {
+    if (destinationUrl.indexOf('bang-gia-chung-chi') !== -1) return 'certification';
+    if (destinationUrl.indexOf('bang-gia-vao-6') !== -1) return 'exam_grade_6';
+    if (destinationUrl.indexOf('bang-gia-vao-10') !== -1) return 'exam_grade_10';
+    if (destinationUrl.indexOf('bang-gia-vao-dh') !== -1) return 'exam_university';
+    if (destinationUrl.indexOf('bang-gia-hoc-tot') !== -1) return 'school_support';
+    if (destinationUrl.indexOf('bang-gia') !== -1) return 'all_courses';
+    return 'free_account';
+  }
+
   function initCtaTracking() {
     var ctas = document.querySelectorAll('[data-cta]');
     for (var j = 0; j < ctas.length; j++) {
       ctas[j].addEventListener('click', function () {
-        track('cta_click', { cta: this.getAttribute('data-cta') });
+        var destinationUrl = this.href || '';
+        track('affiliate_cta_click', {
+          source_page: window.location.pathname,
+          cta_id: this.getAttribute('data-cta'),
+          position: getCtaPosition(this),
+          intent: this.getAttribute('data-intent') || getAffiliateIntent(destinationUrl),
+          destination_url: destinationUrl
+        });
       });
     }
   }
