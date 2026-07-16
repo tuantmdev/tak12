@@ -9,7 +9,7 @@
     initHeroMotion();
     initFAQ();
     initQuiz();
-    initCampaign();
+    initCampaignCarousel();
   });
 
   // ---------- PostHog helper ----------
@@ -93,20 +93,20 @@
     window.addEventListener('resize', readBounds);
   }
 
-  // ---------- Partner campaign banner ----------
-  // Reads data-end-date="dd/mm/yyyy" off the section and fills in the
-  // countdown and the displayed end date. Editors only ever need to touch
-  // that one attribute (plus the plain-text copy in the HTML). Once the end
-  // date has fully passed, the section hides itself. On the end date's own
-  // calendar day, it switches to a live, ticking HH:MM:SS countdown for a
+  // ---------- Campaign carousel ----------
+  // Each .campaign-slide reads its own data-end-date="dd/mm/yyyy" off itself
+  // and fills in its countdown and displayed end date (attachCountdown).
+  // Editors only ever need to touch that one attribute per slide (plus the
+  // plain-text copy in the HTML). Once a slide's end date fully passes it
+  // hides itself; the carousel (initCampaignCarousel) reacts by dropping it
+  // from rotation, collapsing to a plain static banner once only one slide
+  // is left, and hiding entirely once none are. On a slide's own end-date
+  // calendar day it switches to a live, ticking HH:MM:SS countdown for a
   // stronger urgency (FOMO) effect.
   var MS_PER_DAY = 1000 * 60 * 60 * 24;
 
-  function initCampaign() {
-    var section = document.querySelector('[data-campaign]');
-    if (!section || section.classList.contains('hidden')) return;
-
-    var endDateStr = section.getAttribute('data-end-date');
+  function attachCountdown(slide, onExpire) {
+    var endDateStr = slide.getAttribute('data-end-date');
     if (!endDateStr) return;
 
     var parts = endDateStr.split('/').map(function (n) { return parseInt(n, 10); });
@@ -115,13 +115,13 @@
 
     var endDate = new Date(year, month - 1, day, 23, 59, 59);
 
-    var daysBlock = section.querySelector('[data-campaign-days-block]');
-    var timerBlock = section.querySelector('[data-campaign-timer-block]');
-    var daysEl = section.querySelector('[data-campaign-days]');
-    var hEl = section.querySelector('[data-timer-h]');
-    var mEl = section.querySelector('[data-timer-m]');
-    var sEl = section.querySelector('[data-timer-s]');
-    var dateEl = section.querySelector('[data-campaign-end-date]');
+    var daysBlock = slide.querySelector('[data-campaign-days-block]');
+    var timerBlock = slide.querySelector('[data-campaign-timer-block]');
+    var daysEl = slide.querySelector('[data-campaign-days]');
+    var hEl = slide.querySelector('[data-timer-h]');
+    var mEl = slide.querySelector('[data-timer-m]');
+    var sEl = slide.querySelector('[data-timer-s]');
+    var dateEl = slide.querySelector('[data-campaign-end-date]');
     if (dateEl) dateEl.textContent = day + '/' + month + '/' + year;
 
     var pad = function (n) { return n < 10 ? '0' + n : '' + n; };
@@ -133,7 +133,8 @@
 
       if (msLeft <= 0) {
         if (timerHandle) clearInterval(timerHandle);
-        section.classList.add('hidden');
+        slide.classList.add('hidden');
+        onExpire(slide);
         return;
       }
 
@@ -158,6 +159,135 @@
     }
 
     tick();
+  }
+
+  function initCampaignCarousel() {
+    var carousel = document.querySelector('[data-campaign-carousel]');
+    if (!carousel) return;
+
+    var viewport = carousel.querySelector('.campaign-viewport');
+    var track = carousel.querySelector('[data-campaign-track]');
+    var dotsWrap = carousel.querySelector('[data-campaign-dots]');
+    var allSlides = Array.prototype.slice.call(carousel.querySelectorAll('.campaign-slide'));
+    if (!allSlides.length) return;
+
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var activeSlides = [];
+    var current = 0;
+    var autoplayHandle = null;
+    var AUTOPLAY_MS = 6000;
+
+    function setSlideAttrs(slide, active) {
+      slide.setAttribute('aria-hidden', active ? 'false' : 'true');
+      var focusables = slide.querySelectorAll('a, button, [tabindex]');
+      for (var i = 0; i < focusables.length; i++) {
+        focusables[i].tabIndex = active ? 0 : -1;
+      }
+    }
+
+    function renderDots() {
+      if (!dotsWrap) return;
+      dotsWrap.innerHTML = '';
+      activeSlides.forEach(function (slide, idx) {
+        var dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'campaign-dot';
+        dot.setAttribute('aria-label', 'Chương trình ' + (idx + 1) + ' / ' + activeSlides.length);
+        dot.addEventListener('click', function () { goTo(idx); resetAutoplay(); });
+        dotsWrap.appendChild(dot);
+      });
+    }
+
+    function goTo(index, immediate) {
+      if (!activeSlides.length) return;
+      current = ((index % activeSlides.length) + activeSlides.length) % activeSlides.length;
+
+      allSlides.forEach(function (slide) {
+        setSlideAttrs(slide, activeSlides[current] === slide);
+      });
+
+      if (track) {
+        track.style.transition = (reduceMotion || immediate) ? 'none' : '';
+        track.style.transform = 'translateX(-' + (current * 100) + '%)';
+      }
+
+      if (dotsWrap) {
+        var dots = dotsWrap.querySelectorAll('.campaign-dot');
+        for (var d = 0; d < dots.length; d++) {
+          dots[d].setAttribute('aria-current', d === current ? 'true' : 'false');
+        }
+      }
+    }
+
+    function next() { goTo(current + 1); }
+    function prev() { goTo(current - 1); }
+
+    function stopAutoplay() {
+      if (autoplayHandle) { clearInterval(autoplayHandle); autoplayHandle = null; }
+    }
+
+    function startAutoplay() {
+      stopAutoplay();
+      if (reduceMotion || activeSlides.length <= 1) return;
+      if (document.hidden) return;
+      autoplayHandle = setInterval(next, AUTOPLAY_MS);
+    }
+
+    function resetAutoplay() {
+      if (activeSlides.length > 1) startAutoplay();
+    }
+
+    function refresh() {
+      activeSlides = allSlides.filter(function (slide) { return !slide.classList.contains('hidden'); });
+
+      if (!activeSlides.length) {
+        carousel.classList.add('hidden');
+        stopAutoplay();
+        return;
+      }
+
+      var multi = activeSlides.length > 1;
+      if (dotsWrap) dotsWrap.classList.toggle('hidden', !multi);
+
+      renderDots();
+      goTo(Math.min(current, activeSlides.length - 1), true);
+      startAutoplay();
+    }
+
+    allSlides.forEach(function (slide) {
+      attachCountdown(slide, refresh);
+    });
+
+    carousel.addEventListener('mouseenter', stopAutoplay);
+    carousel.addEventListener('mouseleave', resetAutoplay);
+    carousel.addEventListener('focusin', stopAutoplay);
+    carousel.addEventListener('focusout', resetAutoplay);
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) stopAutoplay(); else resetAutoplay();
+    });
+
+    if (viewport) {
+      var touchStartX = 0, touchStartY = 0, touching = false;
+      viewport.addEventListener('touchstart', function (e) {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        touching = true;
+        stopAutoplay();
+      }, { passive: true });
+      viewport.addEventListener('touchend', function (e) {
+        if (!touching) return;
+        touching = false;
+        var dx = e.changedTouches[0].clientX - touchStartX;
+        var dy = e.changedTouches[0].clientY - touchStartY;
+        if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+          if (dx < 0) next(); else prev();
+        }
+        resetAutoplay();
+      }, { passive: true });
+    }
+
+    refresh();
   }
 
   // ---------- FAQ accordion ----------

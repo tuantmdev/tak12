@@ -358,8 +358,11 @@ img { max-width: 100%; }
   color: var(--green-dark);
 }
 
-/* ---------- Partner Campaign Banner ---------- */
-.campaign-banner { max-width: var(--maxw); margin: 28px auto 0; padding: 0 32px; }
+/* ---------- Campaign Carousel ---------- */
+.campaign-carousel { max-width: var(--maxw); margin: 28px auto 0; padding: 0 32px; position: relative; }
+.campaign-viewport { overflow: hidden; border-radius: 18px; }
+.campaign-track { display: flex; transition: transform .5s ease; }
+.campaign-slide { flex: 0 0 100%; min-width: 100%; }
 .campaign-inner {
   background: linear-gradient(120deg, var(--orange) 0%, var(--orange-2) 100%);
   border-radius: 18px;
@@ -375,6 +378,7 @@ img { max-width: 100%; }
   background: radial-gradient(circle, rgba(255,255,255,.25) 0%, transparent 70%);
   pointer-events: none;
 }
+.campaign-inner--stars { background: linear-gradient(120deg, var(--green) 0%, var(--green-dark) 100%); }
 .campaign-info {
   display: flex; align-items: center; gap: 16px;
   position: relative; z-index: 1; flex: 1; min-width: 280px;
@@ -411,12 +415,26 @@ img { max-width: 100%; }
 }
 .campaign-partner .partner-name { font-size: 12px; font-weight: 700; color: var(--muted-2); }
 .campaign-discount { background: #dc2626; color: #fff; padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 800; }
+.campaign-reward {
+  background: #fff; border-radius: 10px; padding: 8px 16px;
+  display: flex; align-items: center; gap: 6px;
+}
+.campaign-reward .reward-icon { font-size: 14px; }
+.campaign-reward .reward-label { font-size: 12px; font-weight: 700; color: var(--muted-2); }
 .campaign-cta {
   background: var(--ink); color: #fff;
   padding: 11px 22px; font-size: 13px;
   text-decoration: none; white-space: nowrap;
 }
 .campaign-cta:hover { background: #000; color: #fff; }
+
+.campaign-dots { display: flex; justify-content: center; gap: 8px; margin-top: 12px; }
+.campaign-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--border-2); border: none; padding: 0; cursor: pointer;
+  transition: width .2s, background .2s;
+}
+.campaign-dot[aria-current="true"] { width: 20px; border-radius: 4px; background: var(--ink); }
 
 /* ---------- Stats ---------- */
 .stats { background: var(--bg-soft); border-bottom: 1px solid var(--border); }
@@ -703,11 +721,11 @@ img { max-width: 100%; }
 
 @media (max-width: 640px) {
   .container, .section, .quiz-wrap, .coupon-wrap, .hero-inner { padding-left: 20px; padding-right: 20px; }
-  .campaign-banner { padding: 0 20px; margin-top: 20px; }
+  .campaign-carousel { padding: 0 20px; margin-top: 20px; }
   .campaign-inner { padding: 22px 20px; }
   .campaign-title { font-size: 17px; }
   .campaign-action { width: 100%; }
-  .campaign-partner { flex: 1; justify-content: center; }
+  .campaign-partner, .campaign-reward { flex: 1; justify-content: center; }
   .campaign-cta { width: 100%; }
   .hero { padding: 56px 0 52px; }
   .hero h1 { font-size: 30px; }
@@ -830,4 +848,5 @@ img { max-width: 100%; }
 @media (prefers-reduced-motion: reduce) {
   .cd-timer { animation: none; }
   .cd-timer .cd-colon { animation: none; }
+  .campaign-track { transition: none; }
 }

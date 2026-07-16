@@ -340,41 +340,73 @@
     </div>
   </section>
 
-  <!-- PARTNER CAMPAIGN BANNER -->
-  <!-- Configurable promo, kept independent of the FREE-account signup above.
-       - Hide it now: add class="hidden" to the <section> tag below.
-       - Auto-hide: once data-end-date passes, script.js adds class="hidden" itself
-         on page load — no manual cleanup needed after a campaign ends.
-       - Edit copy: title, subtitle, and partner discount chips are plain text here.
-       - Edit the countdown: change data-end-date (dd/mm/yyyy) on the <section> tag —
-         "days left" and the displayed end date are both computed from it automatically.
-         On the end date's own calendar day, it switches to a live HH:MM:SS countdown
-         that ticks every second and hides the section the instant it hits zero.
-       - The CTA link keeps the usual ?ref=njg2odn affiliate parameter. -->
-  <section id="campaign-section" class="campaign-banner" data-campaign data-end-date="31/07/2026">
-    <div class="campaign-inner">
-      <div class="campaign-info">
-        <div class="campaign-countdown" data-campaign-countdown>
-          <div class="cd-days" data-campaign-days-block>
-            <span class="days-num" data-campaign-days>—</span>
-            <span class="days-label">Ngày Còn Lại</span>
+  <!-- CAMPAIGN CAROUSEL -->
+  <!-- Rotates through all active promos, independent of the FREE-account signup above.
+       - Add a campaign: add another .campaign-slide.campaign-inner block below with its
+         own data-end-date (dd/mm/yyyy). Edit its title/subtitle/CTA/chips as plain text.
+       - Retire a campaign early: add class="hidden" to that slide.
+       - Auto-hide: once a slide's data-end-date passes, script.js hides that slide itself
+         — no manual cleanup needed. The whole carousel hides once every slide has expired.
+       - When only one slide is active (before/after an overlap), the dots/autoplay
+         are hidden automatically and it behaves like a plain static banner.
+       - Navigation is dots + swipe + autoplay only, by design (no prev/next arrows).
+       - On a slide's own end-date calendar day it switches to a live HH:MM:SS countdown.
+       - CTA links keep the usual ?ref=njg2odn affiliate parameter. -->
+  <section class="campaign-carousel" data-campaign-carousel aria-roledescription="carousel" aria-label="Chương trình khuyến mãi TAK12">
+    <div class="campaign-viewport">
+      <div class="campaign-track" data-campaign-track>
+
+        <div class="campaign-slide campaign-inner" data-campaign data-end-date="31/07/2026">
+          <div class="campaign-info">
+            <div class="campaign-countdown" data-campaign-countdown>
+              <div class="cd-days" data-campaign-days-block>
+                <span class="days-num" data-campaign-days>—</span>
+                <span class="days-label">Ngày Còn Lại</span>
+              </div>
+              <div class="cd-timer hidden" data-campaign-timer-block>
+                <span class="cd-clock"><span data-timer-h>00</span><span class="cd-colon">:</span><span data-timer-m>00</span><span class="cd-colon">:</span><span data-timer-s>00</span></span>
+                <span class="days-label">Sắp Kết Thúc!</span>
+              </div>
+            </div>
+            <div class="campaign-text">
+              <div class="campaign-title">Hè Rực Rỡ - Học Hết Cỡ</div>
+              <div class="campaign-subtitle">Ưu đãi đặc biệt cho Achieve3000 &amp; Matific · Kết thúc <span data-campaign-end-date>—</span></div>
+            </div>
           </div>
-          <div class="cd-timer hidden" data-campaign-timer-block>
-            <span class="cd-clock"><span data-timer-h>00</span><span class="cd-colon">:</span><span data-timer-m>00</span><span class="cd-colon">:</span><span data-timer-s>00</span></span>
-            <span class="days-label">Sắp Kết Thúc!</span>
+          <div class="campaign-action">
+            <div class="campaign-partner"><span class="partner-name">Achieve3000</span><span class="campaign-discount">−20%</span></div>
+            <div class="campaign-partner"><span class="partner-name">Matific</span><span class="campaign-discount">−30%</span></div>
+            <a class="btn campaign-cta" href="https://contuhoc.com/he-ruc-ro-hoc-het-co-uu-dai-den-30-achieve3000-matific?ref=njg2odn" target="_blank" rel="noopener" data-cta="campaign_banner">Xem Ưu Đãi →</a>
           </div>
         </div>
-        <div class="campaign-text">
-          <div class="campaign-title">Hè Rực Rỡ - Học Hết Cỡ</div>
-          <div class="campaign-subtitle">Ưu đãi đặc biệt cho Achieve3000 &amp; Matific · Kết thúc <span data-campaign-end-date>—</span></div>
+
+        <div class="campaign-slide campaign-inner campaign-inner--stars" data-campaign data-end-date="21/08/2026">
+          <div class="campaign-info">
+            <div class="campaign-countdown" data-campaign-countdown>
+              <div class="cd-days" data-campaign-days-block>
+                <span class="days-num" data-campaign-days>—</span>
+                <span class="days-label">Ngày Còn Lại</span>
+              </div>
+              <div class="cd-timer hidden" data-campaign-timer-block>
+                <span class="cd-clock"><span data-timer-h>00</span><span class="cd-colon">:</span><span data-timer-m>00</span><span class="cd-colon">:</span><span data-timer-s>00</span></span>
+                <span class="days-label">Sắp Kết Thúc!</span>
+              </div>
+            </div>
+            <div class="campaign-text">
+              <div class="campaign-title">Hè Học Chất – Nhận Quà Thật</div>
+              <div class="campaign-subtitle">Học tích sao, đổi quà, lên Bảng vàng vinh danh mùa hè · Kết thúc <span data-campaign-end-date>—</span></div>
+            </div>
+          </div>
+          <div class="campaign-action">
+            <div class="campaign-reward"><span class="reward-icon">🎟️</span><span class="reward-label">Voucher 500K</span></div>
+            <div class="campaign-reward"><span class="reward-icon">🎁</span><span class="reward-label">Quà tặng PRO</span></div>
+            <a class="btn campaign-cta" href="https://tak12.com/news/n/2454/thu-thach-45-ngay-thi-dua-he-hoc-chat-nhan-qua-that?ref=njg2odn" target="_blank" rel="noopener" data-cta="campaign_banner_stars">Tham Gia Ngay →</a>
+          </div>
         </div>
-      </div>
-      <div class="campaign-action">
-        <div class="campaign-partner"><span class="partner-name">Achieve3000</span><span class="campaign-discount">−20%</span></div>
-        <div class="campaign-partner"><span class="partner-name">Matific</span><span class="campaign-discount">−30%</span></div>
-        <a class="btn campaign-cta" href="https://contuhoc.com/he-ruc-ro-hoc-het-co-uu-dai-den-30-achieve3000-matific?ref=njg2odn" target="_blank" rel="noopener" data-cta="campaign_banner">Xem Ưu Đãi →</a>
+
       </div>
     </div>
+    <div class="campaign-dots" data-campaign-dots></div>
   </section>
 
   <!-- STATS BAR -->
