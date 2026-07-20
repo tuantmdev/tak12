@@ -145,13 +145,14 @@ class ReviewSeoCroTests(unittest.TestCase):
             "review_mid_trial": ("account", "test-learning-fit", ("dùng thử",)),
             "review_pricing": ("pricing", "verify-current-price-and-access", ("giá", "quyền truy cập")),
             "review_bottom_trial": ("account", "start-free-trial", ("tài khoản", "free")),
+            "review_footer_provider": ("provider", "visit-provider", ("tak12.com",)),
         }
         self.assertEqual(set(self.parser.ctas), set(expected))
         for cta_id, (destination_type, intent, label_terms) in expected.items():
             with self.subTest(cta=cta_id):
                 cta = self.parser.ctas[cta_id]
                 destination = urlparse(cta["attrs"]["href"])
-                destination_types = {"/": "account", "/info/bang-gia": "pricing"}
+                destination_types = {"/": "provider" if intent == "visit-provider" else "account", "/info/bang-gia": "pricing"}
                 label = " ".join("".join(cta["text"]).split()).lower()
                 self.assertEqual(destination.netloc, "tak12.com")
                 self.assertEqual(destination_types.get(destination.path), destination_type)
