@@ -454,7 +454,10 @@
       if (resTag) resTag.textContent = r.tag;
       if (resName) resName.textContent = r.name;
       if (resDesc) resDesc.textContent = r.desc;
-      if (resLink && r.url) resLink.href = r.url;
+      if (resLink && r.url) {
+        resLink.href = r.url;
+        resLink.setAttribute('data-intent', getAffiliateIntent(r.url));
+      }
       show(result);
       track('quiz_completed', { result: r.name, answers: answers.join(',') });
     }
