@@ -117,6 +117,29 @@ This site is deployed using **GitHub Pages** with automatic deployment:
 - Live at https://tuantmdev.github.io/tak12/
 - Custom domain (tak-12.com) via the `CNAME` file
 
+### Sitemap freshness contract
+
+Every canonical page in `sitemap.xml` has a matching entry in
+`sitemap-content.json`. A canonical URL selects its page deterministically:
+the site root maps to `index.html`, and `/<slug>/` maps to
+`<slug>/index.html`; the contract never stores a source path. When a page's
+indexable HTML changes, update that entry's SHA-256 fingerprint **and** set
+both contract and sitemap `lastmod` to the reviewed content-change date. Do
+not bump unchanged pages.
+
+Verify the contract before opening a content PR:
+
+```bash
+python3 -m unittest tests.test_sitemap -v
+```
+
+The test resolves the branch point with `git merge-base origin/main HEAD` and
+compares against `sitemap-content.json` at that exact commit. Fetch
+`origin/main` before validating a change; missing or unreadable Git history
+fails closed. The initial contract bootstrap is allowed only when the resolved
+baseline commit exists but has no manifest. Once a baseline exists, a
+fingerprint and its `lastmod` must change together.
+
 ## 📊 Analytics & Tracking
 
 ### PostHog Integration
