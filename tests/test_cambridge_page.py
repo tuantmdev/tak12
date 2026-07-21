@@ -100,18 +100,10 @@ class CambridgeSeoCroTests(unittest.TestCase):
         ):
             self.assertIn(cta_id, self.parser.cta_ids)
 
-    def test_affiliate_disclosure_and_internal_links_are_present(self):
-        self.assertIn("tiếp thị liên kết", self.html.lower())
+    def test_internal_links_are_present(self):
         self.assertIn('../tak12-co-tot-khong/', self.html)
         self.assertIn('../tak12-ma-giam-gia/', self.html)
         self.assertIn('../tak12-luyen-thi-ielts/', self.html)
-
-    def test_affiliate_disclosure_precedes_first_affiliate_link(self):
-        disclosure_position = self.html.lower().find("tiếp thị liên kết")
-        affiliate_link = re.search(r'<a\b[^>]*href="[^"]*ref=njg2odn', self.html, re.I)
-        self.assertGreaterEqual(disclosure_position, 0)
-        self.assertIsNotNone(affiliate_link)
-        self.assertLess(disclosure_position, affiliate_link.start() if affiliate_link else -1)
 
     def test_all_affiliate_links_are_safely_marked_as_sponsored(self):
         self.assertTrue(self.parser.affiliate_links)

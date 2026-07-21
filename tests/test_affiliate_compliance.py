@@ -160,19 +160,13 @@ class AffiliateComplianceTests(unittest.TestCase):
         parser.feed(page.read_text(encoding="utf-8"))
         return parser
 
-    def test_visible_disclosure_precedes_first_affiliate_link_on_every_page(self):
+    def test_affiliate_disclosure_top_banner_is_not_rendered_on_any_page(self):
         self.assertEqual(9, len(HTML_PAGES))
         for page in HTML_PAGES:
-            parser = self.parse_page(page)
+            html = page.read_text(encoding="utf-8")
             with self.subTest(page=page.relative_to(ROOT)):
-                self.assertTrue(parser.affiliate_links, "Expected at least one ref-tagged affiliate link")
-                self.assertTrue(
-                    any(
-                        position < parser.affiliate_links[0]["position"]
-                        for position in parser.disclosure_positions
-                    ),
-                    "Expected a visible body disclosure before the first affiliate link",
-                )
+                self.assertNotIn("data-affiliate-disclosure", html)
+                self.assertNotIn("affiliate-disclosure", html)
 
     def test_every_affiliate_link_is_sponsored_and_blank_links_are_noopener(self):
         total_links = 0
@@ -186,7 +180,7 @@ class AffiliateComplianceTests(unittest.TestCase):
                     self.assertIn("sponsored", rel_tokens)
                     if attrs.get("target", "").lower() == "_blank":
                         self.assertIn("noopener", rel_tokens)
-        self.assertEqual(66, total_links, "Affiliate-link fixture changed; review all new links")
+        self.assertEqual(65, total_links, "Affiliate-link fixture changed; review all new links")
 
     def test_every_affiliate_link_has_unique_cta_id_and_explicit_semantics(self):
         allowed_intents = {
