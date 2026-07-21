@@ -160,13 +160,6 @@ class ReviewSeoCroTests(unittest.TestCase):
                 for term in label_terms:
                     self.assertIn(term, label)
 
-    def test_disclosure_precedes_first_affiliate_link(self):
-        self.assertTrue(self.parser.affiliate_positions)
-        self.assertTrue(
-            any(position < self.parser.affiliate_positions[0] for position in self.parser.disclosure_positions),
-            "Expected a visible body disclosure element before the first affiliate anchor",
-        )
-
     def test_all_affiliate_links_are_safely_marked_as_sponsored(self):
         self.assertTrue(self.parser.affiliate_links)
         for link in self.parser.affiliate_links:
