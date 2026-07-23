@@ -3,12 +3,12 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://tak-12.com/</loc>
-    <lastmod>2026-07-12</lastmod>
+    <lastmod>2026-07-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
       <image:loc>https://cdn.jsdelivr.net/gh/tuantmdev/tak12@main/images/feature_desktop.jpg</image:loc>
-      <image:title>TAK12 Courses - Dùng Thử Miễn Phí</image:title>
+      <image:title>Đánh Giá TAK12: Chọn FREE Hay Trả Phí?</image:title>
     </image:image>
   </url>
   <url>
