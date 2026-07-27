@@ -161,7 +161,7 @@ class AffiliateComplianceTests(unittest.TestCase):
         return parser
 
     def test_affiliate_disclosure_top_banner_is_not_rendered_on_any_page(self):
-        self.assertEqual(9, len(HTML_PAGES))
+        self.assertEqual(11, len(HTML_PAGES))
         for page in HTML_PAGES:
             html = page.read_text(encoding="utf-8")
             with self.subTest(page=page.relative_to(ROOT)):
@@ -180,7 +180,7 @@ class AffiliateComplianceTests(unittest.TestCase):
                     self.assertIn("sponsored", rel_tokens)
                     if attrs.get("target", "").lower() == "_blank":
                         self.assertIn("noopener", rel_tokens)
-        self.assertEqual(65, total_links, "Affiliate-link fixture changed; review all new links")
+        self.assertEqual(71, total_links, "Affiliate-link fixture changed; review all new links")
 
     def test_every_affiliate_link_has_unique_cta_id_and_explicit_semantics(self):
         allowed_intents = {

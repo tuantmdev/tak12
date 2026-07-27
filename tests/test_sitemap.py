@@ -107,7 +107,7 @@ class SitemapTests(unittest.TestCase):
 
     def test_sitemap_has_unique_canonical_urls_and_valid_lastmod_dates(self):
         entries = self.sitemap_entries()
-        self.assertEqual(9, len(entries))
+        self.assertEqual(11, len(entries))
         for location, lastmod in entries.items():
             with self.subTest(location=location):
                 parsed = urlparse(location)
