@@ -727,11 +727,11 @@ img { max-width: 100%; }
   .campaign-action { width: 100%; }
   .campaign-partner, .campaign-reward { flex: 1; justify-content: center; }
   .campaign-cta { width: 100%; }
-  .hero { padding: 56px 0 52px; }
+  .hero { padding: 40px 0 44px; }
   .hero h1 { font-size: 30px; }
   .hero p { font-size: 15px; }
-  .hero-actions { width: 100%; }
-  .hero-actions .btn { flex: 1; }
+  .hero-actions { width: 100%; flex-direction: column; align-items: stretch; gap: 10px; }
+  .hero-actions .btn { width: 100%; min-height: 56px; padding: 14px 20px; text-align: center; }
   .hero-art { height: 250px; }
   .hero-float-score { width: 160px; padding: 10px 11px; }
   .hero-float-score strong { font-size: 12px; }
