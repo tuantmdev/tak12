@@ -466,7 +466,8 @@ img { max-width: 100%; }
 .course-card {
   background: #fff; border: 1px solid var(--border);
   border-radius: 16px; padding: 28px;
-  position: relative; transition: border-color .2s, box-shadow .2s, transform .2s;
+  position: relative; display: flex; flex-direction: column;
+  transition: border-color .2s, box-shadow .2s, transform .2s;
 }
 .course-card:hover {
   border-color: var(--green);
@@ -496,6 +497,7 @@ img { max-width: 100%; }
   padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;
 }
 .price-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 16px; }
+.course-card .price-row { margin-top: auto; }
 .price { font-size: 16px; color: var(--green); font-weight: 800; }
 .price-old { font-size: 13px; color: var(--muted-3); text-decoration: line-through; }
 .see-all { text-align: center; margin-top: 28px; }
