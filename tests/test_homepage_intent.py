@@ -66,6 +66,17 @@ class HomepageQualifiedIntentTests(unittest.TestCase):
                     "Search metadata and H1 must set independent review/selection intent",
                 )
 
+    def test_homepage_search_metadata_preserves_brand_access_and_decision_intent(self):
+        title = " ".join(self.parser.title.lower().split())
+        description = " ".join(self.parser.description.lower().split())
+
+        self.assertIn("tak12", title)
+        self.assertIn("học thử miễn phí", title)
+        self.assertIn("đánh giá", title)
+        self.assertIn("đăng nhập chính thức", description)
+        self.assertIn("học thử miễn phí", description)
+        self.assertIn("độc lập", description)
+
     def test_hero_says_site_is_independent_and_not_the_official_tak12_site(self):
         hero = " ".join("".join(self.parser.hero_text).lower().split())
         self.assertIn("trang thông tin độc lập", hero)
