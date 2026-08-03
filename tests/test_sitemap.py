@@ -31,13 +31,19 @@ def canonical_page_path(location, root=ROOT):
     return root / parsed.path.strip("/") / "index.html"
 
 
-def validate_historical_coupling(current, previous):
+def validate_historical_coupling(current, previous, today=None):
     if previous is None:
         return
+    today = today or dt.date.today().isoformat()
     for location in set(current) & set(previous):
         digest_changed = current[location]["sha256"] != previous[location]["sha256"]
         lastmod_changed = current[location]["lastmod"] != previous[location]["lastmod"]
-        if digest_changed != lastmod_changed:
+        same_day_revision = (
+            digest_changed
+            and not lastmod_changed
+            and current[location]["lastmod"] == today
+        )
+        if digest_changed != lastmod_changed and not same_day_revision:
             raise AssertionError(
                 f"{location}: sha256 and lastmod must change together relative to the baseline"
             )
@@ -151,6 +157,16 @@ class SitemapTests(unittest.TestCase):
         for location, metadata in contract.items():
             with self.subTest(location=location):
                 self.assertEqual({"sha256", "lastmod"}, set(metadata))
+
+    def test_history_allows_multiple_reviewed_changes_on_the_same_lastmod_day(self):
+        current = {
+            "https://tak-12.com/": {"sha256": "new-hash", "lastmod": dt.date.today().isoformat()}
+        }
+        previous = {
+            "https://tak-12.com/": {"sha256": "old-hash", "lastmod": dt.date.today().isoformat()}
+        }
+
+        validate_historical_coupling(current, previous)
 
     def test_history_rejects_hash_only_or_lastmod_only_contract_changes(self):
         previous = {

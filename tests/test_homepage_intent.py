@@ -84,7 +84,11 @@ class HomepageQualifiedIntentTests(unittest.TestCase):
 
     def test_homepage_routes_login_review_and_free_vs_paid_to_distinct_semantic_destinations(self):
         expected = {
-            "official-login": ("https://tak12.com/", None, "Đăng nhập"),
+            "official-login": (
+                "https://tak12.com/?ref=njg2odn",
+                "start-free-trial",
+                "Dùng thử miễn phí",
+            ),
             "independent-review": ("/tak12-co-tot-khong/", "read-independent-review", "Đọc review"),
             "free-vs-paid": ("/tak12-ma-giam-gia/", "compare-free-vs-paid", "So sánh FREE và trả phí"),
         }
@@ -96,8 +100,12 @@ class HomepageQualifiedIntentTests(unittest.TestCase):
                 self.assertEqual(intent, attrs.get("data-intent"))
                 self.assertEqual(label, attrs.get("aria-label"))
                 if route == "official-login":
-                    self.assertNotIn("ref=", attrs["href"])
-                    self.assertNotIn("sponsored", str(attrs.get("rel", "")).split())
+                    self.assertEqual("homepage-hero-official-login", attrs.get("data-cta"))
+                    self.assertIn("ref=njg2odn", attrs["href"])
+                    self.assertEqual(
+                        {"sponsored", "noopener"},
+                        set(str(attrs.get("rel", "")).split()),
+                    )
                 else:
                     self.assertEqual("noopener", attrs.get("rel"))
 
