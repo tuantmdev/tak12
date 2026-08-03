@@ -77,10 +77,12 @@ class HomepageQualifiedIntentTests(unittest.TestCase):
         self.assertIn("học thử miễn phí", description)
         self.assertIn("độc lập", description)
 
-    def test_hero_says_site_is_independent_and_not_the_official_tak12_site(self):
+    def test_hero_leads_with_parent_learning_hook_before_decision_paths(self):
         hero = " ".join("".join(self.parser.hero_text).lower().split())
-        self.assertIn("trang thông tin độc lập", hero)
-        self.assertIn("không phải website chính thức", hero)
+        self.assertIn("con đang cần một lộ trình học phù hợp", hero)
+        self.assertIn("dùng thử miễn phí", hero)
+        self.assertIn("free với pro", hero)
+        self.assertNotIn("không phải website chính thức", hero)
 
     def test_homepage_routes_login_review_and_free_vs_paid_to_distinct_semantic_destinations(self):
         expected = {
