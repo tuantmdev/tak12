@@ -8,8 +8,8 @@
     "lastmod": "2026-07-12"
   },
   "https://tak-12.com/tak12-on-thi-lop-10-ha-noi/": {
-    "sha256": "b12fead26f9c8edbb67990c381a932622ee262f2fcfc37207781fe172fe72de4",
-    "lastmod": "2026-07-12"
+    "sha256": "0eeee0eb533f1741f682813802f0abc082818a14ab83000b07dade61c6803b23",
+    "lastmod": "2026-08-13"
   },
   "https://tak-12.com/tak12-on-thi-lop-6/": {
     "sha256": "aa77647d4fc416494fc55804db4918559aac5b9da6cbd628fab6cfd8d2b9fc7a",
@@ -42,5 +42,9 @@
   "https://tak-12.com/tak12-co-tot-khong/": {
     "sha256": "969c1b9281ed7b1b1532d6e82c2d9ebb69cb43555ff37cebb31c0d149919ae71",
     "lastmod": "2026-07-17"
+  },
+  "https://tak-12.com/lo-trinh-on-thi-vao-lop-10-ha-noi/": {
+    "sha256": "eba8df47fd27a917830f563545d43a3a7b4110191746475e8bb072d711063caa",
+    "lastmod": "2026-08-13"
   }
 }
