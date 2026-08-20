@@ -180,7 +180,7 @@ class AffiliateComplianceTests(unittest.TestCase):
                     self.assertIn("sponsored", rel_tokens)
                     if attrs.get("target", "").lower() == "_blank":
                         self.assertIn("noopener", rel_tokens)
-        self.assertEqual(75, total_links, "Affiliate-link fixture changed; review all new links")
+        self.assertEqual(74, total_links, "Affiliate-link fixture changed; review all new links")
 
     def test_every_affiliate_link_has_unique_cta_id_and_explicit_semantics(self):
         allowed_intents = {
@@ -196,9 +196,6 @@ class AffiliateComplianceTests(unittest.TestCase):
             ("tak12.com", "/info/bang-gia-vao-dh"): {"exam_university"},
             ("tak12.com", "/news/n/2454/thu-thach-45-ngay-thi-dua-he-hoc-chat-nhan-qua-that"): {
                 "campaign_summer_challenge"
-            },
-            ("contuhoc.com", "/he-ruc-ro-hoc-het-co-uu-dai-den-30-achieve3000-matific"): {
-                "campaign_achieve_matific"
             },
         }
         for page in HTML_PAGES:

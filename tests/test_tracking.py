@@ -36,11 +36,27 @@ class SitewideTrackingTests(unittest.TestCase):
         self.assertEqual([Path("analytics.js")], initializers)
         self.assertEqual(1, analytics.read_text(encoding="utf-8").count("posthog.init"))
 
-    def test_campaign_ctas_declare_non_default_intent(self):
+    def test_expired_achieve_matific_campaign_is_not_published_but_current_campaign_keeps_its_semantics(self):
         homepage = (ROOT / "index.html").read_text(encoding="utf-8")
-        self.assertRegex(homepage, r'data-cta="campaign_banner"[^>]+data-intent="campaign_achieve_matific"')
+        for expired_marker in (
+            'data-cta="campaign_banner"',
+            "campaign_achieve_matific",
+            "Hè Rực Rỡ",
+            "Achieve3000",
+            "Matific",
+            "he-ruc-ro-hoc-het-co-uu-dai",
+        ):
+            with self.subTest(expired_marker=expired_marker):
+                self.assertNotIn(expired_marker, homepage)
         self.assertRegex(homepage, r'data-cta="campaign_banner_stars"[^>]+data-intent="campaign_summer_challenge"')
         self.assertIn("this.getAttribute('data-intent') || getAffiliateIntent", (ROOT / "script.js").read_text(encoding="utf-8"))
+
+    def test_llms_current_campaigns_do_not_include_the_expired_achieve_matific_offer(self):
+        llms = (ROOT / "llms.txt").read_text(encoding="utf-8")
+        for expired_marker in ("Hè Rực Rỡ", "Achieve3000", "Matific", "he-ruc-ro-hoc-het-co-uu-dai"):
+            with self.subTest(expired_marker=expired_marker):
+                self.assertNotIn(expired_marker, llms)
+        self.assertIn("Hè Học Chất", llms)
 
     def test_affiliate_click_event_has_attribution_properties(self):
         script = (ROOT / "script.js").read_text(encoding="utf-8")
