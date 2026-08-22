@@ -36,27 +36,29 @@ class SitewideTrackingTests(unittest.TestCase):
         self.assertEqual([Path("analytics.js")], initializers)
         self.assertEqual(1, analytics.read_text(encoding="utf-8").count("posthog.init"))
 
-    def test_expired_achieve_matific_campaign_is_not_published_but_current_campaign_keeps_its_semantics(self):
-        homepage = (ROOT / "index.html").read_text(encoding="utf-8")
-        for expired_marker in (
+    def test_expired_summer_campaign_is_not_published_in_homepage_metadata_or_llms(self):
+        sources = {
+            "homepage": (ROOT / "index.html").read_text(encoding="utf-8"),
+            "llms": (ROOT / "llms.txt").read_text(encoding="utf-8"),
+        }
+        expired_markers = (
             'data-cta="campaign_banner"',
+            'data-cta="campaign_banner_stars"',
             "campaign_achieve_matific",
+            "campaign_summer_challenge",
             "Hè Rực Rỡ",
+            "Hè Học Chất",
             "Achieve3000",
             "Matific",
+            "Voucher 500K",
             "he-ruc-ro-hoc-het-co-uu-dai",
-        ):
-            with self.subTest(expired_marker=expired_marker):
-                self.assertNotIn(expired_marker, homepage)
-        self.assertRegex(homepage, r'data-cta="campaign_banner_stars"[^>]+data-intent="campaign_summer_challenge"')
-        self.assertIn("this.getAttribute('data-intent') || getAffiliateIntent", (ROOT / "script.js").read_text(encoding="utf-8"))
-
-    def test_llms_current_campaigns_do_not_include_the_expired_achieve_matific_offer(self):
-        llms = (ROOT / "llms.txt").read_text(encoding="utf-8")
-        for expired_marker in ("Hè Rực Rỡ", "Achieve3000", "Matific", "he-ruc-ro-hoc-het-co-uu-dai"):
-            with self.subTest(expired_marker=expired_marker):
-                self.assertNotIn(expired_marker, llms)
-        self.assertIn("Hè Học Chất", llms)
+            "thu-thach-45-ngay-thi-dua-he-hoc-chat-nhan-qua-that",
+            "validThrough\": \"2026-08-21",
+        )
+        for source_name, content in sources.items():
+            for expired_marker in expired_markers:
+                with self.subTest(source=source_name, expired_marker=expired_marker):
+                    self.assertNotIn(expired_marker, content)
 
     def test_affiliate_click_event_has_attribution_properties(self):
         script = (ROOT / "script.js").read_text(encoding="utf-8")
