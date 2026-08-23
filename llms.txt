@@ -1,6 +1,6 @@
 # TAK12 Courses — Affiliate Landing Page
 
-> Trang giới thiệu chính thức của đối tác liên kết TAK12. TAK12 là nền tảng học tập
+> Trang thông tin độc lập của đối tác liên kết TAK12. TAK12 là nền tảng học tập
 > trực tuyến K-12 tại Việt Nam cho học sinh lớp 1–12, kết hợp chương trình giảng dạy
 > với AI để cá nhân hóa lộ trình học. Đăng ký tài khoản **FREE** để dùng thử miễn phí,
 > không cần thẻ thanh toán, rồi nâng cấp lên **PRO** bất cứ lúc nào để mở khóa luyện

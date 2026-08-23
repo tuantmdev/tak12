@@ -349,6 +349,12 @@ class AffiliateComplianceTests(unittest.TestCase):
                 with self.subTest(page=page.relative_to(ROOT), claim=claim):
                     self.assertNotIn(claim, html)
 
+    def test_llms_identifies_the_site_as_an_independent_affiliate_page(self):
+        llms = (ROOT / "llms.txt").read_text(encoding="utf-8").lower()
+        self.assertNotIn("trang giới thiệu chính thức", llms)
+        self.assertIn("trang thông tin độc lập", llms)
+        self.assertIn("đối tác liên kết", llms)
+
     def test_home_navigation_labels_the_independent_evaluation_guide(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
         self.assertIn('href="#testimonials-section">Cách Đánh Giá</a>', html)
