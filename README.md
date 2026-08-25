@@ -1,35 +1,34 @@
 # TAK12 Courses — Affiliate Landing Page
 
-A modern, responsive affiliate landing page promoting **TAK12**, Vietnam's comprehensive K-12 online learning platform. The page showcases featured courses, an interactive course-finder quiz, and the exclusive **DSMANHTUAN** discount code (10% off all TAK12 courses).
+A modern, responsive independent affiliate landing page about **TAK12**, Vietnam's K-12 online learning platform. The site helps families compare FREE and paid paths, explore relevant courses, and use an interactive course-finder quiz before visiting the provider.
 
 This page was designed in [Claude Design](https://claude.ai/design) (`TAK12 Affiliate.dc.html`) and implemented here as standalone vanilla HTML/CSS/JS.
 
 ## 🌟 Features
 
 ### Page Sections
-- **Sticky navigation** with anchor links and a discount CTA
-- **Coupon banner** with copy-to-clipboard code
+- **Sticky navigation** with anchor links and a FREE-vs-paid CTA
+- **FREE-vs-paid guide** with links to the provider's current options
 - **Hero** with headline, value proposition, and primary CTAs
-- **Stats bar** — social-proof metrics (students, satisfaction, courses, rating)
+- **Decision guide** — independent review and FREE-vs-paid routes
 - **Featured courses** — 3 highlighted courses with tags, highlights, and pricing
 - **Course-finder quiz** — 3 questions that recommend the best course for the student
-- **Coupon CTA** — prominent discount code with copy button
+- **Course CTA** — contextual route to the provider's current course options
 - **About TAK12** — key selling points (AI personalization, time savings, progress tracking, affordability)
-- **Testimonials** — parent reviews
+- **Independent review** — selection guidance for families
 - **FAQ** — collapsible accordion (6 questions)
 - **Final CTA** and footer
 
 ### Interactive Elements
 - Interactive course-finder quiz with a progress bar and dynamic recommendation
 - Collapsible FAQ accordion
-- Copy-to-clipboard promo code with toast confirmation (and `execCommand` fallback)
+- Contextual affiliate CTA tracking with destination-aligned intent
 - Smooth-scrolling in-page navigation (native CSS `scroll-behavior`)
 - Hover states and transitions throughout
 
 ### Marketing & Conversion
-- Exclusive discount code **DSMANHTUAN** (10% off) surfaced in the banner, coupon sections, and footer
-- Multiple CTAs linking to TAK12 with the affiliate `?ref=njg2odn` parameter
-- PostHog event tracking on CTA clicks, quiz interactions, and promo-code copies
+- Multiple CTAs linking to TAK12 with the affiliate `?ref=njg2odn` parameter and `rel="sponsored noopener"`
+- PostHog event tracking on affiliate CTA clicks and quiz interactions
 
 ## 🚀 Live Demo
 
@@ -40,7 +39,7 @@ Visit the live site: [tak-12.com](https://tak-12.com/)
 ### Frontend
 - **HTML5**: Semantic markup
 - **CSS3**: CSS Grid, Flexbox, custom properties, and responsive breakpoints
-- **JavaScript**: Vanilla JS (no framework) for the quiz, FAQ, and copy/toast interactions
+- **JavaScript**: Vanilla JS (no framework) for the quiz, FAQ accordion, and analytics events
 
 ### SEO & Analytics
 - **SEO Optimized**:
@@ -58,7 +57,7 @@ Visit the live site: [tak-12.com](https://tak-12.com/)
 
 ## 📱 Responsive Design
 
-- **Breakpoints**: 900px and 640px with layout stacking (nav, hero, stats, course/testimonial grids, coupon card, footer)
+- **Breakpoints**: 900px and 640px with layout stacking (nav, hero, course grids, decision-guide cards, footer)
 - **Touch-Friendly**: Large tap targets and mobile-optimized interactions
 - **Cross-Browser**: Compatible with modern browsers including Safari, Chrome, and Firefox
 
@@ -100,7 +99,7 @@ python3 -m http.server 8000
 tak12/
 ├── index.html          # Affiliate landing page
 ├── styles.css          # Green/gold theme + responsive styles
-├── script.js           # Quiz, FAQ accordion, copy-to-clipboard, PostHog events
+├── script.js           # Quiz, FAQ accordion, affiliate CTA tracking, PostHog events
 ├── images/             # Feature images for social media
 │   ├── feature_desktop.jpg
 │   └── feature_mobile.png
@@ -145,7 +144,7 @@ fingerprint and its `lastmod` must change together.
 ### PostHog Integration
 - **User Behavior**: Page views and interactions
 - **Privacy-Focused**: Identified users only
-- **Custom Events**: `cta_click`, `quiz_started`, `quiz_completed`, and `promo_code_copied`
+- **Custom Events**: `affiliate_cta_click`, `quiz_started`, and `quiz_completed`
 
 ## 🎨 Design System
 
@@ -157,7 +156,7 @@ fingerprint and its `lastmod` must change together.
 
 ### Interactive Elements
 - Hover transforms and color transitions
-- Toast feedback on promo-code copy
+- CTA interaction feedback
 - Accessible tap targets and keyboard-friendly buttons
 
 ## 🤝 Contributing
@@ -169,7 +168,7 @@ This is a marketing landing page for TAK12. For:
 
 ## 📄 License
 
-This landing page is created for promotional purposes. All educational content and services are provided by TAK12.
+This independent affiliate landing page provides selection guidance; all educational content and services are provided by TAK12.
 
 ---
 

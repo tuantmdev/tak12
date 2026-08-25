@@ -355,6 +355,15 @@ class AffiliateComplianceTests(unittest.TestCase):
         self.assertIn("trang thông tin độc lập", llms)
         self.assertIn("đối tác liên kết", llms)
 
+    def test_readme_does_not_promote_an_unverified_discount_campaign(self):
+        readme = (ROOT / "README.md").read_text(encoding="utf-8").lower()
+        self.assertIn("independent affiliate", readme)
+        self.assertNotRegex(
+            readme,
+            r"\b(?:dsmanhtuan|coupon|promo(?:tion| code)?|discount)\b|"
+            r"\b(?:10\s*%\s*off|giảm\s*\d+\s*%)\b",
+        )
+
     def test_home_navigation_labels_the_independent_evaluation_guide(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
         self.assertIn('href="#testimonials-section">Cách Đánh Giá</a>', html)
