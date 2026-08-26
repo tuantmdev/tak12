@@ -355,6 +355,17 @@ class AffiliateComplianceTests(unittest.TestCase):
         self.assertIn("trang thông tin độc lập", llms)
         self.assertIn("đối tác liên kết", llms)
 
+    def test_llms_routes_readers_to_official_pricing_without_unverified_price_floors(self):
+        llms = (ROOT / "llms.txt").read_text(encoding="utf-8").lower()
+        self.assertNotRegex(llms, r"\btừ\s+(?:940|890|600)\.000₫")
+        for pricing_path in (
+            "/info/bang-gia-vao-10?ref=njg2odn",
+            "/info/bang-gia-chung-chi?ref=njg2odn",
+            "/info/bang-gia-hoc-tot?ref=njg2odn",
+        ):
+            with self.subTest(pricing_path=pricing_path):
+                self.assertIn(pricing_path, llms)
+
     def test_readme_does_not_promote_an_unverified_discount_campaign(self):
         readme = (ROOT / "README.md").read_text(encoding="utf-8").lower()
         self.assertIn("independent affiliate", readme)
