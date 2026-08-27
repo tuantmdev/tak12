@@ -60,6 +60,26 @@ class SitewideTrackingTests(unittest.TestCase):
                 with self.subTest(source=source_name, expired_marker=expired_marker):
                     self.assertNotIn(expired_marker, content)
 
+    def test_homepage_does_not_publish_unverified_course_prices_or_offer_expiry(self):
+        homepage = (ROOT / "index.html").read_text(encoding="utf-8")
+        for unverified_claim in (
+            "750.000₫",
+            "890.000₫",
+            "600.000₫",
+            '"priceValidUntil"',
+            '"price":',
+        ):
+            with self.subTest(unverified_claim=unverified_claim):
+                self.assertNotIn(unverified_claim, homepage)
+
+        for pricing_url in (
+            "https://tak12.com/info/bang-gia-vao-6?ref=njg2odn",
+            "https://tak12.com/info/bang-gia-chung-chi?ref=njg2odn",
+            "https://tak12.com/info/bang-gia-hoc-tot?ref=njg2odn",
+        ):
+            with self.subTest(pricing_url=pricing_url):
+                self.assertIn(pricing_url, homepage)
+
     def test_affiliate_click_event_has_attribution_properties(self):
         script = (ROOT / "script.js").read_text(encoding="utf-8")
         self.assertIn("affiliate_cta_click", script)
