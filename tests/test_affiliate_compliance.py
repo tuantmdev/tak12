@@ -349,6 +349,15 @@ class AffiliateComplianceTests(unittest.TestCase):
                 with self.subTest(page=page.relative_to(ROOT), claim=claim):
                     self.assertNotIn(claim, html)
 
+    def test_thpt_page_removes_expired_prices_but_keeps_current_price_route(self):
+        html = (ROOT / "tak12-on-thi-tot-nghiep-thpt" / "index.html").read_text(encoding="utf-8")
+        self.assertIn("https://tak12.com/info/bang-gia-vao-dh?ref=njg2odn", html)
+        self.assertNotIn('"priceValidUntil"', html)
+        self.assertNotRegex(
+            html,
+            r"(?:590|670|690|830|990|1\.150)\.000(?:₫|đ)|\"price\"\s*:\s*\"590000\"",
+        )
+
     def test_llms_identifies_the_site_as_an_independent_affiliate_page(self):
         llms = (ROOT / "llms.txt").read_text(encoding="utf-8").lower()
         self.assertNotIn("trang giới thiệu chính thức", llms)
