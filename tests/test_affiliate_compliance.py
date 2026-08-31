@@ -349,6 +349,20 @@ class AffiliateComplianceTests(unittest.TestCase):
                 with self.subTest(page=page.relative_to(ROOT), claim=claim):
                     self.assertNotIn(claim, html)
 
+    def test_homepage_does_not_publish_unverified_usage_or_satisfaction_statistics(self):
+        html = (ROOT / "index.html").read_text(encoding="utf-8")
+        for unsupported_statistic in (
+            "500K+",
+            "98%",
+            "60+",
+            "6M+",
+            "Giờ học mỗi tháng",
+            "Khách hàng xác nhận hài lòng",
+            "Lượt câu hỏi được làm mỗi tháng",
+        ):
+            with self.subTest(unsupported_statistic=unsupported_statistic):
+                self.assertNotIn(unsupported_statistic, html)
+
     def test_thpt_page_removes_expired_prices_but_keeps_current_price_route(self):
         html = (ROOT / "tak12-on-thi-tot-nghiep-thpt" / "index.html").read_text(encoding="utf-8")
         self.assertIn("https://tak12.com/info/bang-gia-vao-dh?ref=njg2odn", html)
