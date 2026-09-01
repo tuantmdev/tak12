@@ -372,6 +372,23 @@ class AffiliateComplianceTests(unittest.TestCase):
             r"(?:590|670|690|830|990|1\.150)\.000(?:₫|đ)|\"price\"\s*:\s*\"590000\"",
         )
 
+    def test_course_pages_remove_unverified_prices_but_keep_referral_pricing_routes(self):
+        pages = {
+            "tak12-on-thi-lop-6": "/info/bang-gia-vao-6?ref=njg2odn",
+            "tak12-on-thi-lop-10-ha-noi": "/info/bang-gia-vao-10?ref=njg2odn",
+            "tak12-luyen-thi-ielts": "/info/bang-gia-chung-chi?ref=njg2odn",
+        }
+        unverified_price_pattern = (
+            r"(?:750|850|890|940|1\.090)\.000(?:₫|đ)|"
+            r'"price"\s*:\s*"(?:750000|890000|940000)"|'
+            r'"priceValidUntil"'
+        )
+        for slug, pricing_path in pages.items():
+            with self.subTest(page=slug):
+                html = (ROOT / slug / "index.html").read_text(encoding="utf-8")
+                self.assertIn(pricing_path, html)
+                self.assertNotRegex(html, unverified_price_pattern)
+
     def test_llms_identifies_the_site_as_an_independent_affiliate_page(self):
         llms = (ROOT / "llms.txt").read_text(encoding="utf-8").lower()
         self.assertNotIn("trang giới thiệu chính thức", llms)
