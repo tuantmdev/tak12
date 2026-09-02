@@ -126,8 +126,12 @@ class SitemapTests(unittest.TestCase):
                 self.assertEqual(lastmod, dt.date.fromisoformat(lastmod).isoformat())
 
         self.assertEqual(
-            "2026-07-16",
+            "2026-09-02",
             entries["https://tak-12.com/tak12-cambridge-ket-pet-flyers/"],
+        )
+        self.assertEqual(
+            "2026-09-02",
+            entries["https://tak-12.com/tak12-hoc-tot-toan-tieng-anh/"],
         )
         self.assertEqual(
             "2026-07-17",

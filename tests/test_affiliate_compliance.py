@@ -377,10 +377,12 @@ class AffiliateComplianceTests(unittest.TestCase):
             "tak12-on-thi-lop-6": "/info/bang-gia-vao-6?ref=njg2odn",
             "tak12-on-thi-lop-10-ha-noi": "/info/bang-gia-vao-10?ref=njg2odn",
             "tak12-luyen-thi-ielts": "/info/bang-gia-chung-chi?ref=njg2odn",
+            "tak12-cambridge-ket-pet-flyers": "/info/bang-gia-chung-chi?ref=njg2odn",
+            "tak12-hoc-tot-toan-tieng-anh": "/info/bang-gia-hoc-tot?ref=njg2odn",
         }
         unverified_price_pattern = (
-            r"(?:750|850|890|940|1\.090)\.000(?:₫|đ)|"
-            r'"price"\s*:\s*"(?:750000|890000|940000)"|'
+            r"(?:600|750|850|890|940|1\.090)\.000(?:₫|đ)|"
+            r'"price"\s*:\s*"(?:600000|750000|890000|940000)"|'
             r'"priceValidUntil"'
         )
         for slug, pricing_path in pages.items():
