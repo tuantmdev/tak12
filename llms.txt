@@ -1,52 +1,42 @@
 # TAK12 Courses — Affiliate Landing Page
 
-> Trang thông tin độc lập của đối tác liên kết TAK12. TAK12 là nền tảng học tập
-> trực tuyến K-12 tại Việt Nam cho học sinh lớp 1–12, kết hợp chương trình giảng dạy
-> với AI để cá nhân hóa lộ trình học. Đăng ký tài khoản **FREE** để dùng thử miễn phí,
-> không cần thẻ thanh toán, rồi nâng cấp lên **PRO** bất cứ lúc nào để mở khóa luyện
-> tập không giới hạn.
+> Trang thông tin độc lập của đối tác liên kết TAK12. Trang này cung cấp hướng dẫn
+> lựa chọn và liên kết đến nhà cung cấp; không phải website chính thức của TAK12.
+> Quyền truy cập, học phí, điều kiện tài khoản và chương trình có thể thay đổi.
+> Hãy xác nhận thông tin đang hiển thị trên TAK12 trước khi đăng ký hoặc thanh toán.
 
-## Thông tin nhanh (Key facts)
+## Thông tin nhanh
 
-- **Dùng thử / Trial:** Tài khoản FREE — luyện các bài đánh dấu FREE, tối đa 10 câu/ngày và 100 câu/chương trình cho mỗi phần, không xem giải thích chi tiết, không tải PDF, có quảng cáo. Nâng cấp PRO để mở khóa đầy đủ.
-- **Đối tượng / Audience:** Học sinh lớp 1–12 (6–18 tuổi)
-- **Nền tảng / Platform:** TAK12 (https://tak12.com/) — học trực tuyến, cá nhân hóa bằng AI
+- **Nền tảng:** TAK12 (https://tak12.com/) — nền tảng học trực tuyến tại Việt Nam.
 - **Landing page:** https://tak-12.com/
-- **Thanh toán / Payment:** Thẻ ngân hàng, ví điện tử (MoMo, ZaloPay), chuyển khoản
-- **Ngôn ngữ / Language:** Tiếng Việt
+- **Ngôn ngữ:** Tiếng Việt
+- **Tài khoản và gói học:** Xem điều kiện và quyền truy cập hiện hành trực tiếp trên TAK12.
 
-## Khóa học nổi bật (Featured courses)
+## Khóa học và bảng giá chính thức
 
-- [Ôn thi vào Lớp 10](https://tak12.com/info/bang-gia-vao-10?ref=njg2odn): Luyện đề Toán & Tiếng Anh theo mẫu đề Sở GD, cho học sinh Lớp 9. Xem mức giá và gói hiện tại tại TAK12.
-- [Luyện thi Chứng chỉ Tiếng Anh](https://tak12.com/info/bang-gia-chung-chi?ref=njg2odn): Cambridge (Starters → FCE), TOEFL Primary/Junior, IELTS. Xem mức giá và gói hiện tại tại TAK12.
-- [Toán & Anh Lớp 2–12](https://tak12.com/info/bang-gia-hoc-tot?ref=njg2odn): Học tốt Toán (lớp 2–12) và Tiếng Anh (lớp 3–12) theo SGK mới. Xem mức giá và gói hiện tại tại TAK12.
+- [Ôn thi vào Lớp 10](https://tak12.com/info/bang-gia-vao-10?ref=njg2odn): xem chương trình, gói và học phí hiện hành trên TAK12.
+- [Luyện thi Chứng chỉ Tiếng Anh](https://tak12.com/info/bang-gia-chung-chi?ref=njg2odn): xem chương trình, gói và học phí hiện hành trên TAK12.
+- [Toán & Anh Lớp 2–12](https://tak12.com/info/bang-gia-hoc-tot?ref=njg2odn): xem chương trình, gói và học phí hiện hành trên TAK12.
 - [Xem tất cả bảng giá khóa học](https://tak12.com/info/bang-gia?ref=njg2odn)
 
-## Trang chủ đề chi tiết (Topic pages)
+## Trang chủ đề chi tiết
 
-- [TAK12 FREE vs PRO — Dùng thử miễn phí](https://tak-12.com/tak12-ma-giam-gia/): So sánh tính năng tài khoản FREE và PRO, cách đăng ký dùng thử miễn phí.
-- [Ôn thi vào lớp 10 Hà Nội](https://tak-12.com/tak12-on-thi-lop-10-ha-noi/): Luyện Toán & Tiếng Anh online bám sát đề Sở GD.
-- [Ôn thi vào lớp 6](https://tak-12.com/tak12-on-thi-lop-6/): Luyện Toán & Tiếng Anh cho học sinh lớp 5.
-- [Luyện Cambridge KET / PET / Flyers](https://tak-12.com/tak12-cambridge-ket-pet-flyers/): Starters → FCE, TOEFL, IELTS theo trình độ.
-- [Học tốt Toán & Tiếng Anh lớp 2–12](https://tak-12.com/tak12-hoc-tot-toan-tieng-anh/): Bám sát sách giáo khoa mới.
-- [Luyện thi IELTS online](https://tak-12.com/tak12-luyen-thi-ielts/): Đề mô phỏng 4 kỹ năng, trong chương trình chứng chỉ Anh.
-- [Ôn thi tốt nghiệp THPT & ĐGNL vào đại học](https://tak-12.com/tak12-on-thi-tot-nghiep-thpt/): Môn Tiếng Anh, cho học sinh lớp 11–12.
-- [TAK12 có tốt không (đánh giá)](https://tak-12.com/tak12-co-tot-khong/): Review ưu điểm, đối tượng phù hợp, học phí.
+- [TAK12 FREE và gói trả phí](https://tak-12.com/tak12-ma-giam-gia/): cách kiểm tra điều kiện hiện hành trước khi chọn.
+- [Ôn thi vào lớp 10 Hà Nội](https://tak-12.com/tak12-on-thi-lop-10-ha-noi/)
+- [Ôn thi vào lớp 6](https://tak-12.com/tak12-on-thi-lop-6/)
+- [Luyện Cambridge KET / PET / Flyers](https://tak-12.com/tak12-cambridge-ket-pet-flyers/)
+- [Học tốt Toán & Tiếng Anh lớp 2–12](https://tak-12.com/tak12-hoc-tot-toan-tieng-anh/)
+- [Luyện thi IELTS online](https://tak-12.com/tak12-luyen-thi-ielts/)
+- [Ôn thi tốt nghiệp THPT & ĐGNL vào đại học](https://tak-12.com/tak12-on-thi-tot-nghiep-thpt/)
+- [TAK12 có tốt không (đánh giá)](https://tak-12.com/tak12-co-tot-khong/)
 
-## Cách đăng ký dùng thử miễn phí (How to start)
+## Cách kiểm tra trước khi chọn
 
-1. Truy cập https://tak12.com/ và nhấn "Đăng ký".
-2. Tạo tài khoản FREE bằng email hoặc số điện thoại — không cần thẻ thanh toán.
-3. Chọn khóa học và bắt đầu luyện các bài đánh dấu FREE ngay.
-4. Nâng cấp lên PRO bất cứ lúc nào để mở khóa luyện tập không giới hạn, xem giải thích đáp án chi tiết và tải PDF.
+1. Truy cập https://tak12.com/ và chọn chương trình cần tìm hiểu.
+2. Kiểm tra quyền truy cập, thời hạn, điều kiện và học phí đang hiển thị.
+3. Đối chiếu thông tin với mục tiêu học trước khi tiếp tục.
 
-## Câu hỏi thường gặp (FAQ)
+## Ghi chú
 
-- **Tài khoản FREE dùng được gì?** Làm các bài đánh dấu FREE, luyện tối đa 10 câu/ngày và 100 câu/chương trình cho mỗi phần/chủ điểm.
-- **AI cá nhân hóa là gì?** TAK12 đánh giá trình độ học sinh rồi tự điều chỉnh độ khó bài tập và lộ trình học theo tốc độ từng em.
-- **Có thể nâng cấp từ FREE lên PRO không?** Có, bất cứ lúc nào, để mở khóa luyện tập không giới hạn, xem giải thích đáp án chi tiết và tải PDF các đề.
-
-## Ghi chú (Notes)
-
-- Đây là trang của đối tác liên kết (affiliate). Mọi khóa học được cung cấp bởi TAK12 tại https://tak12.com/.
+- Đây là trang thông tin độc lập của đối tác liên kết (affiliate). Mọi khóa học được cung cấp bởi TAK12 tại https://tak12.com/.
 - Tham số `?ref=njg2odn` trong các liên kết là mã giới thiệu của đối tác.

@@ -391,6 +391,29 @@ class AffiliateComplianceTests(unittest.TestCase):
                 self.assertIn(pricing_path, html)
                 self.assertNotRegex(html, unverified_price_pattern)
 
+    def test_free_vs_pro_page_and_llms_do_not_publish_unverified_access_or_payment_claims(self):
+        documents = {
+            "free-vs-pro page": (ROOT / "tak12-ma-giam-gia" / "index.html").read_text(encoding="utf-8"),
+            "llms.txt": (ROOT / "llms.txt").read_text(encoding="utf-8"),
+        }
+        unsupported_claims = (
+            "10 câu/ngày",
+            "100 câu/chương trình",
+            "không xem được giải thích đáp án chi tiết",
+            "không tải PDF",
+            "không giới hạn số câu",
+            "không cần thẻ thanh toán",
+            "nâng cấp lên PRO bất cứ lúc nào",
+        )
+        for document_name, document in documents.items():
+            for claim in unsupported_claims:
+                with self.subTest(document=document_name, claim=claim):
+                    self.assertNotIn(claim.lower(), document.lower())
+
+        page = documents["free-vs-pro page"]
+        self.assertIn("https://tak12.com/?ref=njg2odn", page)
+        self.assertIn("https://tak12.com/info/bang-gia?ref=njg2odn", page)
+
     def test_llms_identifies_the_site_as_an_independent_affiliate_page(self):
         llms = (ROOT / "llms.txt").read_text(encoding="utf-8").lower()
         self.assertNotIn("trang giới thiệu chính thức", llms)
