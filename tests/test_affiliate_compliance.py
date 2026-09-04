@@ -185,7 +185,7 @@ class AffiliateComplianceTests(unittest.TestCase):
     def test_every_affiliate_link_has_unique_cta_id_and_explicit_semantics(self):
         allowed_intents = {
             ("tak12.com", "/"): {"free_account", "start-free-trial", "test-learning-fit", "visit-provider"},
-            ("tak12.com", "/info/bang-gia"): {"all_courses", "verify-current-price-and-access"},
+            ("tak12.com", "/info/bang-gia"): {"all_courses", "campaign", "verify-current-price-and-access"},
             ("tak12.com", "/info/bang-gia-chung-chi"): {
                 "certification", "certification_flyers", "certification_ket",
                 "certification_pet", "certification_toefl_primary",
@@ -430,6 +430,32 @@ class AffiliateComplianceTests(unittest.TestCase):
         page = documents["free-vs-pro page"]
         self.assertIn("https://tak12.com/?ref=njg2odn", page)
         self.assertIn("https://tak12.com/info/bang-gia?ref=njg2odn", page)
+
+    def test_back_to_school_campaign_has_exact_scope_window_and_attributed_cta(self):
+        page = (ROOT / "tak12-ma-giam-gia" / "index.html").read_text(encoding="utf-8")
+
+        normalized_page = page.lower()
+        for claim in (
+            "05/09 đến 20/09/2026",
+            "giảm 20% toàn bộ gói tak12 và azvocab",
+            "không áp dụng cho gói credit",
+            "mua 01 năm → tặng 01 tháng",
+            "mua 05 năm → tặng 05 tháng",
+            "05/09/2026",
+            "tặng toefl primary",
+            "tặng azvocab với thời hạn tương ứng",
+        ):
+            with self.subTest(claim=claim):
+                self.assertIn(claim, normalized_page)
+
+        self.assertIn(
+            'href="https://tak12.com/info/bang-gia?ref=njg2odn"', page
+        )
+        self.assertIn(
+            'data-cta="back_to_school_campaign_pricing"', page
+        )
+        self.assertIn('data-intent="campaign"', page)
+        self.assertIn('rel="sponsored noopener"', page)
 
     def test_llms_identifies_the_site_as_an_independent_affiliate_page(self):
         llms = (ROOT / "llms.txt").read_text(encoding="utf-8").lower()
