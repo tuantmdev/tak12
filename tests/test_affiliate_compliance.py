@@ -391,6 +391,23 @@ class AffiliateComplianceTests(unittest.TestCase):
                 self.assertIn(pricing_path, html)
                 self.assertNotRegex(html, unverified_price_pattern)
 
+    def test_homepage_does_not_publish_unverified_free_pro_or_payment_details(self):
+        homepage = (ROOT / "index.html").read_text(encoding="utf-8").lower()
+        unsupported_claims = (
+            "10 câu/ngày",
+            "100 câu/chương trình",
+            "không cần thẻ thanh toán",
+            "luyện không giới hạn",
+            "xem giải thích đáp án chi tiết",
+            "tải pdf các đề",
+            "hỗ trợ thanh toán qua thẻ ngân hàng",
+        )
+        for claim in unsupported_claims:
+            with self.subTest(claim=claim):
+                self.assertNotIn(claim, homepage)
+        self.assertIn("https://tak12.com/?ref=njg2odn", homepage)
+        self.assertIn("https://tak12.com/info/bang-gia?ref=njg2odn", homepage)
+
     def test_free_vs_pro_page_and_llms_do_not_publish_unverified_access_or_payment_claims(self):
         documents = {
             "free-vs-pro page": (ROOT / "tak12-ma-giam-gia" / "index.html").read_text(encoding="utf-8"),
