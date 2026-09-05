@@ -431,30 +431,24 @@ class AffiliateComplianceTests(unittest.TestCase):
         self.assertIn("https://tak12.com/?ref=njg2odn", page)
         self.assertIn("https://tak12.com/info/bang-gia?ref=njg2odn", page)
 
-    def test_back_to_school_campaign_has_exact_scope_window_and_attributed_cta(self):
+    def test_offer_page_omits_unverified_back_to_school_campaign_claims(self):
         page = (ROOT / "tak12-ma-giam-gia" / "index.html").read_text(encoding="utf-8")
-
         normalized_page = page.lower()
+
         for claim in (
+            "ưu đãi năm học mới",
+            "giảm 20%",
+            "azvocab",
             "05/09 đến 20/09/2026",
-            "giảm 20% toàn bộ gói tak12 và azvocab",
-            "không áp dụng cho gói credit",
-            "mua 01 năm → tặng 01 tháng",
-            "mua 05 năm → tặng 05 tháng",
-            "05/09/2026",
             "tặng toefl primary",
-            "tặng azvocab với thời hạn tương ứng",
         ):
             with self.subTest(claim=claim):
-                self.assertIn(claim, normalized_page)
+                self.assertNotIn(claim, normalized_page)
 
-        self.assertIn(
-            'href="https://tak12.com/info/bang-gia?ref=njg2odn"', page
-        )
-        self.assertIn(
-            'data-cta="back_to_school_campaign_pricing"', page
-        )
-        self.assertIn('data-intent="campaign"', page)
+        self.assertIn('href="https://tak12.com/?ref=njg2odn"', page)
+        self.assertIn('href="https://tak12.com/info/bang-gia?ref=njg2odn"', page)
+        self.assertIn('data-cta="coupon_hero_cta"', page)
+        self.assertIn('data-intent="free_account"', page)
         self.assertIn('rel="sponsored noopener"', page)
 
     def test_llms_identifies_the_site_as_an_independent_affiliate_page(self):
