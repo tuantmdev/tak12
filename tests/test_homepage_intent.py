@@ -66,30 +66,32 @@ class HomepageQualifiedIntentTests(unittest.TestCase):
                     "Search metadata and H1 must set independent review/selection intent",
                 )
 
-    def test_homepage_search_metadata_preserves_brand_access_and_decision_intent(self):
+    def test_homepage_search_metadata_uses_independent_review_intent_without_unverified_access_claims(self):
         title = " ".join(self.parser.title.lower().split())
         description = " ".join(self.parser.description.lower().split())
 
         self.assertIn("tak12", title)
-        self.assertIn("học thử miễn phí", title)
         self.assertIn("đánh giá", title)
-        self.assertIn("đăng nhập chính thức", description)
-        self.assertIn("học thử miễn phí", description)
         self.assertIn("độc lập", description)
+        for claim in ("học thử miễn phí", "tài khoản free", "free/pro"):
+            with self.subTest(claim=claim):
+                self.assertNotIn(claim, title)
+                self.assertNotIn(claim, description)
 
-    def test_hero_leads_with_parent_learning_hook_before_decision_paths(self):
+    def test_hero_leads_with_parent_learning_hook_without_unverified_access_claims(self):
         hero = " ".join("".join(self.parser.hero_text).lower().split())
         self.assertIn("con đang cần một lộ trình học phù hợp", hero)
-        self.assertIn("dùng thử miễn phí", hero)
-        self.assertIn("free với pro", hero)
         self.assertNotIn("không phải website chính thức", hero)
+        for claim in ("dùng thử miễn phí", "tài khoản free", "free/pro"):
+            with self.subTest(claim=claim):
+                self.assertNotIn(claim, hero)
 
-    def test_homepage_routes_login_review_and_free_vs_paid_to_distinct_semantic_destinations(self):
+    def test_homepage_routes_provider_review_and_selection_to_distinct_semantic_destinations(self):
         expected = {
-            "free-trial-referral": (
+            "provider-exploration": (
                 "https://tak12.com/?ref=njg2odn",
-                "start-free-trial",
-                "Dùng thử miễn phí",
+                "visit-provider",
+                "Truy cập TAK12 để xem chương trình",
             ),
             "independent-review": ("/tak12-co-tot-khong/", "read-independent-review", "Đọc review"),
             "free-vs-paid": ("/tak12-ma-giam-gia/", "compare-free-vs-paid", "So sánh FREE và trả phí"),
@@ -101,8 +103,8 @@ class HomepageQualifiedIntentTests(unittest.TestCase):
                 self.assertEqual(href, attrs.get("href"))
                 self.assertEqual(intent, attrs.get("data-intent"))
                 self.assertEqual(label, attrs.get("aria-label"))
-                if route == "free-trial-referral":
-                    self.assertEqual("homepage-hero-free-trial", attrs.get("data-cta"))
+                if route == "provider-exploration":
+                    self.assertEqual("homepage-hero-provider-exploration", attrs.get("data-cta"))
                     self.assertIn("ref=njg2odn", attrs["href"])
                     self.assertEqual(
                         {"sponsored", "noopener"},
