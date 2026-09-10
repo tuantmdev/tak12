@@ -1,4 +1,5 @@
 import unittest
+import re
 from pathlib import Path
 
 
@@ -14,9 +15,9 @@ class SitewideTrackingTests(unittest.TestCase):
             html = page.read_text(encoding="utf-8")
             expected_prefix = "" if page.parent == ROOT else "../"
             analytics_tag = f'<script src="{expected_prefix}analytics.js"></script>'
-            interactions_tag = f'<script src="{expected_prefix}script.js"></script>'
+            interactions_tag = re.search(r'<script src="' + re.escape(expected_prefix) + r'script\.js(?:\?v=[a-zA-Z0-9-]+)?"></script>', html)
             analytics_position = html.find(analytics_tag)
-            interactions_position = html.find(interactions_tag)
+            interactions_position = interactions_tag.start() if interactions_tag else -1
 
             with self.subTest(page=page.relative_to(ROOT)):
                 self.assertGreaterEqual(analytics_position, 0, "Shared analytics.js path is missing or incorrect")

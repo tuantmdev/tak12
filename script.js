@@ -9,6 +9,9 @@
     initHeroMotion();
     initFAQ();
     initQuiz();
+    document.querySelectorAll('[data-dated-offer]').forEach(function (offer) {
+      attachCountdown(offer, function () {});
+    });
     initCampaignCarousel();
   });
 
@@ -131,13 +134,17 @@
 
   function attachCountdown(slide, onExpire) {
     var endDateStr = slide.getAttribute('data-end-date');
-    if (!endDateStr) return;
+    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(endDateStr || '')) return;
 
     var parts = endDateStr.split('/').map(function (n) { return parseInt(n, 10); });
     var day = parts[0], month = parts[1], year = parts[2];
-    if (!day || !month || !year) return;
+    var dateCheck = new Date(Date.UTC(year, month - 1, day));
+    if (dateCheck.getUTCFullYear() !== year || dateCheck.getUTCMonth() !== month - 1 || dateCheck.getUTCDate() !== day) return;
 
-    var endDate = new Date(year, month - 1, day, 23, 59, 59);
+    // Exclusive midnight after the end date in Asia/Ho_Chi_Minh (UTC+07,
+    // no daylight saving). Never depend on the visitor's timezone.
+    var vietnamOffset = 7 * 60 * 60 * 1000;
+    var endDate = Date.UTC(year, month - 1, day + 1) - vietnamOffset;
 
     var daysBlock = slide.querySelector('[data-campaign-days-block]');
     var timerBlock = slide.querySelector('[data-campaign-timer-block]');
@@ -152,36 +159,43 @@
     var timerHandle = null;
 
     function tick() {
+      if (timerHandle) clearTimeout(timerHandle);
       var now = new Date();
       var msLeft = endDate - now;
 
       if (msLeft <= 0) {
-        if (timerHandle) clearInterval(timerHandle);
+        slide.hidden = true;
         slide.classList.add('hidden');
         onExpire(slide);
         return;
       }
+      slide.hidden = false;
 
-      var todayOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      var endDateOnly = new Date(year, month - 1, day);
+      var vietnamNow = new Date(now.getTime() + vietnamOffset);
+      var todayOnly = Date.UTC(vietnamNow.getUTCFullYear(), vietnamNow.getUTCMonth(), vietnamNow.getUTCDate());
+      var endDateOnly = Date.UTC(year, month - 1, day);
       var calendarDaysLeft = Math.round((endDateOnly - todayOnly) / MS_PER_DAY);
 
       if (calendarDaysLeft <= 0) {
         if (daysBlock) daysBlock.classList.add('hidden');
         if (timerBlock) timerBlock.classList.remove('hidden');
-        var totalSeconds = Math.floor(msLeft / 1000);
+        var totalSeconds = Math.ceil(msLeft / 1000);
         if (hEl) hEl.textContent = pad(Math.floor(totalSeconds / 3600));
         if (mEl) mEl.textContent = pad(Math.floor((totalSeconds % 3600) / 60));
         if (sEl) sEl.textContent = pad(totalSeconds % 60);
-        if (!timerHandle) timerHandle = setInterval(tick, 1000);
       } else {
         if (timerBlock) timerBlock.classList.add('hidden');
         if (daysBlock) daysBlock.classList.remove('hidden');
         if (daysEl) daysEl.textContent = calendarDaysLeft;
-        if (timerHandle) { clearInterval(timerHandle); timerHandle = null; }
       }
+      // Keep long-open tabs current even when loaded before the final day.
+      timerHandle = setTimeout(tick, Math.min(msLeft, calendarDaysLeft <= 0 ? 1000 : 60000));
     }
 
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) tick();
+    });
+    window.addEventListener('pageshow', tick);
     tick();
   }
 

@@ -180,10 +180,11 @@ class AffiliateComplianceTests(unittest.TestCase):
                     self.assertIn("sponsored", rel_tokens)
                     if attrs.get("target", "").lower() == "_blank":
                         self.assertIn("noopener", rel_tokens)
-        self.assertEqual(73, total_links, "Affiliate-link fixture changed; review all new links")
+        self.assertEqual(75, total_links, "Affiliate-link fixture changed; review all new links")
 
     def test_every_affiliate_link_has_unique_cta_id_and_explicit_semantics(self):
         allowed_intents = {
+            ("tak12.com", "/news/n/2486/chao-mung-nam-hoc-moi-26-27-tang-ma-giam-20-va-thoi-han-pro"): {"campaign_nsy2627"},
             ("tak12.com", "/"): {"free_account", "start-free-trial", "test-learning-fit", "visit-provider"},
             ("tak12.com", "/info/bang-gia"): {"all_courses", "campaign", "verify-current-price-and-access"},
             ("tak12.com", "/info/bang-gia-chung-chi"): {
@@ -217,6 +218,8 @@ class AffiliateComplianceTests(unittest.TestCase):
                     if destination_key[0] == "contuhoc.com":
                         self.assertEqual("campaign_achieve_matific", intent)
                         self.assertIn("ưu đãi", label, "Contuhoc campaign CTA must explicitly describe the offer")
+                    elif intent == "campaign_nsy2627":
+                        self.assertIn("điều kiện ưu đãi", label)
                     elif intent == "visit-provider":
                         self.assertTrue("tak12.com" in label or "truy cập" in label)
                     elif destination.path == "/":
@@ -431,13 +434,11 @@ class AffiliateComplianceTests(unittest.TestCase):
         self.assertIn("https://tak12.com/?ref=njg2odn", page)
         self.assertIn("https://tak12.com/info/bang-gia?ref=njg2odn", page)
 
-    def test_offer_page_omits_unverified_back_to_school_campaign_claims(self):
+    def test_offer_page_omits_unverified_back_to_school_gifts(self):
         page = (ROOT / "tak12-ma-giam-gia" / "index.html").read_text(encoding="utf-8")
         normalized_page = page.lower()
 
         for claim in (
-            "ưu đãi năm học mới",
-            "giảm 20%",
             "azvocab",
             "05/09 đến 20/09/2026",
             "tặng toefl primary",
