@@ -36,6 +36,15 @@
 2. Kiểm tra quyền truy cập, thời hạn, điều kiện và học phí đang hiển thị.
 3. Đối chiếu thông tin với mục tiêu học trước khi tiếp tục.
 
+## Chiến dịch có thời hạn: NSY2627 (bản ghi xác minh 10/09/2026)
+
+- Mã học bổng NSY2627: giảm 20% cho toàn bộ gói ôn luyện PRO; không áp dụng gói credit (xu) Speaking/Writing.
+- Thông báo ngày 05/09/2026; áp dụng đến hết 20/09/2026 theo giờ Việt Nam (Asia/Ho_Chi_Minh). Mốc hết hạn loại trừ: `2026-09-21T00:00:00+07:00`.
+- Đây là thông tin có thời hạn, không phải ưu đãi thường trực. Từ mốc hết hạn, chỉ dùng như bản ghi lịch sử; không giới thiệu mã là còn hiệu lực. Không suy diễn gia hạn nếu chưa có nguồn mới từ TAK12; luôn kiểm tra điều kiện khi thanh toán.
+- [Nguồn TAK12 và điều kiện ưu đãi](https://tak12.com/news/n/2486/chao-mung-nam-hoc-moi-26-27-tang-ma-giam-20-va-thoi-han-pro?ref=njg2odn).
+- [Campaign trên trang chủ](https://tak-12.com/#homepage-nsy2627): chỉ hiển thị trước mốc hết hạn khi có JavaScript.
+- [Hướng dẫn nhập mã học bổng](https://tak-12.com/tak12-ma-giam-gia/#nsy2627): chọn gói, nhập mã và kiểm tra giá trước thanh toán. Sau hạn, xem hướng dẫn FREE và trả phí cùng bảng giá hiện hành trên trang này.
+
 ## Ghi chú
 
 - Đây là trang thông tin độc lập của đối tác liên kết (affiliate). Mọi khóa học được cung cấp bởi TAK12 tại https://tak12.com/.

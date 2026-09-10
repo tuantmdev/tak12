@@ -12,7 +12,7 @@ We do not reproduce package prices or infer eligibility beyond the source. The o
 
 ## Narrow scope
 
-Only the existing /tak12-ma-giam-gia/ commercial page gets campaign content, below its unchanged hero. Homepage HTML, search metadata, canonical, FAQ and existing referral links remain unchanged. No time-limited Offer schema or claim is added to evergreen metadata.
+The initial release covered /tak12-ma-giam-gia/. Following explicit user correction, the homepage also restores its existing campaign slot between the unchanged hero and featured courses, reusing campaign CSS and the dated-offer expiry handler. It includes code, expiry, credit exception, attributed pricing/source CTAs and a guide link. Homepage title, H1, canonical, FAQ and existing referral links remain unchanged; only description/social descriptions gain evergreen code-checking guidance. llms.txt records sourced, explicitly dated campaign facts with historical-only interpretation after expiry. docs/keyword-map.md assigns detailed coupon intent to the guide and supporting seasonal discovery to the homepage. No time-limited Offer schema or claim is added to evergreen metadata.
 
 Reuse the existing countdown with an exclusive expiry of 2026-09-21T00:00:00+07:00 (2026-09-20T17:00:00Z), independent of visitor timezone. A hidden-by-default section is revealed only after validation; expired or no-JavaScript visits retain the evergreen page and pricing CTA. Visibility/pageshow and scheduled ticks handle long-open tabs. Static HTML retains dated historical source text; the rendered promotional section is hidden after expiry, not removed by a scheduled build.
 
