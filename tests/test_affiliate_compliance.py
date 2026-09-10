@@ -452,6 +452,23 @@ class AffiliateComplianceTests(unittest.TestCase):
         self.assertIn('data-intent="free_account"', page)
         self.assertIn('rel="sponsored noopener"', page)
 
+    def test_homepage_metadata_identifies_an_independent_information_site(self):
+        parser = self.parse_page(ROOT / "index.html")
+        homepage = (ROOT / "index.html").read_text(encoding="utf-8").lower()
+        identity_schema = next(
+            item for item in parser.json_ld if item.get("@id") == "https://tak-12.com/#website"
+        )
+
+        self.assertIn('meta name="author" content="tak12 courses — trang thông tin độc lập"', homepage)
+        self.assertIn('property="og:site_name" content="tak12 courses — thông tin độc lập"', homepage)
+        self.assertEqual("TAK12 Courses — Trang thông tin độc lập", identity_schema["name"])
+        self.assertEqual("WebSite", identity_schema["@type"])
+        self.assertEqual("https://tak-12.com/", identity_schema["url"])
+        self.assertIn("độc lập", identity_schema["description"].lower())
+        self.assertNotIn("EducationalOrganization", homepage)
+        self.assertNotIn("#organization", homepage)
+        self.assertNotIn('"logo":', homepage)
+
     def test_llms_identifies_the_site_as_an_independent_affiliate_page(self):
         llms = (ROOT / "llms.txt").read_text(encoding="utf-8").lower()
         self.assertNotIn("trang giới thiệu chính thức", llms)
