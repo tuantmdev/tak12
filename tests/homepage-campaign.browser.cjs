@@ -5,7 +5,7 @@ const assert = require('node:assert/strict');
 (async () => {
  const browser = await chromium.launch({headless:true});
  try {
-  for (const width of [390, 1440]) {
+  for (const width of [320, 390, 900, 901, 1440]) {
    const context = await browser.newContext({viewport:{width,height:900},timezoneId:'America/Los_Angeles'});
    const page = await context.newPage();
    await page.route('https://**', r => r.abort());
@@ -18,8 +18,17 @@ const assert = require('node:assert/strict');
    assert.ok(await offer.innerText().then(t=>t.includes('NSY2627')&&t.includes('Speaking/Writing')));
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth <= innerWidth),true,'No horizontal overflow');
    const cta=page.locator('[data-cta="homepage_nsy2627_pricing"]');
+   assert.equal(await offer.locator('.campaign-primary-cta').count(),1,'Exactly one primary CTA');
+   assert.equal(await offer.locator('.campaign-secondary-links a').count(),2,'Exactly two secondary links');
+   assert.equal(await offer.locator('.campaign-code-card').getAttribute('role'),'group');
+   assert.equal(await offer.locator('.campaign-code-card code').innerText(),'NSY2627');
    const box=await cta.boundingBox();
    assert.ok(box && box.x>=0 && box.x+box.width<=width,'CTA in viewport width');
+   for (const link of await offer.locator('.campaign-secondary-links a').all()) {
+    const linkBox=await link.boundingBox();
+    assert.ok(linkBox && linkBox.x>=0 && linkBox.x+linkBox.width<=width,'Secondary link in viewport width');
+    assert.ok(linkBox.height>=36,'Secondary link has a usable touch target');
+   }
    assert.equal(await cta.getAttribute('href'),'https://tak12.com/info/bang-gia?ref=njg2odn');
    await page.screenshot({path:`/tmp/tak12-homepage-${width}.png`,fullPage:false});
    await page.clock.fastForward(new Date('2026-09-20T16:59:59.999Z')-new Date('2026-09-10T03:00:00Z'));
