@@ -64,6 +64,23 @@ class CambridgeSeoCroTests(unittest.TestCase):
         self.assertIn("dùng thử", description.lower())
         self.assertLessEqual(len(description), 160)
 
+    def test_h1_leads_with_observed_tak12_flyers_intent(self):
+        h1_match = re.search(r"<h1>(.*?)</h1>", self.html, re.S)
+        self.assertIsNotNone(h1_match)
+        h1 = " ".join(re.sub(r"<[^>]+>", " ", h1_match[1]).split()) if h1_match else ""
+        self.assertTrue(h1.startswith("TAK12 Flyers:"), h1)
+        self.assertIn("KET", h1)
+        self.assertIn("PET", h1)
+
+    def test_above_fold_copy_states_who_the_flyers_path_is_and_is_not_for(self):
+        hero_match = re.search(r'<section class="hero">(.*?)<div class="hero-actions">', self.html, re.S)
+        self.assertIsNotNone(hero_match)
+        hero = " ".join(re.sub(r"<[^>]+>", " ", hero_match[1]).split()) if hero_match else ""
+        self.assertIn("Phù hợp nếu", hero)
+        self.assertIn("Không phù hợp nếu", hero)
+        self.assertIn("Starters/Movers", hero)
+        self.assertIn("TOEFL Primary", hero)
+
     def test_social_metadata_matches_updated_search_positioning(self):
         def content(pattern):
             match = re.search(pattern, self.html, re.S)
