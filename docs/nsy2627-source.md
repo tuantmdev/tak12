@@ -8,7 +8,15 @@ The announcement (dated 5/9/2026) states:
 - Speaking/Writing credit (xu) packages are excluded.
 - Eligible international-English combos from one year receive additional duration, credited on 21/09/2026.
 
-We do not reproduce package prices or infer eligibility beyond the source. The owner supplied the redemption walkthrough; users perform registration, captcha and payment themselves. No registration or purchase was performed for this release.
+On 2026-09-15, the owner supplied TAK12's accompanying “Top gói ôn luyện dẫn đầu xu hướng đầu năm học 2026–2027” copy and campaign graphic. The source graphic is preserved at [nsy2627-top-packages.jpg](nsy2627-top-packages.jpg) (SHA-256 `e319f8e9d96839355557a2a9a91fe064364ae7ac9b567f9f25a9aeadcebf8b2c`). They identify six packages, their original and post-code prices, duration or access end date, and monthly equivalents where relevant. The dated campaign section reproduces these package facts but keeps them out of evergreen metadata and course pages. Users are told to recheck the live price, duration and package contents before paying. The owner also supplied the redemption walkthrough; users perform registration, captcha and payment themselves. No registration or purchase was performed for this release.
+
+Package facts supplied on 2026-09-15:
+- International English Certificates, 1 year: 890,000đ → 712,000đ; 13 months; approximately 55,000đ/month.
+- International English Certificates, 5 years: 2,290,000đ → 1,832,000đ; 65 months; approximately 28,000đ/month.
+- English FULL A2–C1, 4 years: 3,250,000đ → 2,600,000đ; 52 months; 50,000đ/month.
+- English FULL A1–C1, 5 years: 3,680,000đ → 2,944,000đ; 65 months; approximately 45,000đ/month.
+- Grade 6 entrance preparation for Grade 5: 2,850,000đ → 2,280,000đ; access through 30/06/2027.
+- Grade 6 entrance preparation for Grade 4: 3,620,000đ → 2,896,000đ; access through 30/06/2028.
 
 ## Narrow scope
 

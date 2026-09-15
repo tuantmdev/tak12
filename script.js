@@ -12,8 +12,24 @@
     document.querySelectorAll('[data-dated-offer]').forEach(function (offer) {
       attachCountdown(offer, function () {});
     });
+    restoreDatedOfferFragment();
     initCampaignCarousel();
   });
+
+  // The browser cannot position a fragment whose dated section starts hidden.
+  // Restore it after validation reveals the active offer.
+  function restoreDatedOfferFragment() {
+    if (!window.location.hash) return;
+    var fragment;
+    try {
+      fragment = decodeURIComponent(window.location.hash.slice(1));
+    } catch (error) {
+      return;
+    }
+    var target = document.getElementById(fragment);
+    if (!target || !target.matches('[data-dated-offer]') || target.hidden) return;
+    target.scrollIntoView({ behavior: 'instant', block: 'start' });
+  }
 
   // ---------- PostHog helper ----------
   function track(event, props) {

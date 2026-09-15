@@ -51,3 +51,30 @@ class CampaignTests(unittest.TestCase):
             self.assertEqual({'sponsored', 'noopener'}, set(link['rel'].split()))
             self.assertTrue(link['data-cta'])
         self.assertNotIn('NSY2627', html.split('</head>')[0])
+
+    def test_verified_popular_packages_are_published_only_inside_dated_offer(self):
+        html = (ROOT / 'tak12-ma-giam-gia/index.html').read_text(encoding='utf-8')
+        offer = html[html.index('id="nsy2627"'):html.index('</section>', html.index('id="nsy2627"'))]
+        before_offer = html[:html.index('id="nsy2627"')]
+        after_offer = html[html.index('</section>', html.index('id="nsy2627"')):]
+
+        for marker in [
+            '712.000đ', '13 tháng', 'khoảng 55.000đ/tháng',
+            '1.832.000đ', '65 tháng', 'khoảng 28.000đ/tháng',
+            '2.600.000đ', '52 tháng', '50.000đ/tháng',
+            '2.944.000đ', 'khoảng 45.000đ/tháng',
+            '2.280.000đ', '30/06/2027',
+            '2.896.000đ', '30/06/2028',
+        ]:
+            self.assertIn(marker, offer)
+            self.assertNotIn(marker, before_offer)
+            self.assertNotIn(marker, after_offer)
+
+        self.assertEqual(6, offer.count('class="offer-package"'))
+        self.assertIn('Giá ưu đãi sau khi áp dụng mã', offer)
+        self.assertIn('kiểm tra lại giá, thời hạn và nội dung gói', offer)
+
+        source_image = ROOT / 'docs/nsy2627-top-packages.jpg'
+        self.assertTrue(source_image.is_file(), 'Owner-supplied package graphic must remain auditable')
+        source_notes = (ROOT / 'docs/nsy2627-source.md').read_text(encoding='utf-8')
+        self.assertIn('nsy2627-top-packages.jpg', source_notes)
