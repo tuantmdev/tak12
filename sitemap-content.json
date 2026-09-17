@@ -12,8 +12,8 @@
     "lastmod": "2026-09-01"
   },
   "https://tak-12.com/tak12-on-thi-lop-6/": {
-    "sha256": "cd34c3917fefa81a180d2473cd770e482d671d97bf960b06b62ba1cc094d3b3b",
-    "lastmod": "2026-09-01"
+    "sha256": "927008863d57eddd50f3cfc4449cd974c0fb7a810aff9ea52d452efe8f04f0cb",
+    "lastmod": "2026-09-17"
   },
   "https://tak-12.com/lo-trinh-on-thi-vao-lop-6/": {
     "sha256": "9afc0e66b39d65cf484beed7940719ceaab806a1f6038a60072e12a03803292d",
@@ -22,6 +22,18 @@
   "https://tak-12.com/kinh-nghiem-on-thi-vao-lop-6/": {
     "sha256": "e7ad393949749fb971fbd4b7d05e19b186f193ab300a2bbdb1bd2f96514eaff4",
     "lastmod": "2026-07-27"
+  },
+  "https://tak-12.com/kinh-nghiem-thi-vao-lop-6-nguyen-tat-thanh/": {
+    "sha256": "a0b160698b60a1cc4c0d00279277a33895e4c598a4be9a72084d92cd9513c0d1",
+    "lastmod": "2026-09-17"
+  },
+  "https://tak-12.com/kinh-nghiem-thi-vao-lop-6-cau-giay/": {
+    "sha256": "c9b20682bb957afc3123ab066a8400aeedf78d06e239fdd7d030c58b22725c4f",
+    "lastmod": "2026-09-17"
+  },
+  "https://tak-12.com/kinh-nghiem-thi-vao-lop-6-thanh-xuan/": {
+    "sha256": "0488d23e495ce4cdb5f4d19b1d3ed8dad8f5f755111004ace88f08bdbdfc4757",
+    "lastmod": "2026-09-17"
   },
   "https://tak-12.com/tak12-cambridge-ket-pet-flyers/": {
     "sha256": "3e945ccc77f23a0f0cccd25740ebd410b0ce9d6212c08b6d5eeef0650e6a0d67",

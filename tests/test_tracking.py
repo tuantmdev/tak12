@@ -9,7 +9,7 @@ HTML_PAGES = sorted(ROOT.rglob("index.html"))
 
 class SitewideTrackingTests(unittest.TestCase):
     def test_every_page_loads_shared_analytics_before_interactions(self):
-        self.assertEqual(12, len(HTML_PAGES), "Expected homepage plus eleven SEO landing pages")
+        self.assertEqual(15, len(HTML_PAGES), "Expected homepage plus fourteen SEO landing pages")
 
         for page in HTML_PAGES:
             html = page.read_text(encoding="utf-8")

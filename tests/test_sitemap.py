@@ -113,7 +113,13 @@ class SitemapTests(unittest.TestCase):
 
     def test_sitemap_has_unique_canonical_urls_and_valid_lastmod_dates(self):
         entries = self.sitemap_entries()
-        self.assertEqual(12, len(entries))
+        self.assertEqual(15, len(entries))
+        for slug in (
+            "kinh-nghiem-thi-vao-lop-6-nguyen-tat-thanh",
+            "kinh-nghiem-thi-vao-lop-6-cau-giay",
+            "kinh-nghiem-thi-vao-lop-6-thanh-xuan",
+        ):
+            self.assertIn(f"https://tak-12.com/{slug}/", entries)
         self.assertIn("https://tak-12.com/lo-trinh-on-thi-vao-lop-10-ha-noi/", entries)
         for location, lastmod in entries.items():
             with self.subTest(location=location):

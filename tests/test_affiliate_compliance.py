@@ -161,7 +161,7 @@ class AffiliateComplianceTests(unittest.TestCase):
         return parser
 
     def test_affiliate_disclosure_top_banner_is_not_rendered_on_any_page(self):
-        self.assertEqual(12, len(HTML_PAGES))
+        self.assertEqual(15, len(HTML_PAGES))
         for page in HTML_PAGES:
             html = page.read_text(encoding="utf-8")
             with self.subTest(page=page.relative_to(ROOT)):
@@ -180,7 +180,7 @@ class AffiliateComplianceTests(unittest.TestCase):
                     self.assertIn("sponsored", rel_tokens)
                     if attrs.get("target", "").lower() == "_blank":
                         self.assertIn("noopener", rel_tokens)
-        self.assertEqual(77, total_links, "Affiliate-link fixture changed; review all new links")
+        self.assertEqual(83, total_links, "Affiliate-link fixture changed; review all new links")
 
     def test_every_affiliate_link_has_unique_cta_id_and_explicit_semantics(self):
         allowed_intents = {
@@ -193,6 +193,9 @@ class AffiliateComplianceTests(unittest.TestCase):
             },
             ("tak12.com", "/info/bang-gia-hoc-tot"): {"school_support"},
             ("tak12.com", "/info/bang-gia-vao-6"): {"exam_grade_6"},
+            ("tak12.com", "/info/vao-6-ntt"): {"school_exam_grade_6"},
+            ("tak12.com", "/info/vao-6-cau-giay"): {"school_exam_grade_6"},
+            ("tak12.com", "/info/vao-6-thanh-xuan"): {"school_exam_grade_6"},
             ("tak12.com", "/info/bang-gia-vao-10"): {"exam_grade_10"},
             ("tak12.com", "/info/bang-gia-vao-dh"): {"exam_university"},
             ("tak12.com", "/news/n/2454/thu-thach-45-ngay-thi-dua-he-hoc-chat-nhan-qua-that"): {
@@ -227,7 +230,7 @@ class AffiliateComplianceTests(unittest.TestCase):
                             any(term in label for term in ("free", "miễn phí", "dùng thử", "tài khoản")),
                             "Account destination label must communicate free/trial/account intent",
                         )
-                    elif destination.path.startswith("/info/bang-gia"):
+                    elif destination.path.startswith("/info/bang-gia") or destination.path.startswith("/info/vao-6-"):
                         self.assertTrue(
                             any(term in label for term in ("đăng ký", "giá", "học phí", "khóa", "dùng thử")),
                             "Pricing destination label must communicate price/course intent",
