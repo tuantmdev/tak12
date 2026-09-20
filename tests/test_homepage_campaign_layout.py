@@ -27,7 +27,7 @@ class HomepageCampaignLayoutTests(unittest.TestCase):
         self.assertIn(".campaign-featured .campaign-primary-cta {", css)
         self.assertIn(".campaign-featured .campaign-secondary-links a { min-height: 36px;", css)
         self.assertIn(".campaign-featured .campaign-inner { grid-template-columns: 1fr; gap: 24px; }", css)
-        self.assertIn('styles.css?v=nsy2627-layout-20260911', (ROOT / "index.html").read_text(encoding="utf-8"))
+        self.assertIn('styles.css?v=nsy2627-countdown-20260920', (ROOT / "index.html").read_text(encoding="utf-8"))
 
     def test_rendered_layout_contract(self):
         result = subprocess.run(

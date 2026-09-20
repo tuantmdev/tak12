@@ -22,6 +22,19 @@ class HomepageCampaignTests(unittest.TestCase):
         self.assertLess(html.index('id="homepage-nsy2627"'), html.index('id="courses-section"'))
         for text in ['NSY2627', 'giảm 20%', 'Speaking', 'Writing', 'credit (xu)', '/tak12-ma-giam-gia/#nsy2627']:
             self.assertIn(text, html)
+        for marker in [
+            'class="campaign-countdown"',
+            'data-campaign-days-block',
+            'data-campaign-days',
+            'data-campaign-timer-block',
+            'data-timer-h',
+            'data-timer-m',
+            'data-timer-s',
+        ]:
+            self.assertIn(marker, html, f'Missing countdown marker: {marker}')
+        countdown = next(a for t, a in tags if 'campaign-countdown' in a.get('class', '').split())
+        self.assertEqual('timer', countdown.get('role'))
+        self.assertNotIn('aria-live', countdown, 'A one-second timer must not create screen-reader chatter')
         link = next(a for t,a in tags if a.get('data-cta') == 'homepage_nsy2627_pricing')
         self.assertEqual('https://tak12.com/info/bang-gia?ref=njg2odn', link['href'])
         self.assertEqual('verify-current-price-and-access', link['data-intent'])

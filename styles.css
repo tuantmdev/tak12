@@ -436,7 +436,19 @@ img { max-width: 100%; }
   padding: 34px 40px;
   align-items: center;
 }
-.campaign-featured .campaign-info { min-width: 0; }
+.campaign-featured .campaign-info {
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+.campaign-featured .campaign-countdown { position: relative; z-index: 1; }
+.campaign-featured .cd-days,
+.campaign-featured .cd-timer {
+  min-width: 116px;
+  padding: 8px 16px;
+  box-shadow: 0 8px 22px rgba(0,0,0,.15);
+}
 .campaign-featured .campaign-title {
   max-width: 620px;
   margin: 8px 0 12px;
