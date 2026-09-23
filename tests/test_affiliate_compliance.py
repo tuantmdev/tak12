@@ -182,6 +182,22 @@ class AffiliateComplianceTests(unittest.TestCase):
                         self.assertIn("noopener", rel_tokens)
         self.assertEqual(80, total_links, "Affiliate-link fixture changed; review all new links")
 
+    def test_affiliate_cta_ids_are_unique_sitewide(self):
+        occurrences = {}
+        for page in HTML_PAGES:
+            parser = self.parse_page(page)
+            for link in parser.affiliate_links:
+                cta_id = link["attrs"].get("data-cta")
+                self.assertTrue(cta_id, f"Missing CTA ID in {page.relative_to(ROOT)}")
+                occurrences.setdefault(cta_id, []).append(str(page.relative_to(ROOT)))
+
+        duplicates = {
+            cta_id: pages
+            for cta_id, pages in occurrences.items()
+            if len(pages) > 1
+        }
+        self.assertEqual({}, duplicates, "CTA IDs must identify one sitewide placement")
+
     def test_every_affiliate_link_has_unique_cta_id_and_explicit_semantics(self):
         allowed_intents = {
             ("tak12.com", "/"): {"free_account", "start-free-trial", "test-learning-fit", "visit-provider"},
