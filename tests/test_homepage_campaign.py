@@ -39,6 +39,28 @@ class HomepageCampaignTests(unittest.TestCase):
         ]:
             self.assertNotIn(marker, html)
 
+    def test_current_free_assessment_is_coordinated_across_campaign_surfaces(self):
+        homepage = (ROOT / "index.html").read_text(encoding="utf-8")
+        guide = (ROOT / "tak12-ma-giam-gia" / "index.html").read_text(encoding="utf-8")
+        llms = (ROOT / "llms.txt").read_text(encoding="utf-8")
+        official_url = "https://tak12.com/info/dgnl-tieng-anh-toan-dau-nam?ref=njg2odn"
+
+        self.assertIn('id="homepage-free-assessment"', homepage)
+        self.assertIn(
+            f'href="{official_url}" target="_blank" rel="sponsored noopener" '
+            'data-cta="homepage_free_assessment" data-intent="free_assessment"',
+            homepage,
+        )
+        self.assertIn("Đánh giá năng lực đầu năm miễn phí", homepage)
+        self.assertIn('id="dgnl-dau-nam"', guide)
+        self.assertIn(
+            f'href="{official_url}" target="_blank" rel="sponsored noopener" '
+            'data-cta="coupon_guide_free_assessment" data-intent="free_assessment"',
+            guide,
+        )
+        self.assertIn(official_url, llms)
+        self.assertNotIn("Back to School", llms, "Keep LLM collateral useful after seasonal wording ages")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -180,7 +180,7 @@ class AffiliateComplianceTests(unittest.TestCase):
                     self.assertIn("sponsored", rel_tokens)
                     if attrs.get("target", "").lower() == "_blank":
                         self.assertIn("noopener", rel_tokens)
-        self.assertEqual(80, total_links, "Affiliate-link fixture changed; review all new links")
+        self.assertEqual(82, total_links, "Affiliate-link fixture changed; review all new links")
 
     def test_affiliate_cta_ids_are_unique_sitewide(self):
         occurrences = {}
@@ -213,6 +213,7 @@ class AffiliateComplianceTests(unittest.TestCase):
             ("tak12.com", "/info/vao-6-thanh-xuan"): {"school_exam_grade_6"},
             ("tak12.com", "/info/bang-gia-vao-10"): {"exam_grade_10"},
             ("tak12.com", "/info/bang-gia-vao-dh"): {"exam_university"},
+            ("tak12.com", "/info/dgnl-tieng-anh-toan-dau-nam"): {"free_assessment"},
             ("tak12.com", "/news/n/2454/thu-thach-45-ngay-thi-dua-he-hoc-chat-nhan-qua-that"): {
                 "campaign_summer_challenge"
             },
@@ -248,6 +249,8 @@ class AffiliateComplianceTests(unittest.TestCase):
                             any(term in label for term in ("đăng ký", "giá", "học phí", "khóa", "dùng thử")),
                             "Pricing destination label must communicate price/course intent",
                         )
+                    elif intent == "free_assessment":
+                        self.assertIn("đánh giá miễn phí", label)
                     else:
                         self.assertIn("tham gia", label)
 
