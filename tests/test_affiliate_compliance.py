@@ -471,6 +471,17 @@ class AffiliateComplianceTests(unittest.TestCase):
         self.assertIn('data-intent="free_account"', page)
         self.assertIn('rel="sponsored noopener"', page)
 
+    def test_every_page_metadata_identifies_the_independent_publisher(self):
+        for page in HTML_PAGES:
+            html = page.read_text(encoding="utf-8").lower()
+            with self.subTest(page=page.relative_to(ROOT)):
+                self.assertNotIn('meta name="author" content="tak12 education"', html)
+                self.assertNotIn('property="og:site_name" content="tak12 education"', html)
+                self.assertRegex(
+                    html,
+                    r'property="og:site_name" content="[^"]*(?:độc lập|independent)[^"]*"',
+                )
+
     def test_homepage_metadata_identifies_an_independent_information_site(self):
         parser = self.parse_page(ROOT / "index.html")
         homepage = (ROOT / "index.html").read_text(encoding="utf-8").lower()
