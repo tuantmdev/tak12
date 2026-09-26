@@ -43,7 +43,7 @@ class HomepageCampaignTests(unittest.TestCase):
         homepage = (ROOT / "index.html").read_text(encoding="utf-8")
         guide = (ROOT / "tak12-ma-giam-gia" / "index.html").read_text(encoding="utf-8")
         llms = (ROOT / "llms.txt").read_text(encoding="utf-8")
-        official_url = "https://tak12.com/info/dgnl-tieng-anh-toan-dau-nam?ref=njg2odn"
+        official_url = "https://tak12.com/info/dgnl-tieng-anh-toan-dau-nam?ref=njg2odn#chon-de-thi"
 
         self.assertIn('id="homepage-free-assessment"', homepage)
         self.assertIn(
