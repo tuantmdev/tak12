@@ -14,16 +14,20 @@ class HomepageParser(HTMLParser):
         self.description = ""
         self.h1 = ""
         self.hero_text = []
+        self.courses_text = []
         self.routes = {}
         self._stack = []
         self._capture = None
         self._hero_depth = 0
+        self._courses_depth = 0
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
         self._stack.append(tag)
         if "hero" in str(attrs.get("class", "")).split():
             self._hero_depth += 1
+        if tag == "section" and attrs.get("id") == "courses-section":
+            self._courses_depth += 1
         if tag == "meta" and attrs.get("name") == "description":
             self.description = attrs.get("content", "")
         if tag == "a" and attrs.get("data-homepage-route"):
@@ -40,10 +44,14 @@ class HomepageParser(HTMLParser):
             self.h1 += data
         if self._hero_depth:
             self.hero_text.append(data)
+        if self._courses_depth:
+            self.courses_text.append(data)
 
     def handle_endtag(self, tag):
         if tag == "section" and self._hero_depth:
             self._hero_depth -= 1
+        if tag == "section" and self._courses_depth:
+            self._courses_depth -= 1
         if tag == self._capture:
             self._capture = None
         if self._stack:
@@ -85,6 +93,13 @@ class HomepageQualifiedIntentTests(unittest.TestCase):
         for claim in ("dùng thử miễn phí", "tài khoản free", "free/pro"):
             with self.subTest(claim=claim):
                 self.assertNotIn(claim, hero)
+
+    def test_featured_courses_use_selection_guidance_without_unsupported_popularity_claims(self):
+        courses = " ".join("".join(self.parser.courses_text).lower().split())
+        self.assertIn("chọn theo mục tiêu học tập", courses)
+        for unsupported_claim in ("lựa chọn nhiều nhất", "bán chạy nhất"):
+            with self.subTest(unsupported_claim=unsupported_claim):
+                self.assertNotIn(unsupported_claim, courses)
 
     def test_homepage_routes_provider_review_and_selection_to_distinct_semantic_destinations(self):
         expected = {
