@@ -499,6 +499,12 @@ class AffiliateComplianceTests(unittest.TestCase):
         self.assertNotIn("#organization", homepage)
         self.assertNotIn('"logo":', homepage)
 
+    def test_homepage_social_metadata_does_not_claim_the_providers_social_identity(self):
+        homepage = (ROOT / "index.html").read_text(encoding="utf-8").lower()
+
+        self.assertNotIn('name="twitter:site" content="@tak12education"', homepage)
+        self.assertNotIn('name="twitter:creator" content="@tak12education"', homepage)
+
     def test_llms_identifies_the_site_as_an_independent_affiliate_page(self):
         llms = (ROOT / "llms.txt").read_text(encoding="utf-8").lower()
         self.assertNotIn("trang giới thiệu chính thức", llms)
