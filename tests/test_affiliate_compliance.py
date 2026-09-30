@@ -394,6 +394,21 @@ class AffiliateComplianceTests(unittest.TestCase):
             r"(?:590|670|690|830|990|1\.150)\.000(?:₫|đ)|\"price\"\s*:\s*\"590000\"",
         )
 
+    def test_thpt_search_metadata_does_not_target_the_completed_2026_exam(self):
+        html = (ROOT / "tak12-on-thi-tot-nghiep-thpt" / "index.html").read_text(encoding="utf-8")
+        patterns = (
+            r"<title>(.*?)</title>",
+            r'<meta name="description" content="([^"]+)">',
+            r'<meta property="og:title" content="([^"]+)">',
+            r'<meta property="og:description" content="([^"]+)">',
+        )
+        for pattern in patterns:
+            with self.subTest(pattern=pattern):
+                match = re.search(pattern, html, re.S)
+                self.assertIsNotNone(match)
+                if match:
+                    self.assertNotIn("2026", match.group(1))
+
     def test_course_pages_remove_unverified_prices_but_keep_referral_pricing_routes(self):
         pages = {
             "tak12-on-thi-lop-6": "/info/bang-gia-vao-6?ref=njg2odn",
