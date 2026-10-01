@@ -371,6 +371,13 @@ class AffiliateComplianceTests(unittest.TestCase):
                 with self.subTest(page=page.relative_to(ROOT), claim=claim):
                     self.assertNotIn(claim, html)
 
+    def test_lop6_faq_uses_a_fit_check_instead_of_an_unsupported_effectiveness_claim(self):
+        html = (ROOT / "tak12-on-thi-lop-6" / "index.html").read_text(encoding="utf-8").lower()
+        self.assertNotIn("có. tak12 chia nhỏ bài học", html)
+        self.assertNotIn("giúp trẻ duy trì hứng thú và tiến bộ", html)
+        self.assertIn("hiệu quả phụ thuộc", html)
+        self.assertIn("phụ huynh nên cho con dùng thử một bài", html)
+
     def test_homepage_does_not_publish_unverified_usage_or_satisfaction_statistics(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
         for unsupported_statistic in (
