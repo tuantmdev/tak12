@@ -435,6 +435,12 @@ class AffiliateComplianceTests(unittest.TestCase):
                 self.assertIn(pricing_path, html)
                 self.assertNotRegex(html, unverified_price_pattern)
 
+    def test_no_page_claims_registration_needs_no_payment_card(self):
+        for page in HTML_PAGES:
+            html = page.read_text(encoding="utf-8").lower()
+            with self.subTest(page=page.relative_to(ROOT)):
+                self.assertNotIn("không cần thẻ thanh toán", html)
+
     def test_homepage_does_not_publish_unverified_free_pro_or_payment_details(self):
         homepage = (ROOT / "index.html").read_text(encoding="utf-8").lower()
         unsupported_claims = (
