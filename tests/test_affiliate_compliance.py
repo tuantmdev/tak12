@@ -510,6 +510,23 @@ class AffiliateComplianceTests(unittest.TestCase):
                     r'property="og:site_name" content="[^"]*(?:độc lập|independent)[^"]*"',
                 )
 
+    def test_course_schema_does_not_publish_unverified_workload_duration(self):
+        def objects(value):
+            if isinstance(value, dict):
+                yield value
+                for child in value.values():
+                    yield from objects(child)
+            elif isinstance(value, list):
+                for child in value:
+                    yield from objects(child)
+
+        for page in HTML_PAGES:
+            parser = self.parse_page(page)
+            for schema in parser.json_ld:
+                for item in objects(schema):
+                    with self.subTest(page=page.relative_to(ROOT), schema_type=item.get("@type")):
+                        self.assertNotIn("courseWorkload", item)
+
     def test_homepage_metadata_identifies_an_independent_information_site(self):
         parser = self.parse_page(ROOT / "index.html")
         homepage = (ROOT / "index.html").read_text(encoding="utf-8").lower()
