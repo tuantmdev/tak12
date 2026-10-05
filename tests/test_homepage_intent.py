@@ -16,9 +16,11 @@ class HomepageParser(HTMLParser):
         self.hero_text = []
         self.courses_text = []
         self.course_ctas = {}
+        self.ctas = {}
         self.routes = {}
         self._stack = []
         self._course_cta = None
+        self._cta = None
         self._capture = None
         self._hero_depth = 0
         self._courses_depth = 0
@@ -34,6 +36,8 @@ class HomepageParser(HTMLParser):
             self.description = attrs.get("content", "")
         if tag == "a" and attrs.get("data-homepage-route"):
             self.routes[attrs["data-homepage-route"]] = attrs
+        if tag == "a" and attrs.get("data-cta"):
+            self._cta = {"attrs": attrs, "text": []}
         if tag == "a" and self._courses_depth and attrs.get("data-cta"):
             self._course_cta = {"attrs": attrs, "text": []}
         if tag == "title":
@@ -52,6 +56,8 @@ class HomepageParser(HTMLParser):
             self.courses_text.append(data)
         if self._course_cta is not None:
             self._course_cta["text"].append(data)
+        if self._cta is not None:
+            self._cta["text"].append(data)
 
     def handle_endtag(self, tag):
         if tag == "a" and self._course_cta is not None:
@@ -61,6 +67,13 @@ class HomepageParser(HTMLParser):
                 "label": " ".join("".join(self._course_cta["text"]).split()),
             }
             self._course_cta = None
+        if tag == "a" and self._cta is not None:
+            attrs = self._cta["attrs"]
+            self.ctas[attrs["data-cta"]] = {
+                "attrs": attrs,
+                "label": " ".join("".join(self._cta["text"]).split()),
+            }
+            self._cta = None
         if tag == "section" and self._hero_depth:
             self._hero_depth -= 1
         if tag == "section" and self._courses_depth:
@@ -127,6 +140,13 @@ class HomepageQualifiedIntentTests(unittest.TestCase):
                 self.assertIn(destination_path, cta["attrs"]["href"])
                 self.assertEqual(intent, cta["attrs"].get("data-intent"))
                 self.assertEqual("Xem Gói & Học Phí →", cta["label"])
+
+    def test_quiz_result_cta_describes_its_pricing_destination(self):
+        cta = self.parser.ctas["quiz_result"]
+
+        self.assertIn("/info/bang-gia", cta["attrs"]["href"])
+        self.assertEqual("all_courses", cta["attrs"].get("data-intent"))
+        self.assertEqual("Xem Gói & Học Phí Phù Hợp →", cta["label"])
 
     def test_homepage_routes_provider_review_and_selection_to_distinct_semantic_destinations(self):
         expected = {
