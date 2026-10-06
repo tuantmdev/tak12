@@ -32,6 +32,18 @@ class MobileHeroLayoutTests(unittest.TestCase):
             r"\.hero-actions\s+\.btn\s*\{[^}]*flex:\s*1;",
         )
 
+    def test_top_banner_ctas_have_usable_touch_targets(self):
+        banner_cta = re.search(
+            r"\.top-banner \.copy-pill\s*\{(?P<rules>[^}]*)\}",
+            self.css,
+            re.DOTALL,
+        )
+        self.assertIsNotNone(banner_cta)
+        rules = banner_cta.group("rules") if banner_cta else ""
+        self.assertRegex(rules, r"display:\s*inline-flex;")
+        self.assertRegex(rules, r"min-height:\s*44px;")
+        self.assertRegex(rules, r"align-items:\s*center;")
+
     def test_mobile_hero_uses_compact_vertical_spacing(self):
         self.assertRegex(
             self.mobile_rules,

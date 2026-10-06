@@ -166,6 +166,8 @@ img { max-width: 100%; }
   padding: 4px 14px; border-radius: 20px;
   font-size: 12px; font-weight: 700; cursor: pointer;
   border: none; font-family: inherit;
+  display: inline-flex; min-height: 44px;
+  align-items: center; justify-content: center;
 }
 
 /* ---------- Hero ---------- */
