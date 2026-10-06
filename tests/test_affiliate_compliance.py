@@ -180,7 +180,7 @@ class AffiliateComplianceTests(unittest.TestCase):
                     self.assertIn("sponsored", rel_tokens)
                     if attrs.get("target", "").lower() == "_blank":
                         self.assertIn("noopener", rel_tokens)
-        self.assertEqual(82, total_links, "Affiliate-link fixture changed; review all new links")
+        self.assertEqual(83, total_links, "Affiliate-link fixture changed; review all new links")
 
     def test_affiliate_cta_ids_are_unique_sitewide(self):
         occurrences = {}
@@ -391,6 +391,25 @@ class AffiliateComplianceTests(unittest.TestCase):
         ):
             with self.subTest(unsupported_statistic=unsupported_statistic):
                 self.assertNotIn(unsupported_statistic, html)
+
+    def test_thpt_free_account_banner_has_actionable_affiliate_cta(self):
+        html = (ROOT / "tak12-on-thi-tot-nghiep-thpt" / "index.html").read_text(encoding="utf-8")
+        banner = re.search(r'<div class="top-banner">(.*?)</div>', html, re.S)
+        self.assertIsNotNone(banner)
+
+        parser = ComplianceParser()
+        parser.feed(banner.group(1) if banner else "")
+        self.assertEqual(1, len(parser.affiliate_links))
+        link = parser.affiliate_links[0]
+        attrs = link["attrs"]
+        self.assertEqual("https://tak12.com/?ref=njg2odn", attrs.get("href"))
+        self.assertEqual("thpt_top_banner_free_account", attrs.get("data-cta"))
+        self.assertEqual("free_account", attrs.get("data-intent"))
+        self.assertEqual("_blank", attrs.get("target"))
+        self.assertEqual({"sponsored", "noopener"}, set(attrs.get("rel", "").split()))
+        label = " ".join("".join(link["text"]).lower().split())
+        self.assertIn("dùng thử", label)
+        self.assertIn("miễn phí", label)
 
     def test_thpt_page_removes_expired_prices_but_keeps_current_price_route(self):
         html = (ROOT / "tak12-on-thi-tot-nghiep-thpt" / "index.html").read_text(encoding="utf-8")
