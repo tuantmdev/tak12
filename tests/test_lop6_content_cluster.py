@@ -2,6 +2,7 @@ import json
 import unittest
 from html.parser import HTMLParser
 from pathlib import Path
+from urllib.parse import urlparse
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -79,6 +80,28 @@ class VisibleFaqParser(HTMLParser):
                 break
 
 
+class RootAffiliateCtaParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self._current = None
+        self.links = []
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if tag == "a" and urlparse(attrs.get("href", "")).path == "/":
+            self._current = {"attrs": attrs, "text": []}
+
+    def handle_data(self, data):
+        if self._current is not None:
+            self._current["text"].append(data)
+
+    def handle_endtag(self, tag):
+        if tag == "a" and self._current is not None:
+            self._current["label"] = " ".join("".join(self._current["text"]).split())
+            self.links.append(self._current)
+            self._current = None
+
+
 def read(page):
     return page.read_text(encoding="utf-8")
 
@@ -94,6 +117,16 @@ def faq_pairs(page):
 
 
 class Lop6ContentClusterTests(unittest.TestCase):
+    def test_generic_provider_links_do_not_promise_to_start_a_free_trial(self):
+        parser = RootAffiliateCtaParser()
+        parser.feed(read(PILLAR))
+
+        self.assertGreaterEqual(len(parser.links), 5)
+        for link in parser.links:
+            with self.subTest(cta=link["attrs"].get("data-cta")):
+                self.assertEqual("visit-provider", link["attrs"].get("data-intent"))
+                self.assertIn("tak12", link["label"].lower())
+
     def test_pillar_links_to_the_two_supporting_pages(self):
         html = read(PILLAR)
         self.assertIn("../lo-trinh-on-thi-vao-lop-6/", html)
