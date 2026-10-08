@@ -1,4 +1,5 @@
 import json
+import re
 import unittest
 from html.parser import HTMLParser
 from pathlib import Path
@@ -117,6 +118,15 @@ def faq_pairs(page):
 
 
 class Lop6ContentClusterTests(unittest.TestCase):
+    def test_pillar_title_targets_the_current_2027_exam_cycle(self):
+        title_match = re.search(r"<title>(.*?)</title>", read(PILLAR), re.DOTALL)
+
+        self.assertIsNotNone(title_match)
+        assert title_match is not None
+        title = title_match.group(1)
+        self.assertIn("2027", title)
+        self.assertNotIn("2026", title)
+
     def test_generic_provider_links_do_not_promise_to_start_a_free_trial(self):
         parser = RootAffiliateCtaParser()
         parser.feed(read(PILLAR))
