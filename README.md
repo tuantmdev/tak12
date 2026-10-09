@@ -11,7 +11,7 @@ This page was designed in [Claude Design](https://claude.ai/design) (`TAK12 Affi
 - **FREE-vs-paid guide** with links to the provider's current options
 - **Hero** with headline, value proposition, and primary CTAs
 - **Decision guide** — independent review and FREE-vs-paid routes
-- **Featured courses** — 3 highlighted courses with tags, highlights, and pricing
+- **Featured courses** — 3 highlighted courses with tags, decision guidance, and links to current provider pricing routes
 - **Course-finder quiz** — 3 questions that recommend the best course for the student
 - **Course CTA** — contextual route to the provider's current course options
 - **About TAK12** — key selling points (AI personalization, time savings, progress tracking, affordability)
@@ -44,7 +44,7 @@ Visit the live site: [tak-12.com](https://tak-12.com/)
 ### SEO & Analytics
 - **SEO Optimized**:
   - Comprehensive meta tags and Open Graph implementation
-  - JSON-LD structured data (`EducationalOrganization` with course catalog)
+  - JSON-LD WebSite schema for the independent publisher
   - FAQ schema matching the visible FAQ for rich snippets
   - Twitter Card integration
 - **Analytics**: PostHog integration for user behavior tracking and insights
@@ -64,8 +64,8 @@ Visit the live site: [tak-12.com](https://tak-12.com/)
 ## 🎯 SEO & Marketing Features
 
 ### Structured Data
-- `EducationalOrganization` schema for TAK12 with an offer catalog
-- Course offerings with pricing information
+- WebSite schema for the independent publisher
+- Course guidance linking to current provider pricing routes without publishing volatile prices
 - `FAQPage` schema for rich search results
 
 ### Social Media Integration

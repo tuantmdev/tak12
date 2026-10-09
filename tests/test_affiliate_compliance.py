@@ -595,6 +595,15 @@ class AffiliateComplianceTests(unittest.TestCase):
             r"\b(?:10\s*%\s*off|giảm\s*\d+\s*%)\b",
         )
 
+    def test_readme_matches_current_price_safe_schema_and_content(self):
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertNotIn("highlighted courses with tags, highlights, and pricing", readme)
+        self.assertNotIn("EducationalOrganization", readme)
+        self.assertNotIn("offer catalog", readme.lower())
+        self.assertNotIn("Course offerings with pricing information", readme)
+        self.assertIn("WebSite schema for the independent publisher", readme)
+        self.assertIn("current provider pricing routes", readme)
+
     def test_home_navigation_labels_the_independent_evaluation_guide(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
         self.assertIn('href="#testimonials-section">Cách Đánh Giá</a>', html)
