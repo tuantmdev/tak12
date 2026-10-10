@@ -180,7 +180,7 @@ class AffiliateComplianceTests(unittest.TestCase):
                     self.assertIn("sponsored", rel_tokens)
                     if attrs.get("target", "").lower() == "_blank":
                         self.assertIn("noopener", rel_tokens)
-        self.assertEqual(83, total_links, "Affiliate-link fixture changed; review all new links")
+        self.assertEqual(85, total_links, "Affiliate-link fixture changed; review all new links")
 
     def test_affiliate_cta_ids_are_unique_sitewide(self):
         occurrences = {}

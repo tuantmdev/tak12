@@ -7,9 +7,16 @@ from urllib.parse import urlparse
 
 
 ROOT = Path(__file__).resolve().parents[1]
+HOMEPAGE = ROOT / "index.html"
 PILLAR = ROOT / "tak12-on-thi-lop-6" / "index.html"
 TIMELINE = ROOT / "lo-trinh-on-thi-vao-lop-6" / "index.html"
 STRATEGY = ROOT / "kinh-nghiem-on-thi-vao-lop-6" / "index.html"
+LLMS = ROOT / "llms.txt"
+KEYWORD_MAP = ROOT / "docs" / "keyword-map.md"
+OFFICIAL_LUYEN_DE_SOURCE = (
+    "https://tak12.com/news/n/2499/"
+    "tang-khoa-luyen-de-vao-6-cho-hoc-vien-tak12"
+)
 SCHOOL_GUIDES = {
     "kinh-nghiem-thi-vao-lop-6-nguyen-tat-thanh": (
         "Nguyễn Tất Thành",
@@ -118,6 +125,35 @@ def faq_pairs(page):
 
 
 class Lop6ContentClusterTests(unittest.TestCase):
+    def test_current_lop6_luyen_de_offer_has_coordinated_source_safe_coverage(self):
+        homepage = read(HOMEPAGE)
+        pillar = read(PILLAR)
+        llms = read(LLMS)
+        keyword_map = read(KEYWORD_MAP)
+
+        for name, document in {
+            "homepage": homepage,
+            "pillar": pillar,
+            "llms": llms,
+        }.items():
+            with self.subTest(surface=name):
+                self.assertIn("18 buổi", document)
+                self.assertIn("09/11/2026", document)
+                self.assertIn("gói ôn thi vào lớp 6", document.lower())
+                self.assertIn("còn hạn PRO", document)
+                self.assertIn("không áp dụng", document.lower())
+                self.assertIn("Thi thử vào 6", document)
+                self.assertIn(OFFICIAL_LUYEN_DE_SOURCE, document)
+
+        self.assertIn('id="lop6-luyen-de-2027"', homepage)
+        self.assertIn('data-cta="homepage_lop6_luyen_de_pricing"', homepage)
+        self.assertIn('data-intent="exam_grade_6"', homepage)
+        self.assertIn('rel="sponsored noopener"', homepage)
+        self.assertIn('href="/tak12-on-thi-lop-6/#luyen-de-3-mon-2027"', homepage)
+        self.assertIn('id="luyen-de-3-mon-2027"', pillar)
+        self.assertIn("khóa luyện đề vào 6", keyword_map.lower())
+        self.assertIn("tak12-on-thi-lop-6", keyword_map)
+
     def test_pillar_title_targets_the_current_2027_exam_cycle(self):
         title_match = re.search(r"<title>(.*?)</title>", read(PILLAR), re.DOTALL)
 
