@@ -142,6 +142,11 @@ class Lop6ContentClusterTests(unittest.TestCase):
                 self.assertIn("gói ôn thi vào lớp 6", document.lower())
                 self.assertIn("còn hạn PRO", document)
                 self.assertIn("không áp dụng", document.lower())
+                self.assertNotIn(
+                    "08/10/2026",
+                    document,
+                    "The official Article schema says published 04/10 and modified 07/10; do not invent an 08/10 announcement date",
+                )
                 self.assertIn("Thi thử vào 6", document)
                 self.assertIn(OFFICIAL_LUYEN_DE_SOURCE, document)
 
