@@ -378,6 +378,12 @@ class AffiliateComplianceTests(unittest.TestCase):
         self.assertIn("hiệu quả phụ thuộc", html)
         self.assertIn("phụ huynh nên cho con dùng thử một bài", html)
 
+    def test_homepage_does_not_publish_unverified_fixed_access_durations(self):
+        html = (ROOT / "index.html").read_text(encoding="utf-8")
+        for unsupported_claim in ("Trọn bộ 1–5 năm", "Gói 1–5 năm"):
+            with self.subTest(claim=unsupported_claim):
+                self.assertNotIn(unsupported_claim, html)
+
     def test_homepage_does_not_publish_unverified_usage_or_satisfaction_statistics(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
         for unsupported_statistic in (
