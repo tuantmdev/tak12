@@ -8,7 +8,8 @@ import os
 import sys
 import tempfile
 import fcntl
-from datetime import date, timedelta
+from datetime import date, datetime, time, timedelta, timezone
+from zoneinfo import ZoneInfo
 from pathlib import Path
 from typing import Any
 from urllib.parse import quote
@@ -223,15 +224,30 @@ def inspect_url(token: str, url: str) -> dict[str, Any]:
 
 
 def posthog_query(api_key: str, hogql: str) -> dict[str, Any]:
-    response = requests.post(
-        f"{POSTHOG_HOST}/api/projects/{POSTHOG_PROJECT_ID}/query/",
-        headers={"Authorization": f"Bearer {api_key}"},
-        json={"query": {"kind": "HogQLQuery", "query": hogql}},
-        timeout=60,
+    try:
+        response = requests.post(
+            f"{POSTHOG_HOST}/api/projects/{POSTHOG_PROJECT_ID}/query/",
+            headers={"Authorization": f"Bearer {api_key}"},
+            json={"query": {"kind": "HogQLQuery", "query": hogql}},
+            timeout=60,
+        )
+        response.raise_for_status()
+        payload = response.json()
+    except (requests.HTTPError, requests.Timeout, requests.ConnectionError,
+            requests.exceptions.JSONDecodeError, json.JSONDecodeError):
+        return {"incomplete": True}
+    if not isinstance(payload, dict):
+        return {"incomplete": True}
+    query_status = payload.get("query_status")
+    incomplete = query_status is not None and (
+        not isinstance(query_status, dict) or query_status.get("complete") is not True
+        or bool(query_status.get("error") or query_status.get("error_message"))
     )
-    response.raise_for_status()
-    payload = response.json()
-    return {"columns": payload.get("columns", []), "results": payload.get("results", [])}
+    return {
+        "columns": payload.get("columns"), "results": payload.get("results"),
+        "hasMore": payload.get("hasMore", False),
+        "incomplete": bool(payload.get("error") or incomplete),
+    }
 
 
 def referral_query(session_cookie: str, start: date | None = None, end: date | None = None) -> dict[str, Any]:
@@ -301,16 +317,183 @@ def collect_referral_stats(
         return query_all(refresh_referral_session())
 
 
-def collect() -> dict[str, Any]:
-    credentials = gsc_credentials()
-    today = date.today()
-    recent_end = today - timedelta(days=3)
-    recent_start = recent_end - timedelta(days=6)
-    previous_end = recent_start - timedelta(days=1)
-    previous_start = previous_end - timedelta(days=6)
+GSC_TIMEZONE = "America/Los_Angeles"
+TRACKING_CUTOVER = "2026-07-16 17:21:00"
+AGGREGATE_ROW_LIMIT = 50000
+REPORT_DIMENSIONS = json.loads(Path(__file__).with_name("report_dimensions.json").read_text())
+MISSING_FIELDS = ("source_page", "cta_id", "position", "intent", "destination_url")
+BASELINE_COLUMNS = ["source_page", "event", "schema_period", "cta_id", "intent", "total"] + [
+    "missing_" + field for field in MISSING_FIELDS
+]
+POSTHOG_SCOPE = "project 504827; all traffic; site-only and organic attribution unverified; event counts, not users/sessions"
+GSC_SCOPE = "sc-domain:tak-12.com; Google organic web search; clicks/impressions"
+REFERRAL_SCOPE = "agent 210; acquisition surfaces unknown; site-only attribution unverified"
 
-    recent_daily = gsc_query(credentials.token, recent_start, recent_end, ["date"], 100)
-    previous_daily = gsc_query(credentials.token, previous_start, previous_end, ["date"], 100)
+
+def calendar_windows(final_end: date, days: int = 7) -> dict[str, dict[str, Any]]:
+    """Equal calendar-day windows, even when their UTC durations differ across DST."""
+    if days <= 0:
+        raise ValueError("Window length must be positive")
+    zone = ZoneInfo(GSC_TIMEZONE)
+    end = final_end + timedelta(days=1)
+    windows = {}
+    for name, offset in (("recent", 0), ("previous", days)):
+        stop = end - timedelta(days=offset)
+        start = stop - timedelta(days=days)
+        windows[name] = {
+            "start": str(start), "end": str(stop), "bounds": "[start, end)",
+            "timezone": GSC_TIMEZONE, "calendar_days": days,
+            "start_utc": datetime.combine(start, time.min, zone).astimezone(timezone.utc).isoformat(),
+            "end_utc": datetime.combine(stop, time.min, zone).astimezone(timezone.utc).isoformat(),
+        }
+    return windows
+
+
+def timestamp_filter(window: dict[str, Any]) -> str:
+    def sql_timestamp(value: str) -> str:
+        return datetime.fromisoformat(value).astimezone(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+    return (
+        f"timestamp >= toDateTime('{sql_timestamp(window['start_utc'])}', 'UTC') "
+        f"AND timestamp < toDateTime('{sql_timestamp(window['end_utc'])}', 'UTC')"
+    )
+
+
+def baseline_query(window: dict[str, Any]) -> str:
+    """Only aggregate counts and public, allowlisted dimensions leave PostHog."""
+    def allowlisted(expression: str, field: str) -> str:
+        # This versioned catalogue contains public site labels, never event-derived values.
+        literals = ", ".join("'" + value.replace("'", "''") + "'" for value in REPORT_DIMENSIONS[field])
+        return f"if({expression} IN ({literals}), {expression}, NULL)"
+
+    page = "coalesce(nullIf(properties.source_page, ''), nullIf(properties.$pathname, ''), path(properties.$current_url))"
+    columns = [
+        allowlisted(page, "source_page") + " AS source_page",
+        "event",
+        f"if(timestamp < toDateTime('{TRACKING_CUTOVER}', 'UTC'), 'pre_cutover', 'post_cutover') AS schema_period",
+        "if(event = '$pageview', NULL, " + allowlisted("properties.cta_id", "cta_id") + ") AS cta_id",
+        "if(event = '$pageview', NULL, " + allowlisted("properties.intent", "intent") + ") AS intent",
+        "count() AS total",
+    ]
+    for field in MISSING_FIELDS:
+        applicable = "" if field == "source_page" else "event != '$pageview' AND "
+        columns.append(
+            f"countIf({applicable}trim(ifNull(toString(properties.{field}), '')) = '') AS missing_{field}"
+        )
+    return (
+        "SELECT " + ", ".join(columns) + " FROM events WHERE " + timestamp_filter(window)
+        + " AND event IN ('$pageview', 'cta_click', 'affiliate_cta_click') "
+        + "GROUP BY source_page, event, schema_period, cta_id, intent "
+        + "ORDER BY source_page, event, schema_period, cta_id, intent "
+        + f"LIMIT {AGGREGATE_ROW_LIMIT}"
+    )
+
+
+def summarize_baseline(payload: dict[str, Any]) -> dict[str, Any]:
+    """Reject incomplete aggregates; do not turn a missing response into zero traffic."""
+    organic = {"status": "unverified", "counts": None, "reason": "No verified event-level organic attribution contract"}
+    unavailable = {
+        "status": "unavailable", "pages": None,
+        "reason": "Missing, malformed or potentially truncated aggregate response",
+        "organic_attribution": organic,
+    }
+    if not isinstance(payload, dict):
+        return unavailable
+    rows = payload.get("results")
+    if (payload.get("columns") != BASELINE_COLUMNS or not isinstance(rows, list)
+            or payload.get("hasMore") or payload.get("error") or payload.get("incomplete")
+            or len(rows) >= AGGREGATE_ROW_LIMIT):
+        return unavailable
+    events = ("$pageview", "affiliate_cta_click", "cta_click")
+    missing = {event: dict.fromkeys(MISSING_FIELDS, 0) for event in events}
+    unmapped_dimensions = {event: {field: 0 for field in REPORT_DIMENSIONS} for event in events}
+    pages: dict[str | None, dict[str, Any]] = {}
+    unmapped = 0
+    for row in rows:
+        if not isinstance(row, (list, tuple)) or len(row) != len(BASELINE_COLUMNS):
+            return unavailable
+        source, event, period, cta, intent, total, *counts = row
+        if (event not in events or period not in ("pre_cutover", "post_cutover")
+                or any(type(value) is not int or value < 0 for value in [total, *counts])
+                or any(value > total for value in counts)):
+            return unavailable
+        source = source if source in REPORT_DIMENSIONS["source_page"] else None
+        cta = cta if cta in REPORT_DIMENSIONS["cta_id"] else None
+        intent = intent if intent in REPORT_DIMENSIONS["intent"] else None
+        for field, value in (("source_page", source), ("cta_id", cta), ("intent", intent)):
+            if value is None and (field == "source_page" or event != "$pageview"):
+                unmapped_dimensions[event][field] += total
+        if source is None:
+            unmapped += total
+        page = pages.setdefault(source, {
+            "source_page": source, "pageviews": 0, "affiliate_cta_click": 0,
+            "cta_click": 0, "cta_breakdown": [], "schema_periods": {},
+        })
+        metric = "pageviews" if event == "$pageview" else event
+        page[metric] += total
+        period_counts = page["schema_periods"].setdefault(period, {"pageviews": 0, "affiliate_cta_click": 0, "cta_click": 0})
+        period_counts[metric] += total
+        if event != "$pageview":
+            page["cta_breakdown"].append({"event": event, "schema_period": period, "cta_id": cta, "intent": intent, "total": total})
+        for field, count in zip(MISSING_FIELDS, counts):
+            missing[event][field] += count
+    return {
+        "status": "available", "pages": list(pages.values()), "missing": missing,
+        "unmapped_source_page_events": unmapped, "unmapped_dimensions": unmapped_dimensions,
+        "organic_attribution": organic,
+        "counts_unit": "events, not users/sessions; pageview fallback does not imply source_page completeness",
+    }
+
+
+def summarize_instrumentation(payload: dict[str, Any]) -> dict[str, Any]:
+    """Keep partial rolling counts out of the legacy watchdog compatibility alias."""
+    unavailable = {
+        "status": "unavailable", "columns": ["event", "total"], "results": [],
+        "reason": "Missing, malformed or incomplete instrumentation; empty results are not zero traffic",
+    }
+    if (not isinstance(payload, dict) or payload.get("columns") != ["event", "total"]
+            or not isinstance(payload.get("results"), list) or payload.get("incomplete")
+            or payload.get("hasMore") or payload.get("error")):
+        return unavailable
+    seen = set()
+    for row in payload["results"]:
+        if (not isinstance(row, (list, tuple)) or len(row) != 2
+                or row[0] not in ("$pageview", "affiliate_cta_click", "cta_click", "quiz_started", "quiz_completed")
+                or row[0] in seen or type(row[1]) is not int or row[1] < 0):
+            return unavailable
+        seen.add(row[0])
+    return {"status": "available", "columns": ["event", "total"], "results": payload["results"]}
+
+
+def collect(*, final_end: date | None = None, collected_at: datetime | None = None) -> dict[str, Any]:
+    collected_at = collected_at or datetime.now(timezone.utc)
+    if collected_at.tzinfo is None:
+        raise ValueError("Collection timestamp must include a timezone")
+    collected_at = collected_at.astimezone(timezone.utc).replace(microsecond=0)
+    # Retain the existing three-day lag, explicitly anchored to the UTC run date.
+    final_end = final_end or collected_at.date() - timedelta(days=3)
+    credentials = gsc_credentials()
+    comparisons = {}
+    for days in (7, 14, 28):
+        windows = calendar_windows(final_end, days)
+        comparison = {"windows": windows}
+        for name, window in windows.items():
+            start = date.fromisoformat(window["start"])
+            end = date.fromisoformat(window["end"]) - timedelta(days=1)
+            rows = gsc_query(credentials.token, start, end, ["date"], 100)
+            returned_dates = [row["keys"][0] for row in rows if row.get("keys") and str(start) <= row["keys"][0] <= str(end)]
+            window.update({
+                "scope": GSC_SCOPE, "final_data_through": max(returned_dates, default=None),
+                "finality_basis": "latest returned date with final data; missing dates may have no traffic",
+                "requested_final_end": str(end), "api_bounds": "startDate/endDate inclusive",
+            })
+            comparison[name] = aggregate(rows)
+        comparisons[str(days)] = comparison
+    weekly = comparisons["7"]
+    gsc_windows = weekly["windows"]
+    recent_start = date.fromisoformat(gsc_windows["recent"]["start"])
+    recent_end = final_end
+    previous_start = date.fromisoformat(gsc_windows["previous"]["start"])
+    previous_end = recent_start - timedelta(days=1)
     top_queries = gsc_query(credentials.token, recent_start, recent_end, ["query"], 50)
     top_pages = gsc_query(credentials.token, recent_start, recent_end, ["page"], 50)
 
@@ -318,63 +501,87 @@ def collect() -> dict[str, Any]:
     if not posthog_api_key:
         raise RuntimeError("POSTHOG_API_KEY is not available")
     referral_session = secret_value("TAK12_KC_SESSION", prefer_file=True)
-
-    posthog_events = posthog_query(
+    posthog_windows = {
+        name: {**window, "scope": POSTHOG_SCOPE, "final_data_through": None,
+               "finality_basis": "event store; late arrivals possible"}
+        for name, window in calendar_windows(final_end).items()
+    }
+    stable = {
+        name: summarize_baseline(posthog_query(posthog_api_key, baseline_query(window)))
+        for name, window in posthog_windows.items()
+    }
+    rolling_start = (collected_at - timedelta(days=7)).isoformat()
+    rolling_end = collected_at.isoformat()
+    rolling_window = {
+        "start": rolling_start, "end": rolling_end, "start_utc": rolling_start, "end_utc": rolling_end,
+        "bounds": "[start, end)", "timezone": "UTC", "scope": POSTHOG_SCOPE,
+        "final_data_through": None,
+    }
+    posthog_events = summarize_instrumentation(posthog_query(
         posthog_api_key,
-        "SELECT event, count() AS total, max(timestamp) AS latest "
-        "FROM events WHERE timestamp >= now() - INTERVAL 7 DAY "
-        "AND event IN ('$pageview', 'cta_click', 'affiliate_cta_click', 'quiz_started', 'quiz_completed') "
-        "GROUP BY event ORDER BY total DESC",
-    )
-    affiliate_breakdown = posthog_query(
-        posthog_api_key,
-        "SELECT properties.source_page AS source_page, properties.cta_id AS cta_id, "
-        "properties.intent AS intent, count() AS total "
-        "FROM events WHERE timestamp >= now() - INTERVAL 7 DAY "
-        "AND event = 'affiliate_cta_click' "
-        "GROUP BY source_page, cta_id, intent ORDER BY total DESC LIMIT 100",
-    )
+        "SELECT event, count() AS total FROM events WHERE " + timestamp_filter(rolling_window)
+        + " AND event IN ('$pageview', 'cta_click', 'affiliate_cta_click', 'quiz_started', 'quiz_completed') "
+        + "GROUP BY event ORDER BY total DESC",
+    ))
+    rolling_baseline = summarize_baseline(posthog_query(posthog_api_key, baseline_query(rolling_window)))
+    affiliate_rows = [
+        [page["source_page"], cta["cta_id"], cta["intent"], cta["total"], cta["schema_period"]]
+        for page in (rolling_baseline["pages"] or []) for cta in page["cta_breakdown"]
+        if cta["event"] == "affiliate_cta_click"
+    ]
     try:
         referral_stats: dict[str, Any] = {
             "status": "available",
-            **collect_referral_stats(
-                referral_session,
-                recent_start,
-                recent_end,
-                previous_start,
-                previous_end,
-            ),
+            **collect_referral_stats(referral_session, recent_start, recent_end, previous_start, previous_end),
         }
     except (ReferralAuthenticationError, ReferralRefreshError):
-        # Referral authentication failures must not discard independent GSC/PostHog reads.
-        # Never expose the exception text because it can contain session or credential data.
         referral_stats = {
             "status": "unavailable",
             "reason": "referral authentication or session refresh is unavailable",
         }
-
+    referral_windows = {
+        name: {"start": str(start), "end": str(end), "bounds": "unknown", "timezone": None,
+               "scope": REFERRAL_SCOPE, "final_data_through": None,
+               "date_parameters": "requested fromDate/toDate; endpoint semantics unverified"}
+        for name, start, end in (("recent", recent_start, recent_end), ("previous", previous_start, previous_end))
+    }
+    referral_windows["all_time"] = {
+        "start": None, "end": None, "bounds": "unknown", "timezone": None,
+        "scope": REFERRAL_SCOPE, "final_data_through": None,
+    }
     return {
-        "generated_at_utc": __import__("datetime").datetime.now(__import__("datetime").timezone.utc).isoformat(),
+        "generated_at_utc": collected_at.isoformat(),
         "gsc": {
-            "site": GSC_SITE,
+            "site": GSC_SITE, "windows": gsc_windows, "comparisons": comparisons,
             "recent_range": [str(recent_start), str(recent_end)],
             "previous_range": [str(previous_start), str(previous_end)],
-            "recent": aggregate(recent_daily),
-            "previous": aggregate(previous_daily),
-            "top_queries": top_queries[:25],
-            "top_pages": top_pages[:25],
+            "recent": weekly["recent"], "previous": weekly["previous"],
+            "top_queries": top_queries[:25], "top_pages": top_pages[:25],
             "index_status": [inspect_url(credentials.token, url) for url in TARGET_URLS],
         },
         "posthog": {
-            "range": "last_7_days",
-            "events": posthog_events,
-            "affiliate_breakdown": affiliate_breakdown,
+            "windows": posthog_windows, "stable": stable,
+            "instrumentation": {"label": "rolling 7-day instrumentation; not the stable baseline",
+                                "window": rolling_window, "baseline": rolling_baseline,
+                                "tracking_cutover_utc": TRACKING_CUTOVER + "Z"},
+            # Compatibility aliases used by the existing watchdog: explicitly rolling.
+            "range": "last_7_days", "events": posthog_events,
+            "affiliate_breakdown": {"status": rolling_baseline["status"],
+                                    "columns": ["source_page", "cta_id", "intent", "total", "schema_period"],
+                                    "results": affiliate_rows if rolling_baseline["status"] == "available" else None},
         },
         "referral": {
-            "agent_id": REFERRAL_AGENT_ID,
+            "agent_id": REFERRAL_AGENT_ID, "windows": referral_windows,
+            "site_only_attribution": None, "verification": "No authoritative timezone or site-only scope contract supplied",
             "recent_range": [str(recent_start), str(recent_end)],
             "previous_range": [str(previous_start), str(previous_end)],
             **referral_stats,
+        },
+        "comparability": {
+            "cross_source_rates_enabled": False, "rates": None,
+            "reasons": ["GSC search clicks and PostHog all-traffic events are different populations/units",
+                        "PostHog organic attribution and site-only scope are unverified",
+                        "Referral timezone, boundary semantics and acquisition surfaces are unknown"],
         },
     }
 
