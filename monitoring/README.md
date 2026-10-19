@@ -104,6 +104,57 @@ inclusive to October 10 07:00 UTC exclusive). Referral **44 clicks / 2 signups /
 assertions of current production counts. Do not calculate 6/18 or 2/6 as funnel
 rates or infer CRO success from these samples.
 
+## Site scope and attribution completeness (issue #19)
+
+`posthog.site_scope` adds hostname-scoped totals for the same stable `recent` and
+`previous` windows. It does not change `posthog.stable`, which remains all traffic.
+Each window splits `$pageview`, `affiliate_cta_click` and `cta_click` event counts
+into three fixed buckets; together they equal the all-traffic event totals:
+
+- `site`: an `http(s)` `$current_url` where PostHog `domain()` and the literal URL
+  authority (with any port removed) both equal `tak-12.com`, ignoring case. The
+  allowlist is exact. `www.tak-12.com`, suffix or prefix lookalikes, and hosts
+  that appear only in a path or query string do not count.
+- `unknown`: the URL is missing or blank, path-only, scheme-less, not `http(s)`,
+  has an empty authority or userinfo (`@`), or `domain()` and the authority
+  disagree. The host is never taken from `$pathname`, `$host` or `source_page`.
+- `other_host`: any other parsed host, including localhost, preview and test hosts.
+
+The live check behind this rule found that PostHog `domain()` does not exclude
+userinfo on its own. It returns `tak-12.com` for `https://x@tak-12.com/`. It also
+accepts scheme-less input and returns empty for `localhost`. So `domain()` is
+used only together with the checks above. `site_scope.parser` runs fixed literal
+URLs (`HOST_PARSER_CASES`) through the same expression before any site query. If
+any case lands in an unexpected bucket, or the probe is incomplete, no site
+queries are sent and both windows are `unavailable`. Results show case labels
+only, never values.
+
+`completeness` counts missing or blank `$current_url`, `$host`, `$referrer`,
+`$referring_domain`, `$session_id` and `utm_source` by event type. These are
+presence counts only; no URL, referrer, host or identifier value is selected. The
+counts are events, not users or sessions. Referrer and UTM properties belong to
+each event. Session-level entry and channel attribution is not queried.
+Hostname-filtered events do not prove human rather than bot traffic, and they do
+not show organic acquisition. `organic.counts` is always null with status
+`unavailable` because no verified acquisition contract exists. PostHog channel
+types are a configurable rule list, not a verified contract for this site. Cross-
+source rates remain disabled.
+
+Field and function references: [PostHog default event properties](https://posthog.com/docs/data/events),
+[sessions](https://posthog.com/docs/data/sessions),
+[channel types](https://posthog.com/docs/data/channel-type),
+[PostHog SQL functions](https://posthog.com/docs/sql/clickhouse-functions), and
+[ClickHouse URL functions](https://clickhouse.com/docs/sql-reference/functions/url-functions).
+
+Read-only verification on October 19, 2026 for October 10 07:00 to October 17
+07:00 UTC: 25 of 25 parser cases matched. `site` had 67 pageview and 12
+affiliate CTA events; `unknown` and `other_host` were both 0. That matched an
+independent per-event count and the stable all-traffic page sum. Every event had
+`$current_url`, `$host`, `$referrer`, `$referring_domain` and `$session_id`.
+None had `utm_source` or `$utm_source`. The previous window, October 3 to
+October 10, had `site` 51 pageview and 6 affiliate CTA events, with 0 in the
+other buckets. These counts are evidence from that check, not fixed expectations.
+
 ## Verification after authorized integration
 
 This task does not activate the collector, alter cron, or perform production
@@ -140,6 +191,8 @@ GROUP BY event
 ORDER BY event
 ```
 
+The same totals must also equal `site + unknown + other_host` in
+`posthog.site_scope.<window>.totals`, with `site_scope.parser.status: verified`.
 Verify available/partial statuses, per-page denominators, missing/unmapped counts,
 cutover separation, and disabled cross-source rates. Record runtime revision,
 window boundaries, aggregate reconciliation, and activation evidence without

@@ -464,6 +464,170 @@ def summarize_instrumentation(payload: dict[str, Any]) -> dict[str, Any]:
     return {"status": "available", "columns": ["event", "total"], "results": payload["results"]}
 
 
+SITE_HOSTNAMES = ("tak-12.com",)
+HOST_BUCKETS = ("site", "unknown", "other_host")
+# Fixed labels and literal URLs only: verifies PostHog URL parsing before any site count is trusted.
+HOST_PARSER_CASES = (
+    ("site_root", "https://tak-12.com/", "site"),
+    ("site_uppercase", "HTTPS://TAK-12.COM/x", "site"),
+    ("site_port", "https://tak-12.com:443/", "site"),
+    ("site_fragment_at", "https://tak-12.com#@example.com", "site"),
+    ("site_query_at", "https://tak-12.com?@example.com", "site"),
+    ("userinfo_spoof", "https://tak-12.com@example.com/", "unknown"),
+    ("userinfo_before_site", "https://example.com@tak-12.com/", "unknown"),
+    ("userinfo_password", "https://user:pw@tak-12.com/", "unknown"),
+    ("suffix_spoof", "https://tak-12.com.example.com/", "other_host"),
+    ("prefix_spoof", "https://example-tak-12.com/", "other_host"),
+    ("www_subdomain", "https://www.tak-12.com/", "other_host"),
+    ("trailing_dot", "https://tak-12.com./", "other_host"),
+    ("host_in_path", "https://example.com/tak-12.com", "other_host"),
+    ("host_in_query", "https://example.com/?r=https://tak-12.com/", "other_host"),
+    ("encoded_at", "https://tak-12.com%40example.com/", "other_host"),
+    ("backslash", "https://tak-12.com\\example.com/", "other_host"),
+    ("localhost_test", "http://localhost:8000/", "other_host"),
+    ("invalid_port", "https://tak-12.com:abc/", "unknown"),
+    ("empty_authority", "https:///tak-12.com/", "unknown"),
+    ("non_http_scheme", "ftp://tak-12.com/", "unknown"),
+    ("scheme_less", "tak-12.com/", "unknown"),
+    ("path_only", "/tak12-co-tot-khong/", "unknown"),
+    ("not_url", "not a url", "unknown"),
+    ("whitespace", "   ", "unknown"),
+    ("missing", "", "unknown"),
+)
+
+
+def hogql_string(value: str) -> str:
+    return "'" + value.replace("\\", "\\\\").replace("'", "\\'") + "'"
+
+
+def host_bucket_expression(url_expression: str) -> str:
+    """Fail closed: site needs an http(s) URL whose domain() and exact authority both match."""
+    url = f"trim(ifNull(toString({url_expression}), ''))"
+    authority = f"extract({url}, '^[A-Za-z][A-Za-z0-9+.-]*://([^/?#]*)')"
+    hosts = ", ".join(hogql_string(host) for host in SITE_HOSTNAMES)
+    by_domain = f"lower(domain({url})) IN ({hosts})"
+    by_authority = f"lower(replaceRegexpOne({authority}, ':[0-9]{{1,5}}$', '')) IN ({hosts})"
+    return (
+        f"multiIf({url} = '', 'unknown', NOT match({url}, '(?i)^https?://'), 'unknown', "
+        f"{authority} = '', 'unknown', position({authority}, '@') > 0, 'unknown', "
+        f"{by_domain} AND {by_authority}, 'site', {by_domain} OR {by_authority}, 'unknown', "
+        "'other_host')"
+    )
+
+
+def host_parser_probe_query() -> str:
+    return "SELECT " + ", ".join(
+        f"{host_bucket_expression(hogql_string(url))} AS {label}" for label, url, _ in HOST_PARSER_CASES
+    )
+
+
+def summarize_host_parser(payload: dict[str, Any]) -> dict[str, Any]:
+    labels = [label for label, _url, _expected in HOST_PARSER_CASES]
+    unavailable = {"status": "unavailable", "cases": len(labels), "mismatched_cases": None,
+                   "reason": "Hostname parser probe missing, malformed or incomplete"}
+    if (not isinstance(payload, dict) or payload.get("columns") != labels
+            or payload.get("incomplete") or payload.get("hasMore") or payload.get("error")
+            or not isinstance(payload.get("results"), list) or len(payload["results"]) != 1
+            or not isinstance(payload["results"][0], (list, tuple)) or len(payload["results"][0]) != len(labels)):
+        return unavailable
+    mismatched = [label for (label, _url, expected), observed in zip(HOST_PARSER_CASES, payload["results"][0])
+                  if observed != expected]
+    return {"status": "failed" if mismatched else "verified", "cases": len(labels), "mismatched_cases": mismatched}
+
+
+SITE_EVENTS = ("$pageview", "affiliate_cta_click", "cta_click")
+COMPLETENESS_FIELDS = ("$current_url", "$host", "$referrer", "$referring_domain", "$session_id", "utm_source")
+SITE_SCOPE_COLUMNS = ["host_bucket", "event", "total"] + [
+    "missing_" + field.lstrip("$") for field in COMPLETENESS_FIELDS
+]
+ORGANIC_UNAVAILABLE = {
+    "status": "unavailable", "counts": None,
+    "reason": "No verified acquisition contract; referrer/UTM presence and hostname scope do not define organic traffic",
+}
+
+
+SITE_SCOPE_CONTRACT = {
+    "hostname_allowlist": list(SITE_HOSTNAMES),
+    "url_property": "$current_url",
+    "rule": ("site: http(s) $current_url whose PostHog domain() and literal authority (port removed) both "
+             "equal an allowlisted hostname, case-insensitively; unknown: missing, blank, path-only, "
+             "scheme-less, non-http(s), empty authority, userinfo (@) or parser disagreement; "
+             "other_host: any other parsed host, including subdomains, suffix spoofs, localhost and test hosts. "
+             "Never inferred from $pathname, $host or source_page."),
+    "parser_check": "literal adversarial probe must match every expected bucket before site queries run",
+    "semantics": {
+        "counts": "event counts, not users or sessions",
+        "event": "$referrer/$referring_domain and UTM properties describe each captured event; completeness only",
+        "session": "session-level entry/channel attribution is not queried; $session_id completeness only",
+        "not_established": "hostname-filtered events do not establish human vs bot traffic or organic acquisition",
+    },
+    "documentation": [
+        "https://posthog.com/docs/data/events",
+        "https://posthog.com/docs/data/sessions",
+        "https://posthog.com/docs/data/channel-type",
+        "https://posthog.com/docs/sql/clickhouse-functions",
+        "https://clickhouse.com/docs/sql-reference/functions/url-functions",
+    ],
+}
+
+
+def site_scope_query(window: dict[str, Any]) -> str:
+    """Only fixed bucket labels, event names and counts leave PostHog."""
+    columns = [host_bucket_expression("properties.$current_url") + " AS host_bucket", "event", "count() AS total"]
+    for field, column in zip(COMPLETENESS_FIELDS, SITE_SCOPE_COLUMNS[3:]):
+        columns.append(f"countIf(trim(ifNull(toString(properties.{field}), '')) = '') AS {column}")
+    return (
+        "SELECT " + ", ".join(columns) + " FROM events WHERE " + timestamp_filter(window)
+        + " AND event IN (" + ", ".join(hogql_string(event) for event in SITE_EVENTS) + ") "
+        + "GROUP BY host_bucket, event ORDER BY host_bucket, event "
+        + f"LIMIT {AGGREGATE_ROW_LIMIT}"
+    )
+
+
+def summarize_site_scope(payload: dict[str, Any], parser: dict[str, Any] | None) -> dict[str, Any]:
+    """Site counts exist only with a verified parser and a complete aggregate response."""
+    attribution = {"site_only": "unavailable", "organic": "unavailable"}
+    unavailable = {
+        "status": "unavailable", "buckets": None, "totals": None, "completeness": None,
+        "reason": "Hostname parser unverified, or aggregate missing, malformed, incomplete or potentially truncated",
+        "attribution_status": attribution, "organic": ORGANIC_UNAVAILABLE,
+    }
+    if not isinstance(parser, dict) or parser.get("status") != "verified" or not isinstance(payload, dict):
+        return unavailable
+    rows = payload.get("results")
+    if (payload.get("columns") != SITE_SCOPE_COLUMNS or not isinstance(rows, list)
+            or payload.get("hasMore") or payload.get("error") or payload.get("incomplete")
+            or len(rows) >= AGGREGATE_ROW_LIMIT):
+        return unavailable
+    buckets = {bucket: dict.fromkeys(SITE_EVENTS, 0) for bucket in HOST_BUCKETS}
+    missing = {event: dict.fromkeys(COMPLETENESS_FIELDS, 0) for event in SITE_EVENTS}
+    seen = set()
+    for row in rows:
+        if not isinstance(row, (list, tuple)) or len(row) != len(SITE_SCOPE_COLUMNS):
+            return unavailable
+        bucket, event, total, *counts = row
+        if (bucket not in HOST_BUCKETS or event not in SITE_EVENTS or (bucket, event) in seen
+                or any(type(value) is not int or value < 0 for value in [total, *counts])
+                or any(value > total for value in counts)):
+            return unavailable
+        seen.add((bucket, event))
+        buckets[bucket][event] = total
+        for field, count in zip(COMPLETENESS_FIELDS, counts):
+            missing[event][field] += count
+    totals = {event: sum(buckets[bucket][event] for bucket in HOST_BUCKETS) for event in SITE_EVENTS}
+    completeness = {
+        event: {"total": totals[event], "missing": missing[event],
+                "complete": {field: missing[event][field] == 0 for field in COMPLETENESS_FIELDS}}
+        for event in SITE_EVENTS
+    }
+    return {
+        "status": "available", "buckets": buckets, "totals": totals, "completeness": completeness,
+        "counts_unit": "events, not users/sessions",
+        "attribution_status": {**attribution, "site_only": "hostname_filtered_events"},
+        "organic": ORGANIC_UNAVAILABLE,
+    }
+
+
 def collect(*, final_end: date | None = None, collected_at: datetime | None = None) -> dict[str, Any]:
     collected_at = collected_at or datetime.now(timezone.utc)
     if collected_at.tzinfo is None:
@@ -529,6 +693,12 @@ def collect(*, final_end: date | None = None, collected_at: datetime | None = No
         for page in (rolling_baseline["pages"] or []) for cta in page["cta_breakdown"]
         if cta["event"] == "affiliate_cta_click"
     ]
+    host_parser = summarize_host_parser(posthog_query(posthog_api_key, host_parser_probe_query()))
+    site_scope: dict[str, Any] = {"contract": SITE_SCOPE_CONTRACT, "parser": host_parser}
+    for name, window in posthog_windows.items():
+        site_payload = (posthog_query(posthog_api_key, site_scope_query(window))
+                        if host_parser["status"] == "verified" else None)
+        site_scope[name] = summarize_site_scope(site_payload, host_parser)
     try:
         referral_stats: dict[str, Any] = {
             "status": "available",
@@ -560,7 +730,7 @@ def collect(*, final_end: date | None = None, collected_at: datetime | None = No
             "index_status": [inspect_url(credentials.token, url) for url in TARGET_URLS],
         },
         "posthog": {
-            "windows": posthog_windows, "stable": stable,
+            "windows": posthog_windows, "stable": stable, "site_scope": site_scope,
             "instrumentation": {"label": "rolling 7-day instrumentation; not the stable baseline",
                                 "window": rolling_window, "baseline": rolling_baseline,
                                 "tracking_cutover_utc": TRACKING_CUTOVER + "Z"},
@@ -580,7 +750,7 @@ def collect(*, final_end: date | None = None, collected_at: datetime | None = No
         "comparability": {
             "cross_source_rates_enabled": False, "rates": None,
             "reasons": ["GSC search clicks and PostHog all-traffic events are different populations/units",
-                        "PostHog organic attribution and site-only scope are unverified",
+                        "PostHog organic attribution is unavailable; hostname site scope is an event filter, not an acquisition cohort",
                         "Referral timezone, boundary semantics and acquisition surfaces are unknown"],
         },
     }

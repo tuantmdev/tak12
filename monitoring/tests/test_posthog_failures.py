@@ -21,14 +21,19 @@ class PostHogFailureTests(unittest.TestCase):
             ('json', monitor.requests.exceptions.JSONDecodeError(secret, secret, 0)),
             ('json', json.JSONDecodeError(secret, secret, 0)),
         )
+        # Query order: stable recent/previous, rolling events, rolling baseline,
+        # hostname parser probe, site-scope recent/previous.
+        probe = {'columns': [label for label, _url, _bucket in monitor.HOST_PARSER_CASES],
+                 'results': [[bucket for _label, _url, bucket in monitor.HOST_PARSER_CASES]]}
         for stage, error in failures:
-            for failed_index in range(4):
+            for failed_index in range(7):
                 with self.subTest(stage=stage, error=type(error).__name__, query=failed_index):
                     responses = []
-                    for index in range(4):
+                    for index in range(7):
                         payload = (
                             {'columns': ['event', 'total'], 'results': [['$pageview', 47]]}
-                            if index == 2 else
+                            if index == 2 else probe if index == 4 else
+                            {'columns': monitor.SITE_SCOPE_COLUMNS, 'results': []} if index > 4 else
                             {'columns': monitor.BASELINE_COLUMNS, 'results': []}
                         )
                         response = Mock()
@@ -50,10 +55,17 @@ class PostHogFailureTests(unittest.TestCase):
                         stack.enter_context(patch.object(monitor, 'collect_referral_stats', return_value={'recent': {'clickCount': 44}, 'previous': {'clickCount': 22}, 'all_time': {'clickCount': 99}}))
                         post = stack.enter_context(patch.object(monitor.requests, 'post', side_effect=responses))
                         result = monitor.collect(final_end=date(2026, 10, 9), collected_at=datetime(2026, 10, 12, tzinfo=timezone.utc))
-                    self.assertEqual(post.call_count, 4)
+                    # A failed parser probe fails closed: no site-scope queries are sent.
+                    self.assertEqual(post.call_count, 5 if failed_index == 4 else 7)
+                    scope = result['posthog']['site_scope']
                     summaries = [result['posthog']['stable']['recent'], result['posthog']['stable']['previous'], result['posthog']['events'], result['posthog']['instrumentation']['baseline']]
                     for index, summary in enumerate(summaries):
                         self.assertEqual(summary['status'], 'unavailable' if index == failed_index else 'available')
+                    self.assertEqual(scope['parser']['status'], 'unavailable' if failed_index == 4 else 'verified')
+                    for index, name in ((5, 'recent'), (6, 'previous')):
+                        self.assertEqual(scope[name]['status'], 'unavailable' if failed_index in (4, index) else 'available')
+                        self.assertIsNone(scope[name]['organic']['counts'])
+                    self.assertFalse(result['comparability']['cross_source_rates_enabled'])
                     if failed_index != 2:
                         self.assertEqual(result['posthog']['events']['results'], [['$pageview', 47]])
                     else:
