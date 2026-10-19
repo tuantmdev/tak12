@@ -136,7 +136,7 @@ class SitemapTests(unittest.TestCase):
             entries["https://tak-12.com/tak12-cambridge-ket-pet-flyers/"],
         )
         self.assertEqual(
-            "2026-10-03",
+            "2026-10-19",
             entries["https://tak-12.com/tak12-hoc-tot-toan-tieng-anh/"],
         )
         self.assertEqual(

@@ -160,6 +160,32 @@ class AffiliateComplianceTests(unittest.TestCase):
         parser.feed(page.read_text(encoding="utf-8"))
         return parser
 
+    def test_school_support_page_uses_only_retrievable_product_claims(self):
+        page = ROOT / "tak12-hoc-tot-toan-tieng-anh" / "index.html"
+        html = page.read_text(encoding="utf-8").lower()
+
+        unsupported_claims = (
+            "kết nối tri thức",
+            "cánh diều",
+            "chân trời sáng tạo",
+            "luyện tập không giới hạn",
+            "phản hồi tức thì",
+            "tự nhận diện lỗ hổng kiến thức",
+            "gói linh hoạt 1–5 năm",
+            "tiến bộ mỗi ngày",
+            "cá nhân hóa bằng ai",
+            "phù hợp mọi trình độ",
+            "bám sát sgk",
+            "bám sách giáo khoa",
+            "sgk mới",
+        )
+        for claim in unsupported_claims:
+            with self.subTest(claim=claim):
+                self.assertNotIn(claim, html)
+
+        self.assertIn("chương trình gdpt 2018", html)
+        self.assertIn("https://tak12.com/info/bang-gia-hoc-tot?ref=njg2odn", html)
+
     def test_affiliate_disclosure_top_banner_is_not_rendered_on_any_page(self):
         self.assertEqual(15, len(HTML_PAGES))
         for page in HTML_PAGES:
