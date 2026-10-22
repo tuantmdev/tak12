@@ -124,9 +124,13 @@ for (const start of [cutoff, cutoff + 86400000]) {
             self.assertEqual(0, result.returncode, result.stderr)
 
         contract = json.loads((ROOT / "sitemap-content.json").read_text())
-        for url, path in {
-            "https://tak-12.com/": ROOT / "index.html",
-            "https://tak-12.com/tak12-on-thi-lop-6/": ROOT / "tak12-on-thi-lop-6" / "index.html",
-        }.items():
-            self.assertEqual("2026-10-14", contract[url]["lastmod"])
+        for url, path, lastmod in [
+            ("https://tak-12.com/", ROOT / "index.html", "2026-10-22"),
+            (
+                "https://tak-12.com/tak12-on-thi-lop-6/",
+                ROOT / "tak12-on-thi-lop-6" / "index.html",
+                "2026-10-14",
+            ),
+        ]:
+            self.assertEqual(lastmod, contract[url]["lastmod"])
             self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), contract[url]["sha256"])

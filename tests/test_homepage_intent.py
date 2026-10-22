@@ -127,6 +127,14 @@ class HomepageQualifiedIntentTests(unittest.TestCase):
             with self.subTest(unsupported_claim=unsupported_claim):
                 self.assertNotIn(unsupported_claim, courses)
 
+    def test_homepage_does_not_claim_unverified_automatic_ai_adaptation(self):
+        homepage = " ".join(HOMEPAGE.read_text(encoding="utf-8").lower().split())
+        self.assertNotIn("tự động điều chỉnh độ khó", homepage)
+        self.assertIn(
+            "dùng kết quả và gợi ý để chọn nội dung ôn luyện phù hợp",
+            homepage,
+        )
+
     def test_featured_course_ctas_describe_their_pricing_destinations(self):
         expected = {
             "course_lop6": ("/info/bang-gia-vao-6", "exam_grade_6"),
