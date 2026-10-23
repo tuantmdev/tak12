@@ -206,7 +206,7 @@ class AffiliateComplianceTests(unittest.TestCase):
                     self.assertIn("sponsored", rel_tokens)
                     if attrs.get("target", "").lower() == "_blank":
                         self.assertIn("noopener", rel_tokens)
-        self.assertEqual(89, total_links, "Affiliate-link fixture changed; review all new links")
+        self.assertEqual(93, total_links, "Affiliate-link fixture changed; review all new links")
 
     def test_affiliate_cta_ids_are_unique_sitewide(self):
         occurrences = {}
@@ -235,6 +235,7 @@ class AffiliateComplianceTests(unittest.TestCase):
             ("tak12.com", "/info/bang-gia-hoc-tot"): {"school_support"},
             ("tak12.com", "/info/bang-gia-vao-6"): {"exam_grade_6"},
             ("tak12.com", "/news/n/2499/tang-khoa-luyen-de-vao-6-cho-hoc-vien-tak12"): {"verify-offer-terms"},
+            ("tak12.com", "/news/n/2525/uu-dai-thang-10-giam-15-toan-bo-goi-tang-azvocab-va-qua-tang-cho-vao-6"): {"verify-offer-terms"},
             ("tak12.com", "/info/vao-6-ntt"): {"school_exam_grade_6"},
             ("tak12.com", "/info/vao-6-cau-giay"): {"school_exam_grade_6"},
             ("tak12.com", "/info/vao-6-thanh-xuan"): {"school_exam_grade_6"},
@@ -540,7 +541,6 @@ class AffiliateComplianceTests(unittest.TestCase):
         normalized_page = page.lower()
 
         for claim in (
-            "azvocab",
             "05/09 đến 20/09/2026",
             "tặng toefl primary",
         ):
