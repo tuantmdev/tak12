@@ -80,6 +80,20 @@ class OctoberFlashSaleTests(unittest.TestCase):
                     self.assertNotIn(marker, schema)
         self.assertEqual(len(ctas), len(set(ctas)))
 
+        llms = (ROOT / "llms.txt").read_text(encoding="utf-8")
+        for fact in [
+            "OCT26",
+            "20/10 đến 23:59 ngày 31/10/2026",
+            "giảm 15%",
+            "01 năm azVocab PRO",
+            "490.000 đồng",
+            "Mỗi lần mua chỉ áp dụng 01 mã học bổng",
+            SOURCE,
+        ]:
+            self.assertIn(fact, llms)
+        self.assertIn("Sau thời điểm này, thông tin chỉ có giá trị lịch sử", llms)
+        self.assertIn("https://tak12.com/info/bang-gia?ref=njg2odn", llms)
+
         contract = json.loads((ROOT / "sitemap-content.json").read_text())
         for url, page in [
             ("https://tak-12.com/", ROOT / "index.html"),

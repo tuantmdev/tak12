@@ -61,7 +61,6 @@ class OctoberLop6CampaignTests(unittest.TestCase):
                 self.assertTrue(any(a["href"] == "/tak12-on-thi-lop-6/#october-lop6" for a in links))
             for marker in ["08/10", "31/10/2026", "october-lop6"]:
                 self.assertNotIn(marker, html.split("</head>")[0])
-                self.assertNotIn(marker, (ROOT / "llms.txt").read_text())
                 for schema in re.findall(
                     r'<script\b[^>]*type="application/ld\+json"[^>]*>(.*?)</script>',
                     html,
@@ -69,6 +68,8 @@ class OctoberLop6CampaignTests(unittest.TestCase):
                 ):
                     json.loads(schema)
                     self.assertNotIn(marker, schema)
+            for marker in ["08/10", "october-lop6"]:
+                self.assertNotIn(marker, (ROOT / "llms.txt").read_text())
             self.assertNotIn("affiliate-disclosure", section)
             self.assertNotIn("data-affiliate-disclosure", section)
             self.assertIn(f'data-cta="{prefix}_luyen_de_pricing"' if prefix == "lop6"
