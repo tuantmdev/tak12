@@ -155,6 +155,43 @@ None had `utm_source` or `$utm_source`. The previous window, October 3 to
 October 10, had `site` 51 pageview and 6 affiliate CTA events, with 0 in the
 other buckets. These counts are evidence from that check, not fixed expectations.
 
+## CTA ID diagnostics (issue #20)
+
+`posthog.instrumentation.cta_id_categories` is a separate read-only aggregate
+over the same rolling instrumentation window. It is added alongside the existing
+instrumentation keys and does not change them, the `range`/`events`/
+`affiliate_breakdown` aliases, the stable windows, the cutover split, the hostname
+parser gate, or the disabled cross-source rates. It covers `affiliate_cta_click`
+and `cta_click` events. Each event is placed in exactly one fixed category:
+
+- `absent`: the `cta_id` property is missing or null.
+- `empty`: present but empty or only ASCII whitespace (RE2 `[[:space:]]`).
+- `recognized`: exactly equals an ID in `report_dimensions.json`. The match is
+  case- and whitespace-sensitive, with no trimming or normalization.
+- `nonempty_unrecognized`: any other supplied value. This is reported as
+  `unknown` with `mapping: null`. It is never counted as missing and never mapped
+  to a catalogue ID.
+
+`missing` sums only `absent` and `empty`. `quiz_result` counts events whose ID is
+exactly `quiz_result`, a recognized catalogue ID, by event type. Counts are split
+by event and by `schema_periods` (pre/post the July 16, 2026 tracking cutover).
+They are events, not users or sessions. Scope is project-wide all traffic
+(`hostname_filtered: false`). The query does not use the site-scope parser gate
+and runs whether or not the probe verifies. Only category labels, event names and
+counts are selected. No `cta_id` value leaves PostHog, and the report contains none.
+
+The summary fails closed. It is `unavailable` with null counts when the response
+is missing, incomplete, errored, `hasMore` or at the 50,000-row limit. The same
+applies to wrong columns, malformed or duplicate rows, unexpected labels, and
+non-integer, negative or zero counts. It also applies when `quiz_result` exceeds
+its row total or appears outside `recognized`. A valid empty response is zero.
+
+A read-only aggregate run for the fixed rolling window from 2026-10-19 02:00:18
+to 2026-10-26 02:00:18 UTC returned `recognized` 4, `nonempty_unrecognized` 1,
+`absent` 0, `empty` 0 and `quiz_result` 0. The unrecognized ID is not known
+from this aggregate. It is not mapped here, and no value was retrieved to
+identify it. These are evidence from that run, not fixed expectations.
+
 ## Verification after authorized integration
 
 This task does not activate the collector, alter cron, or perform production

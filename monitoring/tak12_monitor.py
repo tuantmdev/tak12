@@ -464,6 +464,85 @@ def summarize_instrumentation(payload: dict[str, Any]) -> dict[str, Any]:
     return {"status": "available", "columns": ["event", "total"], "results": payload["results"]}
 
 
+CTA_EVENTS = ("affiliate_cta_click", "cta_click")
+CTA_ID_CATEGORIES = ("absent", "empty", "recognized", "nonempty_unrecognized")
+CTA_ID_COLUMNS = ["event", "schema_period", "cta_id_category", "total", "quiz_result"]
+CTA_ID_SEMANTICS = {
+    "absent": "cta_id property missing or null",
+    "empty": "cta_id present but empty or only ASCII whitespace",
+    "recognized": "cta_id exactly equals a report_dimensions.json catalogue ID (case- and whitespace-sensitive)",
+    "nonempty_unrecognized": "cta_id supplied but not in the catalogue; unknown, not missing, and never mapped",
+}
+
+
+def cta_id_category_query(window: dict[str, Any]) -> str:
+    """Only fixed category labels, event names and counts leave PostHog; never cta_id values."""
+    value = "toString(properties.cta_id)"
+    catalogue = ", ".join(hogql_string(cta) for cta in REPORT_DIMENSIONS["cta_id"])
+    category = (
+        f"multiIf(properties.cta_id IS NULL, 'absent', match({value}, '^[[:space:]]*$'), 'empty', "
+        f"{value} IN ({catalogue}), 'recognized', 'nonempty_unrecognized')"
+    )
+    return (
+        "SELECT event, "
+        f"if(timestamp < toDateTime('{TRACKING_CUTOVER}', 'UTC'), 'pre_cutover', 'post_cutover') AS schema_period, "
+        f"{category} AS cta_id_category, count() AS total, "
+        f"countIf(ifNull({value}, '') = 'quiz_result') AS quiz_result "
+        "FROM events WHERE " + timestamp_filter(window)
+        + " AND event IN (" + ", ".join(hogql_string(event) for event in CTA_EVENTS) + ") "
+        + "GROUP BY event, schema_period, cta_id_category "
+        + "ORDER BY event, schema_period, cta_id_category "
+        + f"LIMIT {AGGREGATE_ROW_LIMIT}"
+    )
+
+
+def summarize_cta_id_categories(payload: dict[str, Any]) -> dict[str, Any]:
+    """Fail closed: absent/empty/unknown counts are never inferred from a partial response."""
+    scope = {"scope": POSTHOG_SCOPE, "hostname_filtered": False}
+    unavailable = {
+        "status": "unavailable", "totals": None, "total": None, "by_event": None, "schema_periods": None,
+        "quiz_result": None, "unknown": None, "missing": None, "semantics": CTA_ID_SEMANTICS, **scope,
+        "reason": "Missing, malformed, incomplete or potentially truncated CTA ID aggregate; not zero",
+    }
+    if (not isinstance(payload, dict) or payload.get("columns") != CTA_ID_COLUMNS
+            or not isinstance(payload.get("results"), list) or payload.get("hasMore")
+            or payload.get("incomplete") or payload.get("error")
+            or len(payload["results"]) >= AGGREGATE_ROW_LIMIT):
+        return unavailable
+
+    def empty() -> dict[str, int]:
+        return dict.fromkeys(CTA_ID_CATEGORIES, 0)
+
+    totals = empty()
+    by_event = {event: empty() for event in CTA_EVENTS}
+    periods = {period: empty() for period in ("pre_cutover", "post_cutover")}
+    quiz = dict.fromkeys(CTA_EVENTS, 0)
+    seen = set()
+    for row in payload["results"]:
+        if not isinstance(row, (list, tuple)) or len(row) != len(CTA_ID_COLUMNS):
+            return unavailable
+        event, period, category, total, quiz_result = row
+        # GROUP BY never emits an empty group, and quiz_result is a catalogue ID by construction.
+        if (event not in CTA_EVENTS or period not in tuple(periods) or category not in CTA_ID_CATEGORIES
+                or (event, period, category) in seen
+                or any(type(value) is not int or value < 0 for value in (total, quiz_result))
+                or total == 0 or quiz_result > total or (quiz_result and category != "recognized")):
+            return unavailable
+        seen.add((event, period, category))
+        totals[category] += total
+        by_event[event][category] += total
+        periods[period][category] += total
+        quiz[event] += quiz_result
+    return {
+        "status": "available", "totals": totals, "total": sum(totals.values()),
+        "by_event": by_event, "schema_periods": periods,
+        "quiz_result": {"category": "recognized", "total": sum(quiz.values()), "by_event": quiz},
+        "unknown": {"category": "nonempty_unrecognized", "total": totals["nonempty_unrecognized"], "mapping": None},
+        "missing": {"categories": ["absent", "empty"], "total": totals["absent"] + totals["empty"]},
+        "semantics": CTA_ID_SEMANTICS, **scope, "counts_unit": "events, not users/sessions",
+    }
+
+
 SITE_HOSTNAMES = ("tak-12.com",)
 HOST_BUCKETS = ("site", "unknown", "other_host")
 # Fixed labels and literal URLs only: verifies PostHog URL parsing before any site count is trusted.
@@ -693,6 +772,9 @@ def collect(*, final_end: date | None = None, collected_at: datetime | None = No
         for page in (rolling_baseline["pages"] or []) for cta in page["cta_breakdown"]
         if cta["event"] == "affiliate_cta_click"
     ]
+    cta_id_categories = summarize_cta_id_categories(
+        posthog_query(posthog_api_key, cta_id_category_query(rolling_window))
+    )
     host_parser = summarize_host_parser(posthog_query(posthog_api_key, host_parser_probe_query()))
     site_scope: dict[str, Any] = {"contract": SITE_SCOPE_CONTRACT, "parser": host_parser}
     for name, window in posthog_windows.items():
@@ -733,6 +815,7 @@ def collect(*, final_end: date | None = None, collected_at: datetime | None = No
             "windows": posthog_windows, "stable": stable, "site_scope": site_scope,
             "instrumentation": {"label": "rolling 7-day instrumentation; not the stable baseline",
                                 "window": rolling_window, "baseline": rolling_baseline,
+                                "cta_id_categories": cta_id_categories,
                                 "tracking_cutover_utc": TRACKING_CUTOVER + "Z"},
             # Compatibility aliases used by the existing watchdog: explicitly rolling.
             "range": "last_7_days", "events": posthog_events,
