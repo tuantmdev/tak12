@@ -540,10 +540,7 @@ class AffiliateComplianceTests(unittest.TestCase):
         page = (ROOT / "tak12-ma-giam-gia" / "index.html").read_text(encoding="utf-8")
         normalized_page = page.lower()
 
-        for claim in (
-            "05/09 đến 20/09/2026",
-            "tặng toefl primary",
-        ):
+        for claim in ("05/09 đến 20/09/2026",):
             with self.subTest(claim=claim):
                 self.assertNotIn(claim, normalized_page)
 

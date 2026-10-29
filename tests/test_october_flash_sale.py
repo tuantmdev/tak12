@@ -33,8 +33,11 @@ class OctoberFlashSaleTests(unittest.TestCase):
             match = re.search(
                 rf'<section\b[^>]*id="{section_id}"[^>]*>.*?</section>', html, re.S
             )
-            self.assertIsNotNone(match, f"Missing OCT26 section in {path}")
+            if match is None:
+                self.fail(f"Missing OCT26 section in {path}")
             section = match.group()
+            outside_section = html[:match.start()] + html[match.end():]
+            self.assertNotIn("toefl primary step 1", outside_section.lower())
             tags = Tags(section).tags
             attrs = tags[0][1]
             self.assertIn("hidden", attrs, "No-JS visits must keep dated offers hidden")
@@ -45,6 +48,8 @@ class OctoberFlashSaleTests(unittest.TestCase):
                 "giảm 15%", "mọi gói ôn luyện", "01 năm azvocab pro",
                 "490.000đ", "mỗi lần mua chỉ áp dụng 01 mã học bổng",
                 "kiểm tra số tiền cuối cùng trước khi trả",
+                "combo ôn thi vào 6", "toefl primary step 1 &amp; 2",
+                "thời hạn bằng thời hạn gói vào 6",
             ]:
                 self.assertIn(fact, section.lower())
             links = [a for tag, a in tags if tag == "a"]
@@ -69,7 +74,7 @@ class OctoberFlashSaleTests(unittest.TestCase):
                 ctas.append(cta)
             self.assertNotIn("affiliate-disclosure", section)
             self.assertNotIn("data-affiliate-disclosure", section)
-            for marker in ["OCT26", "15%", "490.000đ"]:
+            for marker in ["OCT26", "15%", "490.000đ", "TOEFL Primary"]:
                 self.assertNotIn(marker, html.split("</head>")[0])
                 for schema in re.findall(
                     r'<script\b[^>]*type="application/ld\+json"[^>]*>(.*?)</script>',
@@ -99,7 +104,7 @@ class OctoberFlashSaleTests(unittest.TestCase):
             ("https://tak-12.com/", ROOT / "index.html"),
             ("https://tak-12.com/tak12-ma-giam-gia/", ROOT / "tak12-ma-giam-gia/index.html"),
         ]:
-            self.assertEqual("2026-10-23", contract[url]["lastmod"])
+            self.assertEqual("2026-10-29", contract[url]["lastmod"])
             self.assertEqual(hashlib.sha256(page.read_bytes()).hexdigest(), contract[url]["sha256"])
 
 

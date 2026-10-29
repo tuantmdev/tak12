@@ -126,7 +126,7 @@ for (const start of [cutoff, cutoff + 86400000]) {
 
         contract = json.loads((ROOT / "sitemap-content.json").read_text())
         for url, path, lastmod in [
-            ("https://tak-12.com/", ROOT / "index.html", "2026-10-23"),
+            ("https://tak-12.com/", ROOT / "index.html", "2026-10-29"),
             (
                 "https://tak-12.com/tak12-on-thi-lop-6/",
                 ROOT / "tak12-on-thi-lop-6" / "index.html",
