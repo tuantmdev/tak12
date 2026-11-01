@@ -23,88 +23,19 @@ class Tags(HTMLParser):
 
 
 class OctoberFlashSaleTests(unittest.TestCase):
-    def test_verified_flash_sale_is_coordinated_and_expires(self):
-        ctas = []
-        for path, section_id, prefix in [
-            ("index.html", "homepage-oct26", "homepage"),
-            ("tak12-ma-giam-gia/index.html", "oct26", "coupon_guide"),
-        ]:
-            html = (ROOT / path).read_text(encoding="utf-8")
-            match = re.search(
-                rf'<section\b[^>]*id="{section_id}"[^>]*>.*?</section>', html, re.S
-            )
-            if match is None:
-                self.fail(f"Missing OCT26 section in {path}")
-            section = match.group()
-            outside_section = html[:match.start()] + html[match.end():]
-            self.assertNotIn("toefl primary step 1", outside_section.lower())
-            tags = Tags(section).tags
-            attrs = tags[0][1]
-            self.assertIn("hidden", attrs, "No-JS visits must keep dated offers hidden")
-            self.assertIn("data-dated-offer", attrs)
-            self.assertEqual("31/10/2026", attrs["data-end-date"])
-            for fact in [
-                "20/10", "23h59 ngày 31/10/2026", "giờ việt nam", "oct26",
-                "giảm 15%", "mọi gói ôn luyện", "01 năm azvocab pro",
-                "490.000đ", "mỗi lần mua chỉ áp dụng 01 mã học bổng",
-                "kiểm tra số tiền cuối cùng trước khi trả",
-                "combo ôn thi vào 6", "toefl primary step 1 &amp; 2",
-                "thời hạn bằng thời hạn gói vào 6",
-            ]:
-                self.assertIn(fact, section.lower())
-            links = [a for tag, a in tags if tag == "a"]
-            expected = [
-                (
-                    f"{prefix}_oct26_pricing",
-                    "https://tak12.com/info/bang-gia?ref=njg2odn",
-                    "campaign",
-                ),
-                (
-                    f"{prefix}_oct26_source",
-                    SOURCE + "?ref=njg2odn",
-                    "verify-offer-terms",
-                ),
-            ]
-            for cta, href, intent in expected:
-                link = next(a for a in links if a.get("data-cta") == cta)
-                self.assertEqual(href, link["href"])
-                self.assertEqual("_blank", link["target"])
-                self.assertEqual({"sponsored", "noopener"}, set(link["rel"].split()))
-                self.assertEqual(intent, link["data-intent"])
-                ctas.append(cta)
-            self.assertNotIn("affiliate-disclosure", section)
-            self.assertNotIn("data-affiliate-disclosure", section)
-            for marker in ["OCT26", "15%", "490.000đ", "TOEFL Primary"]:
-                self.assertNotIn(marker, html.split("</head>")[0])
-                for schema in re.findall(
-                    r'<script\b[^>]*type="application/ld\+json"[^>]*>(.*?)</script>',
-                    html,
-                    re.S,
-                ):
-                    json.loads(schema)
-                    self.assertNotIn(marker, schema)
-        self.assertEqual(len(ctas), len(set(ctas)))
-
+    def test_expired_flash_sale_is_removed_from_all_public_surfaces(self):
+        pages = [ROOT / "index.html", ROOT / "tak12-ma-giam-gia/index.html"]
         llms = (ROOT / "llms.txt").read_text(encoding="utf-8")
-        for fact in [
-            "OCT26",
-            "20/10 đến 23:59 ngày 31/10/2026",
-            "giảm 15%",
-            "01 năm azVocab PRO",
-            "490.000 đồng",
-            "Mỗi lần mua chỉ áp dụng 01 mã học bổng",
-            SOURCE,
-        ]:
-            self.assertIn(fact, llms)
-        self.assertIn("Sau thời điểm này, thông tin chỉ có giá trị lịch sử", llms)
-        self.assertIn("https://tak12.com/info/bang-gia?ref=njg2odn", llms)
+        for content in [*(page.read_text(encoding="utf-8") for page in pages), llms]:
+            for marker in ["OCT26", "homepage-oct26", 'id="oct26"', "490.000", SOURCE]:
+                self.assertNotIn(marker, content)
 
         contract = json.loads((ROOT / "sitemap-content.json").read_text())
         for url, page in [
-            ("https://tak-12.com/", ROOT / "index.html"),
-            ("https://tak-12.com/tak12-ma-giam-gia/", ROOT / "tak12-ma-giam-gia/index.html"),
+            ("https://tak-12.com/", pages[0]),
+            ("https://tak-12.com/tak12-ma-giam-gia/", pages[1]),
         ]:
-            self.assertEqual("2026-10-29", contract[url]["lastmod"])
+            self.assertEqual("2026-11-01", contract[url]["lastmod"])
             self.assertEqual(hashlib.sha256(page.read_bytes()).hexdigest(), contract[url]["sha256"])
 
 
