@@ -31,11 +31,11 @@ class OctoberFlashSaleTests(unittest.TestCase):
                 self.assertNotIn(marker, content)
 
         contract = json.loads((ROOT / "sitemap-content.json").read_text())
-        for url, page in [
-            ("https://tak-12.com/", pages[0]),
-            ("https://tak-12.com/tak12-ma-giam-gia/", pages[1]),
+        for url, page, expected_lastmod in [
+            ("https://tak-12.com/", pages[0], "2026-11-02"),
+            ("https://tak-12.com/tak12-ma-giam-gia/", pages[1], "2026-11-01"),
         ]:
-            self.assertEqual("2026-11-01", contract[url]["lastmod"])
+            self.assertEqual(expected_lastmod, contract[url]["lastmod"])
             self.assertEqual(hashlib.sha256(page.read_bytes()).hexdigest(), contract[url]["sha256"])
 
 

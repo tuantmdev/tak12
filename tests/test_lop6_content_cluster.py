@@ -139,6 +139,7 @@ class Lop6ContentClusterTests(unittest.TestCase):
             with self.subTest(surface=name):
                 self.assertIn("18 buổi", document)
                 self.assertIn("09/11/2026", document)
+                self.assertIn("2027-2028", document)
                 self.assertIn("gói ôn thi vào lớp 6", document.lower())
                 self.assertIn("còn hạn PRO", document)
                 self.assertIn("không áp dụng", document.lower())
@@ -149,6 +150,27 @@ class Lop6ContentClusterTests(unittest.TestCase):
                 )
                 self.assertIn("Thi thử vào 6", document)
                 self.assertIn(OFFICIAL_LUYEN_DE_SOURCE, document)
+
+        self.assertIn(
+            'id="lop6-luyen-de-title">Khóa luyện đề 3 môn miễn phí năm học 2027-2028</h2>',
+            homepage,
+        )
+        self.assertIn(
+            '<p class="campaign-subtitle">Khóa 18 buổi năm học 2027-2028, khai giảng 09/11/2026, dành cho học viên có gói ôn thi vào lớp 6 còn hạn PRO; không áp dụng cho gói Thi thử vào 6.</p>',
+            homepage,
+        )
+        self.assertIn(
+            'id="luyen-de-3-mon-2027">Khóa luyện đề 3 môn miễn phí năm học 2027-2028 cho học viên đủ điều kiện</h2>',
+            pillar,
+        )
+        self.assertIn(
+            '<p>Điều kiện TAK12 công bố: học viên phải có <strong>gói ôn thi vào lớp 6 còn hạn PRO</strong>; chương trình <strong>không áp dụng</strong> cho gói <strong>Thi thử vào 6</strong>. Phụ huynh không cần đăng ký riêng; TAK12 cho biết sẽ gửi liên kết học qua email cho tài khoản đủ điều kiện.</p>',
+            pillar,
+        )
+        self.assertIn(
+            "khóa luyện đề 3 môn **miễn phí** năm học **2027-2028**, gồm **18 buổi**, khai giảng **09/11/2026**, dành cho học viên có **gói ôn thi vào lớp 6 còn hạn PRO**; **không áp dụng** cho gói **Thi thử vào 6**.",
+            llms,
+        )
 
         self.assertIn('id="lop6-luyen-de-2027"', homepage)
         self.assertIn('data-cta="homepage_lop6_luyen_de_pricing"', homepage)
