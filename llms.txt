@@ -34,7 +34,7 @@
 
 ## Chương trình ôn thi vào lớp 6 đang được TAK12 công bố
 
-- TAK12 đang công bố một khóa luyện đề 3 môn **miễn phí** năm học **2027-2028**, gồm **18 buổi**, khai giảng **09/11/2026**, dành cho học viên có **gói ôn thi vào lớp 6 còn hạn PRO**; **không áp dụng** cho gói **Thi thử vào 6**.
+- TAK12 đang công bố một khóa luyện đề 3 môn **miễn phí** năm học **2027-2028**; **đợt 1 gồm 18 buổi**, khai giảng **09/11/2026**, dành cho học viên có **gói ôn thi vào lớp 6 còn hạn PRO**; **không áp dụng** cho gói **Thi thử vào 6**.
 - [Thông báo và lịch học chính thức](https://tak12.com/news/n/2499/tang-khoa-luyen-de-vao-6-cho-hoc-vien-tak12)
 - [Kiểm tra gói ôn thi vào lớp 6 hiện hành](https://tak12.com/info/bang-gia-vao-6?ref=njg2odn)
 

@@ -137,7 +137,7 @@ class Lop6ContentClusterTests(unittest.TestCase):
             "llms": llms,
         }.items():
             with self.subTest(surface=name):
-                self.assertIn("18 buổi", document)
+                self.assertIn("đợt 1 gồm 18 buổi", document.lower())
                 self.assertIn("09/11/2026", document)
                 self.assertIn("2027-2028", document)
                 self.assertIn("gói ôn thi vào lớp 6", document.lower())
@@ -156,7 +156,7 @@ class Lop6ContentClusterTests(unittest.TestCase):
             homepage,
         )
         self.assertIn(
-            '<p class="campaign-subtitle">Khóa 18 buổi năm học 2027-2028, khai giảng 09/11/2026, dành cho học viên có gói ôn thi vào lớp 6 còn hạn PRO; không áp dụng cho gói Thi thử vào 6.</p>',
+            '<p class="campaign-subtitle">Đợt 1 gồm 18 buổi, khai giảng 09/11/2026, dành cho học viên có gói ôn thi vào lớp 6 còn hạn PRO; không áp dụng cho gói Thi thử vào 6.</p>',
             homepage,
         )
         self.assertIn(
@@ -168,7 +168,7 @@ class Lop6ContentClusterTests(unittest.TestCase):
             pillar,
         )
         self.assertIn(
-            "khóa luyện đề 3 môn **miễn phí** năm học **2027-2028**, gồm **18 buổi**, khai giảng **09/11/2026**, dành cho học viên có **gói ôn thi vào lớp 6 còn hạn PRO**; **không áp dụng** cho gói **Thi thử vào 6**.",
+            "khóa luyện đề 3 môn **miễn phí** năm học **2027-2028**; **đợt 1 gồm 18 buổi**, khai giảng **09/11/2026**, dành cho học viên có **gói ôn thi vào lớp 6 còn hạn PRO**; **không áp dụng** cho gói **Thi thử vào 6**.",
             llms,
         )
 
