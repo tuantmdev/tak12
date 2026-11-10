@@ -156,7 +156,7 @@ class Lop6ContentClusterTests(unittest.TestCase):
             homepage,
         )
         self.assertIn(
-            '<p class="campaign-subtitle">Đợt 1 gồm 18 buổi, khai giảng 09/11/2026, dành cho học viên có gói ôn thi vào lớp 6 còn hạn PRO; không áp dụng cho gói Thi thử vào 6.</p>',
+            '<p class="campaign-subtitle">Đợt 1 gồm 18 buổi, đang diễn ra từ 09/11/2026 đến 23/01/2027, dành cho học viên có gói ôn thi vào lớp 6 còn hạn PRO; không áp dụng cho gói Thi thử vào 6.</p>',
             homepage,
         )
         self.assertIn(
@@ -168,7 +168,11 @@ class Lop6ContentClusterTests(unittest.TestCase):
             pillar,
         )
         self.assertIn(
-            "khóa luyện đề 3 môn **miễn phí** năm học **2027-2028**; **đợt 1 gồm 18 buổi**, khai giảng **09/11/2026**, dành cho học viên có **gói ôn thi vào lớp 6 còn hạn PRO**; **không áp dụng** cho gói **Thi thử vào 6**.",
+            '<p>TAK12 đang công bố khóa luyện đề 3 môn miễn phí; <strong>đợt 1 gồm 18 buổi</strong>, đang diễn ra từ <strong>09/11/2026</strong> đến <strong>23/01/2027</strong>.</p>',
+            pillar,
+        )
+        self.assertIn(
+            "khóa luyện đề 3 môn **miễn phí** năm học **2027-2028**; **đợt 1 gồm 18 buổi**, đang diễn ra từ **09/11/2026** đến **23/01/2027**, dành cho học viên có **gói ôn thi vào lớp 6 còn hạn PRO**; **không áp dụng** cho gói **Thi thử vào 6**.",
             llms,
         )
 
