@@ -29,7 +29,7 @@ class OctoberLop6CampaignTests(unittest.TestCase):
             ("https://tak-12.com/", pages[0]),
             ("https://tak-12.com/tak12-on-thi-lop-6/", pages[1]),
         ]:
-            self.assertEqual("2026-11-10", contract[url]["lastmod"])
+            self.assertEqual("2026-11-12", contract[url]["lastmod"])
             self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), contract[url]["sha256"])
 
 

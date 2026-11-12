@@ -61,6 +61,17 @@ class HomepageCampaignTests(unittest.TestCase):
         self.assertIn(official_url, llms)
         self.assertNotIn("Back to School", llms, "Keep LLM collateral useful after seasonal wording ages")
 
+    def test_lop6_offer_leads_with_paid_eligibility_not_unconditional_free_claim(self):
+        homepage = (ROOT / "index.html").read_text(encoding="utf-8")
+        detail = (ROOT / "tak12-on-thi-lop-6" / "index.html").read_text(encoding="utf-8")
+        llms = (ROOT / "llms.txt").read_text(encoding="utf-8")
+
+        for content in (homepage, detail, llms):
+            self.assertIn("tặng kèm", content.lower())
+            self.assertIn("còn hạn PRO", content)
+        self.assertNotIn("Khóa luyện đề 3 môn miễn phí năm học 2027-2028", homepage)
+        self.assertNotIn("một khóa luyện đề 3 môn **miễn phí**", llms)
+
 
 if __name__ == "__main__":
     unittest.main()
