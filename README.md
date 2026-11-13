@@ -14,7 +14,7 @@ This page was designed in [Claude Design](https://claude.ai/design) (`TAK12 Affi
 - **Featured courses** — 3 highlighted courses with tags, decision guidance, and links to current provider pricing routes
 - **Course-finder quiz** — 3 questions that recommend the best course for the student
 - **Course CTA** — contextual route to the provider's current course options
-- **About TAK12** — key selling points (AI personalization, time savings, progress tracking, affordability)
+- **About TAK12** — independent selection guidance and links to current provider information
 - **Independent review** — selection guidance for families
 - **FAQ** — collapsible accordion (6 questions)
 - **Final CTA** and footer

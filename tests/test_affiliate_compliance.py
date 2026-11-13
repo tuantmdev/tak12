@@ -160,6 +160,13 @@ class AffiliateComplianceTests(unittest.TestCase):
         parser.feed(page.read_text(encoding="utf-8"))
         return parser
 
+    def test_readme_does_not_publish_unsupported_product_claims(self):
+        readme = (ROOT / "README.md").read_text(encoding="utf-8").lower()
+
+        for claim in ("ai personalization", "time savings", "progress tracking", "affordability"):
+            with self.subTest(claim=claim):
+                self.assertNotIn(claim, readme)
+
     def test_school_support_page_uses_only_retrievable_product_claims(self):
         page = ROOT / "tak12-hoc-tot-toan-tieng-anh" / "index.html"
         html = page.read_text(encoding="utf-8").lower()
