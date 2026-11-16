@@ -20,7 +20,13 @@ class OctoberLop6CampaignTests(unittest.TestCase):
             ]:
                 self.assertNotIn(marker, html)
 
-        # Keep the separately verified November course announcement and its source.
+        # Keep only facts still present in the refreshed official announcement.
+        public_surfaces = pages + [ROOT / "llms.txt"]
+        for path in public_surfaces:
+            content = path.read_text(encoding="utf-8")
+            self.assertNotIn("23/01/2027", content)
+            self.assertIn("18 buổi", content)
+
         self.assertIn(SOURCE, pages[0].read_text(encoding="utf-8"))
         self.assertIn(SOURCE, pages[1].read_text(encoding="utf-8"))
 
@@ -29,7 +35,7 @@ class OctoberLop6CampaignTests(unittest.TestCase):
             ("https://tak-12.com/", pages[0]),
             ("https://tak-12.com/tak12-on-thi-lop-6/", pages[1]),
         ]:
-            self.assertEqual("2026-11-12", contract[url]["lastmod"])
+            self.assertEqual("2026-11-16", contract[url]["lastmod"])
             self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), contract[url]["sha256"])
 
 

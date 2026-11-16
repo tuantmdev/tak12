@@ -6,6 +6,13 @@
 - SHA-256 of the fetched response body: `d6570b21bbd3bbf0ea015420ba0bb5e92751f5686e01603e3d82543c9d6ad65d`.
 - Response body was inspected in the Hermes scratch cache; the large HTML artifact is not archived in the repository. The digest identifies that retrieval, not future responses.
 
+## Refreshed source check (2026-11-16)
+
+- Retrieved: 2026-11-16 UTC with HTTP 200.
+- SHA-256 of the fetched response body: `ea3ca465b19296a0fee80d9513a5600008aa3bb9d0af4063f2e135dbd8edb3e9`.
+- Article schema reports `dateModified: 2026-11-01T18:28:36Z`.
+- The current source still states 18 sessions beginning 09/11/2026 and running across November, December 2026, and January 2027, but no longer states the exact end date 23/01/2027. Public copy must not retain that unsupported endpoint.
+
 ## Verified facts
 
 - Offer runs from 08/10 through the end of 31/10/2026, Vietnam time.
