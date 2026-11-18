@@ -31,11 +31,11 @@ class OctoberLop6CampaignTests(unittest.TestCase):
         self.assertIn(SOURCE, pages[1].read_text(encoding="utf-8"))
 
         contract = json.loads((ROOT / "sitemap-content.json").read_text())
-        for url, path in [
-            ("https://tak-12.com/", pages[0]),
-            ("https://tak-12.com/tak12-on-thi-lop-6/", pages[1]),
+        for url, path, expected_lastmod in [
+            ("https://tak-12.com/", pages[0], "2026-11-18"),
+            ("https://tak-12.com/tak12-on-thi-lop-6/", pages[1], "2026-11-16"),
         ]:
-            self.assertEqual("2026-11-16", contract[url]["lastmod"])
+            self.assertEqual(expected_lastmod, contract[url]["lastmod"])
             self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), contract[url]["sha256"])
 
 

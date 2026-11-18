@@ -32,8 +32,8 @@ class OctoberFlashSaleTests(unittest.TestCase):
 
         contract = json.loads((ROOT / "sitemap-content.json").read_text())
         for url, page, expected_lastmod in [
-            ("https://tak-12.com/", pages[0], "2026-11-16"),
-            ("https://tak-12.com/tak12-ma-giam-gia/", pages[1], "2026-11-01"),
+            ("https://tak-12.com/", pages[0], "2026-11-18"),
+            ("https://tak-12.com/tak12-ma-giam-gia/", pages[1], "2026-11-18"),
         ]:
             self.assertEqual(expected_lastmod, contract[url]["lastmod"])
             self.assertEqual(hashlib.sha256(page.read_bytes()).hexdigest(), contract[url]["sha256"])

@@ -72,6 +72,27 @@ class HomepageCampaignTests(unittest.TestCase):
         self.assertNotIn("Khóa luyện đề 3 môn miễn phí năm học 2027-2028", homepage)
         self.assertNotIn("một khóa luyện đề 3 môn **miễn phí**", llms)
 
+    def test_active_november_combo_offer_is_coordinated_and_expires_fail_closed(self):
+        homepage = (ROOT / "index.html").read_text(encoding="utf-8")
+        guide = (ROOT / "tak12-ma-giam-gia" / "index.html").read_text(encoding="utf-8")
+        llms = (ROOT / "llms.txt").read_text(encoding="utf-8")
+        source = (ROOT / "docs" / "november-combo-source.md").read_text(encoding="utf-8")
+        official = "https://tak12.com/news/n/2530/tang-toc-cuoi-hki-giam-30-combo-hoc-tot-va-nang-cao-toan-tieng-anh"
+
+        for content, section_id in ((homepage, "homepage-november-combo"), (guide, "november-combo")):
+            self.assertIn(f'id="{section_id}"', content)
+            self.assertIn('data-dated-offer data-end-date="30/11/2026" hidden', content)
+            self.assertIn("Giảm trực tiếp 30%", content)
+            self.assertIn("Combo Học tốt &amp; Nâng cao Toán – Tiếng Anh", content)
+            self.assertIn("thời hạn 1 năm", content)
+            self.assertIn(official + "?ref=njg2odn", content)
+        self.assertIn('data-cta="homepage_november_combo_pricing" data-intent="campaign"', homepage)
+        self.assertIn('data-cta="coupon_guide_november_combo_pricing" data-intent="campaign"', guide)
+        self.assertIn('rel="sponsored noopener"', homepage)
+        self.assertIn("11/11 đến 30/11/2026", llms)
+        self.assertIn(official, llms)
+        self.assertIn("b51eab09854fb8bfbaf02d87e370b8c88952f6700cf84945aea7b7d4f289d071", source)
+
 
 if __name__ == "__main__":
     unittest.main()
