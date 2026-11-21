@@ -239,7 +239,7 @@ class AffiliateComplianceTests(unittest.TestCase):
                 "certification", "certification_flyers", "certification_ket",
                 "certification_pet", "certification_toefl_primary",
             },
-            ("tak12.com", "/info/bang-gia-hoc-tot"): {"school_support", "campaign"},
+            ("tak12.com", "/info/bang-gia-hoc-tot"): {"school_support", "campaign", "campaign-pricing"},
             ("tak12.com", "/info/bang-gia-vao-6"): {"exam_grade_6"},
             ("tak12.com", "/news/n/2499/tang-khoa-luyen-de-vao-6-cho-hoc-vien-tak12"): {"verify-offer-terms"},
             ("tak12.com", "/news/n/2525/uu-dai-thang-10-giam-15-toan-bo-goi-tang-azvocab-va-qua-tang-cho-vao-6"): {"verify-offer-terms"},
