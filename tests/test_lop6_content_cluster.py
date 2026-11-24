@@ -181,6 +181,17 @@ class Lop6ContentClusterTests(unittest.TestCase):
         self.assertIn('data-intent="exam_grade_6"', homepage)
         self.assertIn('rel="sponsored noopener"', homepage)
         self.assertIn('href="/tak12-on-thi-lop-6/#luyen-de-3-mon-2027"', homepage)
+        source_url = OFFICIAL_LUYEN_DE_SOURCE + "?ref=njg2odn"
+        self.assertIn(
+            f'href="{source_url}" target="_blank" rel="sponsored noopener" '
+            'data-cta="homepage_lop6_luyen_de_source" data-intent="verify-offer-terms"',
+            homepage,
+        )
+        self.assertIn(
+            f'href="{source_url}" target="_blank" rel="sponsored noopener" '
+            'data-cta="lop6_luyen_de_source" data-intent="verify-offer-terms"',
+            pillar,
+        )
         self.assertIn('id="luyen-de-3-mon-2027"', pillar)
         self.assertIn("khóa luyện đề vào 6", keyword_map.lower())
         self.assertIn("tak12-on-thi-lop-6", keyword_map)
