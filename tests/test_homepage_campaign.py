@@ -90,7 +90,7 @@ class HomepageCampaignTests(unittest.TestCase):
         self.assertIn('data-cta="coupon_guide_november_combo_pricing" data-intent="campaign-pricing"', guide)
         self.assertIn('rel="sponsored noopener"', homepage)
         self.assertIn("11/11 đến 30/11/2026", llms)
-        self.assertIn(official, llms)
+        self.assertIn(official + "?ref=njg2odn", llms)
         self.assertIn("b51eab09854fb8bfbaf02d87e370b8c88952f6700cf84945aea7b7d4f289d071", source)
 
 

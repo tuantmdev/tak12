@@ -195,6 +195,10 @@ class Lop6ContentClusterTests(unittest.TestCase):
         self.assertIn('id="luyen-de-3-mon-2027"', pillar)
         self.assertIn("khóa luyện đề vào 6", keyword_map.lower())
         self.assertIn("tak12-on-thi-lop-6", keyword_map)
+        self.assertIn(
+            OFFICIAL_LUYEN_DE_SOURCE + "?ref=njg2odn",
+            (ROOT / "llms.txt").read_text(encoding="utf-8"),
+        )
 
     def test_pillar_title_targets_the_current_2027_exam_cycle(self):
         title_match = re.search(r"<title>(.*?)</title>", read(PILLAR), re.DOTALL)
