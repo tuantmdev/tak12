@@ -91,6 +91,11 @@ class HomepageCampaignTests(unittest.TestCase):
         self.assertIn('rel="sponsored noopener"', homepage)
         self.assertIn("11/11 đến 30/11/2026", llms)
         self.assertIn(official + "?ref=njg2odn", llms)
+        current_offer_heading = "## Ưu đãi đang có hiệu lực"
+        lop6_heading = "## Chương trình ôn thi vào lớp 6 đang được TAK12 công bố"
+        self.assertIn(current_offer_heading, llms)
+        self.assertLess(llms.index(current_offer_heading), llms.index("11/11 đến 30/11/2026"))
+        self.assertLess(llms.index("11/11 đến 30/11/2026"), llms.index(lop6_heading))
         self.assertIn("b51eab09854fb8bfbaf02d87e370b8c88952f6700cf84945aea7b7d4f289d071", source)
 
 
